@@ -1,7 +1,7 @@
 (() => {
   // ns-params:@params
   var baseURL = "https://yuanshuai1122.github.io/";
-  var params = { blogroll: [{ name: "\u9A6D\u98CE\u7B14\u8BB0", url: "https://yufengbiji.com/" }], defaultcover: "https://www.apple.com.cn/newsroom/images/apple-logo_black.jpg.landing-regular_2x.jpg", email: "floyd.li@outlook.com", showcopyright: true, showmore: true, showrss: true, socialmedia: [{ name: "Github", url: "https://github.com/floyd-li" }] };
+  var params = { blogroll: [{ name: "\u{1F44B}", url: "https://yuanshuaicn.com/" }], defaultcover: "https://www.apple.com.cn/newsroom/images/apple-logo_black.jpg.landing-regular_2x.jpg", email: "shuaiyuan@gmail.com", showcopyright: true, showmore: true, showrss: true, socialmedia: [{ name: "Github", url: "https://github.com/yuanshuai1122" }] };
 
   // <stdin>
   var { appid, appkey, searchindex: indexName, enabled } = params.algolia;
