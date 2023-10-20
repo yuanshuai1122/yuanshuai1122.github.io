@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="JVM内存与垃圾回收篇第7章本地方法栈" />
+<meta property="og:description" content="第 7 章 本地方法栈 1、本地方法栈 本地方法栈的特点 Java虚拟机栈于管理Java方法的调用，而本地方法栈用于管理本地方法的调用。 本地方法栈，也是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC7%E7%AB%A0%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:58:43+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:58:43+00:00" />
+<title>JVM内存与垃圾回收篇第7章本地方法栈</title>
+
+    <link rel="canonical" href="/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC7%E7%AB%A0%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 30, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">JVM内存与垃圾回收篇第7章本地方法栈</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/jvm" class="tag">
+                    JVM
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="第-7-章-本地方法栈" class="pagebody-header">
+    第 7 章 本地方法栈
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1本地方法栈" class="pagebody-header">
+    1、本地方法栈
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>本地方法栈的特点</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>Java虚拟机栈于管理Java方法的调用，而<strong>本地方法栈用于管理本地方法的调用</strong>。</li>
+<li>本地方法栈，也是线程私有的。</li>
+<li>允许被实现成<strong>固定或者是可动态扩展的内存大小</strong>（在内存溢出方面和虚拟机栈相同）
+<div class="component-content component"><ul>
+<li>如果线程请求分配的栈容量超过本地方法栈允许的最大容量，Java虚拟机将会抛出一个stackoverflowError 异常。</li>
+<li>如果本地方法栈可以动态扩展，并且在尝试扩展的时候无法申请到足够的内存，或者在创建新的线程时没有足够的内存去创建对应的本地方法栈，那么Java虚拟机将会抛出一个outofMemoryError异常。</li>
+</ul></div>
+</li>
+<li>本地方法一般是使用C语言实现的。</li>
+<li>它的具体做法是Native Method Stack中登记native方法，在Execution Engine 执行时加载本地方法库。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8768faa22bc24f7e87e5bdb99f9e788a" id="lht8768faa22bc24f7e87e5bdb99f9e788a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/109.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>注意事项</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>当某个线程调用一个本地方法时，它就进入了一个全新的并且不再受虚拟机限制的世界。它和虚拟机拥有同样的权限。
+<div class="component-content component"><ul>
+<li>本地方法可以通过本地方法接口来<strong>访问虚拟机内部的运行时数据区</strong></li>
+<li>它甚至可以直接使用<strong>本地处理器中的寄存器</strong></li>
+<li>直接从<strong>本地内存的堆中分配任意数量的内存</strong></li>
+</ul></div>
+</li>
+<li>并不是所有的JVM都支持本地方法。因为Java虚拟机规范并没有明确要求本地方法栈的使用语言、具体实现方式、数据结构等。如果JVM产品不打算支持native方法，也可以无需实现本地方法栈。</li>
+<li>在Hotspot JVM中，直接将本地方法栈和虚拟机栈合二为一。</li>
+</ol></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 30, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="SpringBoot2核心技术-数据访问" />
+<meta property="og:description" content="&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- | | default | com.alibaba.druid.filter.stat.StatFilter | | stat | com.alibaba.druid.filter.stat.StatFilter | | mergeStat | com.alibaba.druid.filter.stat.MergeStatFilter | | encoding | com.alibaba.druid.filter.encoding.EncodingConvertFilter | | log4j | com.alibaba.druid.filter.logging.Log4jFilter | | log4j2 | com.alibaba.druid.filter.logging.Log4j2Filter | | slf4j | com.alibaba.druid.filter.logging.Slf4jLogFilter | | commonlogging | com.alibaba.druid.filter.logging.CommonsLogFilter | 慢SQL记录配置 &lt;bean id=&#34;stat-filter&#34; class=&#34;com.alibaba.druid.filter.stat.StatFilter&#34;&gt; &lt;property name=&#34;slowSqlMillis&#34; value=&#34;10000&#34; /&gt; &lt;property name=&#34;logSlowSql&#34; value=&#34;true&#34; /&gt; &lt;/bean&gt; 使用 slowSqlMillis 定义慢" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:32:58+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:32:58+00:00" />
+<title>SpringBoot2核心技术-数据访问</title>
+
+    <link rel="canonical" href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">SpringBoot2核心技术-数据访问</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/springboot" class="tag">
+                    SpringBoot
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;- |
+| default       | com.alibaba.druid.filter.stat.StatFilter                |
+| stat          | com.alibaba.druid.filter.stat.StatFilter                |
+| mergeStat     | com.alibaba.druid.filter.stat.MergeStatFilter           |
+| encoding      | com.alibaba.druid.filter.encoding.EncodingConvertFilter |
+| log4j         | com.alibaba.druid.filter.logging.Log4jFilter            |
+| log4j2        | com.alibaba.druid.filter.logging.Log4j2Filter           |
+| slf4j         | com.alibaba.druid.filter.logging.Slf4jLogFilter         |
+| commonlogging | com.alibaba.druid.filter.logging.CommonsLogFilter       |</p>
+<p class="component-content component"><strong>慢SQL记录配置</strong></p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;stat-filter&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.alibaba.druid.filter.stat.StatFilter&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;slowSqlMillis&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;10000&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;logSlowSql&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>使用 slowSqlMillis 定义慢SQL的时长</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="3使用官方starter方式" class="pagebody-header">
+    3、使用官方starter方式
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="1引入druid-starter" class="pagebody-header">
+    1、引入druid-starter
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>com.alibaba<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>druid-spring-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;version&gt;</span>1.1.17<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="2分析自动配置" class="pagebody-header">
+    2、分析自动配置
+  </h4>
+</div><div class="component-content component"><ul>
+<li>扩展配置项 <strong>spring.datasource.druid</strong></li>
+<li>DruidSpringAopConfiguration.<strong>class</strong>,  监控SpringBean的；配置项：<strong>spring.datasource.druid.aop-patterns</strong></li>
+<li>DruidStatViewServletConfiguration.<strong>class</strong>, 监控页的配置：<strong>spring.datasource.druid.stat-view-servlet；默认开启</strong></li>
+<li>DruidWebStatFilterConfiguration.<strong>class</strong>, web监控配置；<strong>spring.datasource.druid.web-stat-filter；默认开启</strong></li>
+<li>DruidFilterConfiguration.<strong>class</strong>}) 所有Druid自己filter的配置</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_STAT_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.stat&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_CONFIG_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.config&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_ENCODING_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.encoding&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_SLF4J_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.slf4j&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_LOG4J_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.log4j&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_LOG4J2_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.log4j2&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_COMMONS_LOG_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.commons-log&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String FILTER_WALL_PREFIX <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.datasource.druid.filter.wall&#34;</span><span style="color:#f92672">;</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="3配置示例" class="pagebody-header">
+    3、配置示例
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">spring</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">datasource</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">url</span>: <span style="color:#ae81ff">jdbc:mysql://localhost:3306/db_account</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">username</span>: <span style="color:#ae81ff">root</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">password</span>: <span style="color:#ae81ff">123456</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">driver-class-name</span>: <span style="color:#ae81ff">com.mysql.jdbc.Driver</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">druid</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">aop-patterns</span>: <span style="color:#ae81ff">com.atguigu.admin.* </span> <span style="color:#75715e">#监控SpringBean</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">filters</span>: <span style="color:#ae81ff">stat,wall    </span> <span style="color:#75715e"># 底层开启功能，stat（sql监控），wall（防火墙）</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">stat-view-servlet</span>:   <span style="color:#75715e"># 配置监控页功能</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">login-username</span>: <span style="color:#ae81ff">admin</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">login-password</span>: <span style="color:#ae81ff">admin</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">resetEnable</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">web-stat-filter</span>:  <span style="color:#75715e"># 监控web</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">urlPattern</span>: <span style="color:#ae81ff">/*</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">exclusions</span>: <span style="color:#e6db74">&#39;*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">filter</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">stat</span>:    <span style="color:#75715e"># 对上面filters里面的stat的详细配置</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">slow-sql-millis</span>: <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">logSlowSql</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">wall</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">config</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">drop-table-allow</span>: <span style="color:#66d9ef">false</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">SpringBoot配置示例</p>
+<p class="component-content component"><a href="https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter">https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter</a></p>
+<p class="component-content component">配置项列表<a href="https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8">https://github.com/alibaba/druid/wiki/DruidDataSource%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8</a></p>
+
+<div class="component-content pagebody component">
+  <h2 id="3整合mybatis操作" class="pagebody-header">
+    3、整合MyBatis操作
+  </h2>
+</div><p class="component-content component"><a href="https://github.com/mybatis">https://github.com/mybatis</a></p>
+<p class="component-content component">starter</p>
+<p class="component-content component">SpringBoot官方的Starter：spring-boot-starter-*</p>
+<p class="component-content component">第三方的： *-spring-boot-starter</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>org.mybatis.spring.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-spring-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;version&gt;</span>2.1.4<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-45f3a852958a2c804572caf9a1d95b58" id="lht45f3a852958a2c804572caf9a1d95b58">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/70.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="1配置模式" class="pagebody-header">
+    1、配置模式
+  </h3>
+</div><div class="component-content component"><ul>
+<li>全局配置文件</li>
+<li>SqlSessionFactory: 自动配置好了</li>
+<li>SqlSession：自动配置了 <strong>SqlSessionTemplate 组合了SqlSession</strong></li>
+<li>@Import(<strong>AutoConfiguredMapperScannerRegistrar</strong>.<strong>class</strong>）；</li>
+<li>Mapper： 只要我们写的操作MyBatis的接口标准了 <strong>@Mapper 就会被自动扫描进来</strong></li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@EnableConfigurationProperties</span><span style="color:#f92672">(</span>MybatisProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#960050;background-color:#1e0010">：</span> MyBatis配置项绑定类<span style="color:#960050;background-color:#1e0010">。</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@AutoConfigureAfter</span><span style="color:#f92672">({</span> DataSourceAutoConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> MybatisLanguageDriverAutoConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span> <span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MybatisAutoConfiguration</span><span style="color:#f92672">{}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ConfigurationProperties</span><span style="color:#f92672">(</span>prefix <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;mybatis&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MybatisProperties</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">可以修改配置文件中 mybatis 开始的所有；</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span># 配置mybatis规则
+</span></span><span style="display:flex;"><span>mybatis:
+</span></span><span style="display:flex;"><span>  config-location: classpath:mybatis/mybatis-config.xml  #全局配置文件位置
+</span></span><span style="display:flex;"><span>  mapper-locations: classpath:mybatis/mapper/*.xml  #sql映射文件位置
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>Mapper接口---&gt;绑定Xml
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; ?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!DOCTYPE mapper
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        PUBLIC &#34;-//mybatis.org//DTD Mapper 3.0//EN&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">        &#34;http://mybatis.org/dtd/mybatis-3-mapper.dtd&#34;&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;mapper</span> <span style="color:#a6e22e">namespace=</span><span style="color:#e6db74">&#34;com.atguigu.admin.mapper.AccountMapper&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--    public Account getAcct(Long id); --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;select</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;getAcct&#34;</span> <span style="color:#a6e22e">resultType=</span><span style="color:#e6db74">&#34;com.atguigu.admin.bean.Account&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        select * from  account_tbl where  id=#{id}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/select&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/mapper&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">配置 <strong>private</strong> Configuration <strong>configuration</strong>; mybatis.<strong>configuration下面的所有，就是相当于改mybatis全局配置文件中的值</strong></p>
+<p class="component-content component">**
+**</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e"># 配置mybatis规则</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">mybatis</span>:
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  config-location: classpath:mybatis/mybatis-config.xml</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">mapper-locations</span>: <span style="color:#ae81ff">classpath:mybatis/mapper/*.xml</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">configuration</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">map-underscore-to-camel-case</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span> <span style="color:#ae81ff">可以不写全局；配置文件，所有全局配置文件的配置都放在configuration配置项中即可</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>导入mybatis官方starter</li>
+<li>编写mapper接口。标准@Mapper注解</li>
+<li>编写sql映射文件并绑定mapper接口</li>
+<li>在application.yaml中指定Mapper配置文件的位置，以及指定全局配置文件的信息 （建议；<strong>配置在mybatis.configuration</strong>）</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="2注解模式" class="pagebody-header">
+    2、注解模式
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Mapper</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">CityMapper</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Select</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;select * from city where id=#{id}&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> City <span style="color:#a6e22e">getById</span><span style="color:#f92672">(</span>Long id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">insert</span><span style="color:#f92672">(</span>City city<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="3混合模式" class="pagebody-header">
+    3、混合模式
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Mapper</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">CityMapper</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Select</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;select * from city where id=#{id}&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> City <span style="color:#a6e22e">getById</span><span style="color:#f92672">(</span>Long id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">insert</span><span style="color:#f92672">(</span>City city<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component"><strong>最佳实战：</strong></p>
+<div class="component-content component"><ul>
+<li>引入mybatis-starter</li>
+<li><strong>配置application.yaml中，指定mapper-location位置即可</strong></li>
+<li>编写Mapper接口并标注@Mapper注解</li>
+<li>简单方法直接注解方式</li>
+<li>复杂方法编写mapper.xml进行绑定映射</li>
+<li><em>@MapperScan(&ldquo;com.atguigu.admin.mapper&rdquo;) 简化，其他的接口就可以不用标注@Mapper注解</em></li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="4整合-mybatis-plus-完成crud" class="pagebody-header">
+    4、整合 MyBatis-Plus 完成CRUD
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1什么是mybatis-plus" class="pagebody-header">
+    1、什么是MyBatis-Plus
+  </h3>
+</div><p class="component-content component"><a href="https://github.com/baomidou/mybatis-plus">MyBatis-Plus</a>（简称 MP）是一个 <a href="http://www.mybatis.org/mybatis-3/">MyBatis</a> 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。</p>
+<p class="component-content component"><a href="https://baomidou.com/">mybatis plus 官网</a></p>
+<p class="component-content component">建议安装 <strong>MybatisX</strong> 插件</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2整合mybatis-plus" class="pagebody-header">
+    2、整合MyBatis-Plus
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>com.baomidou<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>mybatis-plus-boot-starter<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;version&gt;</span>3.4.1<span style="color:#f92672">&lt;/version&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">自动配置</p>
+<div class="component-content component"><ul>
+<li>MybatisPlusAutoConfiguration 配置类，MybatisPlusProperties 配置项绑定。<strong>mybatis-plus：xxx 就是对****mybatis-plus的定制</strong></li>
+<li><strong>SqlSessionFactory 自动配置好。底层是容器中默认的数据源</strong></li>
+<li>**mapperLocations 自动配置好的。有默认值。*<strong><em>classpath*:/mapper/*</em>/*.xml；任意包的类路径下的所有mapper文件夹下任意路径下的所有xml都是sql映射文件。  建议以后sql映射文件，放在 mapper下</strong></li>
+<li><strong>容器中也自动配置好了</strong> <strong>SqlSessionTemplate</strong></li>
+<li><strong>@Mapper 标注的接口也会被自动扫描；建议直接</strong> @MapperScan(<strong>&ldquo;com.atguigu.admin.mapper&rdquo;</strong>) 批量扫描就行</li>
+</ul></div>
+<p class="component-content component"><strong>优点：</strong></p>
+<div class="component-content component"><ul>
+<li>只需要我们的Mapper继承 <strong>BaseMapper</strong> 就可以拥有crud能力</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="3crud功能" class="pagebody-header">
+    3、CRUD功能
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/user/delete/{id}&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">deleteUser</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@PathVariable</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;id&#34;</span><span style="color:#f92672">)</span> Long id<span style="color:#f92672">,</span>
+</span></span><span style="display:flex;"><span>                             <span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pn&#34;</span><span style="color:#f92672">,</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span>Integer pn<span style="color:#f92672">,</span>
+</span></span><span style="display:flex;"><span>                             RedirectAttributes ra<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        userService<span style="color:#f92672">.</span><span style="color:#a6e22e">removeById</span><span style="color:#f92672">(</span>id<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        ra<span style="color:#f92672">.</span><span style="color:#a6e22e">addAttribute</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;pn&#34;</span><span style="color:#f92672">,</span>pn<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;redirect:/dynamic_table&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@GetMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/dynamic_table&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">dynamic_table</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@RequestParam</span><span style="color:#f92672">(</span>value<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pn&#34;</span><span style="color:#f92672">,</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">)</span> Integer pn<span style="color:#f92672">,</span>Model model<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//表格内容的遍历
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        response.sendError
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//     List&lt;User&gt; users = Arrays.asList(new User(&#34;zhangsan&#34;, &#34;123456&#34;),
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                new User(&#34;lisi&#34;, &#34;123444&#34;),
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                new User(&#34;haha&#34;, &#34;aaaaa&#34;),
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                new User(&#34;hehe &#34;, &#34;aaddd&#34;));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        model.addAttribute(&#34;users&#34;,users);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        if(users.size()&gt;3){
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//            throw new UserTooManyException();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        }
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">//从数据库中查出user表中的用户进行展示
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//构造分页参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Page<span style="color:#f92672">&lt;</span>User<span style="color:#f92672">&gt;</span> page <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Page<span style="color:#f92672">&lt;&gt;(</span>pn<span style="color:#f92672">,</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//调用page进行分页
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Page<span style="color:#f92672">&lt;</span>User<span style="color:#f92672">&gt;</span> userPage <span style="color:#f92672">=</span> userService<span style="color:#f92672">.</span><span style="color:#a6e22e">page</span><span style="color:#f92672">(</span>page<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//        userPage.getRecords()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        userPage.getCurrent()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//        userPage.getPages()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        model<span style="color:#f92672">.</span><span style="color:#a6e22e">addAttribute</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;users&#34;</span><span style="color:#f92672">,</span>userPage<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;table/dynamic_table&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserServiceImpl</span> <span style="color:#66d9ef">extends</span> ServiceImpl<span style="color:#f92672">&lt;</span>UserMapper<span style="color:#f92672">,</span>User<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> UserService <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">UserService</span> <span style="color:#66d9ef">extends</span> IService<span style="color:#f92672">&lt;</span>User<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="2nosql" class="pagebody-header">
+    2、NoSQL
+  </h1>
+</div><p class="component-content component">Redis 是一个开源（BSD许可）的，内存中的数据结构存储系统，它可以用作数据库、<strong>缓存</strong>和消息中间件。 它支持多种类型的数据结构，如 <a href="http://www.redis.cn/topics/data-types-intro.html#strings">字符串（strings）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#hashes">散列（hashes）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#lists">列表（lists）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#sets">集合（sets）</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#sorted-sets">有序集合（sorted sets）</a>与范围查询， <a href="http://www.redis.cn/topics/data-types-intro.html#bitmaps">bitmaps</a>， <a href="http://www.redis.cn/topics/data-types-intro.html#hyperloglogs">hyperloglogs</a> 和 <a href="http://www.redis.cn/commands/geoadd.html">地理空间（geospatial）</a> 索引半径查询。 Redis 内置了 <a href="http://www.redis.cn/topics/replication.html">复制（replication）</a>，<a href="http://www.redis.cn/commands/eval.html">LUA脚本（Lua scripting）</a>， <a href="http://www.redis.cn/topics/lru-cache.html">LRU驱动事件（LRU eviction）</a>，<a href="http://www.redis.cn/topics/transactions.html">事务（transactions）</a> 和不同级别的 <a href="http://www.redis.cn/topics/persistence.html">磁盘持久化（persistence）</a>， 并通过 <a href="http://www.redis.cn/topics/sentinel.html">Redis哨兵（Sentinel）</a>和自动 <a href="http://www.redis.cn/topics/cluster-tutorial.html">分区（Cluster）</a>提供高可用性（high availability）。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="1redis自动配置" class="pagebody-header">
+    1、Redis自动配置
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-737ea15fe63080608e0140706b95c4b4" id="lht737ea15fe63080608e0140706b95c4b4">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/71.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">自动配置：</p>
+<div class="component-content component"><ul>
+<li>RedisAutoConfiguration 自动配置类。RedisProperties 属性类 &ndash;&gt; <strong>spring.redis.xxx是对redis的配置</strong></li>
+<li>连接工厂是准备好的。<strong>Lettuce</strong>ConnectionConfiguration、<strong>Jedis</strong>ConnectionConfiguration</li>
+<li><strong>自动注入了RedisTemplate</strong>&lt;<strong>Object</strong>, <strong>Object</strong>&gt; ： xxxTemplate；</li>
+<li><strong>自动注入了StringRedisTemplate；k：v都是String</strong></li>
+<li><strong>key：value</strong></li>
+<li><strong>底层只要我们使用</strong> **StringRedisTemplate、**<strong>RedisTemplate就可以操作redis</strong></li>
+</ul></div>
+<p class="component-content component"><strong>redis环境搭建</strong></p>
+<p class="component-content component"><strong>1、阿里云按量付费redis。经典网络</strong></p>
+<p class="component-content component"><strong>2、申请redis的公网连接地址</strong></p>
+<p class="component-content component"><strong>3、修改白名单  允许0.0.0.0/0 访问</strong></p>
+
+<div class="component-content pagebody component">
+  <h2 id="2redistemplate与lettuce" class="pagebody-header">
+    2、RedisTemplate与Lettuce
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testRedis</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        ValueOperations<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> String<span style="color:#f92672">&gt;</span> operations <span style="color:#f92672">=</span> redisTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">opsForValue</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        operations<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;world&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String hello <span style="color:#f92672">=</span> operations<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>hello<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="3切换至jedis" class="pagebody-header">
+    3、切换至jedis
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!--        导入jedis--&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>redis.clients<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>jedis<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>spring:
+</span></span><span style="display:flex;"><span>  redis:
+</span></span><span style="display:flex;"><span>      host: r-bp1nc7reqesxisgxpipd.redis.rds.aliyuncs.com
+</span></span><span style="display:flex;"><span>      port: 6379
+</span></span><span style="display:flex;"><span>      password: lfy:Lfy123456
+</span></span><span style="display:flex;"><span>      client-type: jedis
+</span></span><span style="display:flex;"><span>      jedis:
+</span></span><span style="display:flex;"><span>        pool:
+</span></span><span style="display:flex;"><span>          max-active: 10</span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

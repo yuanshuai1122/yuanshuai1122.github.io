@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="死磕juc（四）Java内存模型之JMM" />
+<meta property="og:description" content="Java内存模型之JMM 一、计算机硬件存储体系 计算机存储结构，从本地磁盘到主存到CPU缓存，也就是从硬盘到内存，到CPU。一般对应的程序的操" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/si-ke-juc-si-java-nei-cun-mo-xing-zhi-jmm/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-24T13:20:31+00:00" />
+<meta property="article:modified_time" content="2022-08-24T13:20:31+00:00" />
+<title>死磕juc（四）Java内存模型之JMM</title>
+
+    <link rel="canonical" href="/archives/si-ke-juc-si-java-nei-cun-mo-xing-zhi-jmm/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        juc
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">August 24, 2022</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">死磕juc（四）Java内存模型之JMM</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/juc" class="tag">
+                    juc
+                  </a>
+                
+                  
+                  <a href="/tags/jmm" class="tag">
+                    jmm
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="java内存模型之jmm" class="pagebody-header">
+    Java内存模型之JMM
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一计算机硬件存储体系" class="pagebody-header">
+    一、计算机硬件存储体系
+  </h2>
+</div><p class="component-content component">计算机存储结构，从本地磁盘到主存到CPU缓存，也就是从硬盘到内存，到CPU。一般对应的程序的操作就是从数据库查数据到内存然后到CPU进行计算</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e2de8c2a0d0d3cbcf2bf273105c89f2c" id="lhte2de8c2a0d0d3cbcf2bf273105c89f2c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241317518.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">因为有这么多级的缓存(cpu和物理主内存的速度不一致的)，CPU的运行并不是直接操作内存而是先把内存里边的数据读到缓存，而内存的读和写操作的时候就会造成不一致的问题</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-6ea48b26751757d411e09917f56cc0ae" id="lht6ea48b26751757d411e09917f56cc0ae">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241317134.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">Java虚拟机规范中试图定义一种Java内存模型（java Memory Model，简称JMM) 来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。推导出我们需要知道JMM</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二java内存模型java-memory-model" class="pagebody-header">
+    二、Java内存模型Java Memory Model
+  </h2>
+</div><blockquote>
+<p class="component-content component">MM(Java内存模型Java Memory Model，简称JMM)本身是一种抽象的概念并不真实存在它仅仅描述的是一组约定或规范，通过这组规范定义了程序中(尤其是多线程)各个变量的读写访问方式并决定一个线程对共享变量的写入何时以及如何变成对另一个线程可见，关键技术点都是围绕多线程的原子性、可见性和有序性展开的。</p>
+</blockquote>
+<p class="component-content component">原则：</p>
+<p class="component-content component">JMM的关键技术点都是围绕多线程的原子性、可见性和有序性展开的</p>
+<p class="component-content component">能干嘛？</p>
+<p class="component-content component">1 通过JMM来实现线程和主内存之间的抽象关系。</p>
+<p class="component-content component">2 屏蔽各个硬件平台和操作系统的内存访问差异以实现让Java程序在各种平台下都能达到一致的内存访问效果。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="三jmm规范下三大特性" class="pagebody-header">
+    三、JMM规范下，三大特性
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="31-可见性" class="pagebody-header">
+    3.1 可见性
+  </h3>
+</div><p class="component-content component"><code>是指当一个线程修改了某一个共享变量的值，其他线程是否能够立即知道该变更 </code>，JMM规定了所有的变量都存储在<code>主内存</code>中。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-56f0200570b71678f10ea7a29dbe2e2c" id="lht56f0200570b71678f10ea7a29dbe2e2c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241317785.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a4edef05ea370c9db84f2bd9320b79d8" id="lhta4edef05ea370c9db84f2bd9320b79d8">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241317609.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">Java中<code>普通的共享变量不保证可见性</code>，因为数据修改被写入内存的时机是不确定的，多线程并发下很可能出现&quot;脏读&quot;，所以每个线程都有自己的工作内存，线程自己的<code>工作内存</code>中保存了该线程使用到的变量的<code>主内存副本拷贝</code>，线程对变量的所有操作（读取，赋值等 ）都必需在线程自己的工作内存中进行，而不能够直接读写主内存中的变量。不同线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-5a5a995a3c7d19460234e3cd44bff449" id="lht5a5a995a3c7d19460234e3cd44bff449">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241317566.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><table>
+<thead>
+<tr>
+<th>线程脏读：如果没有可见性保证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主内存中有变量 x，初始值为 0</td>
+</tr>
+<tr>
+<td>线程 A 要将 x 加 1，先将 x=0 拷贝到自己的私有内存中，然后更新 x 的值</td>
+</tr>
+<tr>
+<td>线程 A 将更新后的 x 值回刷到主内存的时间是不固定的</td>
+</tr>
+<tr>
+<td>刚好在线程 A 没有回刷 x 到主内存时，线程 B 同样从主内存中读取 x，此时为 0，和线程 A 一样的操作，最后期盼的 x=2 就会变成 x=1</td>
+</tr>
+</tbody>
+</table></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-31dde34dce9ee831ffeca0d8b0e66803" id="lht31dde34dce9ee831ffeca0d8b0e66803">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241318319.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32-原子性" class="pagebody-header">
+    3.2 原子性
+  </h3>
+</div><p class="component-content component">指一个操作是不可中断的，即多线程环境下，操作不能被其他线程干扰</p>
+
+<div class="component-content pagebody component">
+  <h3 id="33-有序性" class="pagebody-header">
+    3.3 有序性
+  </h3>
+</div><p class="component-content component">对于一个线程的执行代码而言，我们总是习惯性认为代码的执行总是从上到下，有序执行。</p>
+<p class="component-content component">但为了提供性能，编译器和处理器通常会对指令序列进行重新排序。</p>
+<p class="component-content component">指令重排<code>可以保证串行语义一致</code>，但没有义务保证<code>多线程间的语义也一致</code>，即可能产生&quot;脏读&quot;，简单说，两行以上不相干的代码在执行的时候有可能先执行的不是第一条，<code>不见得是从上到下顺序执行，执行顺序会被优化。</code></p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-901bbc8510492833213cbf04bf0710f9" id="lht901bbc8510492833213cbf04bf0710f9">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241318978.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">单线程环境里面确保程序最终执行结果和代码顺序执行的结果一致。</p>
+<p class="component-content component">处理器在进行重排序时必须要考虑指令之间的数据依赖性</p>
+<p class="component-content component">多线程环境中线程交替执行,由于编译器优化重排的存在，两个线程中使用的变量能否保证一致性是无法确定的,结果无法预测</p>
+
+<div class="component-content pagebody component">
+  <h2 id="四jmm规范下多线程对变量的读写过程" class="pagebody-header">
+    四、JMM规范下，多线程对变量的读写过程
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41-读取过程" class="pagebody-header">
+    4.1 读取过程
+  </h3>
+</div><p class="component-content component">由于JVM运行程序的实体是线程，而每个线程创建时JVM都会为其创建一个工作内存(有些地方称为栈空间)，工作内存是每个线程的私有数据区域，而Java内存模型中规定所有变量都存储在主内存，主内存是共享内存区域，所有线程都可以访问，但线程对变量的操作(读取赋值等)必须在工作内存中进行，首先要将变量从主内存拷贝到的线程自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，各个线程中的工作内存中存储着主内存中的变量副本拷贝，因此不同的线程间无法访问对方的工作内存，线程间的通信(传值)必须通过主内存来完成，其简要访问过程如下图:</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b7c4eeac01390d37c86910548be43099" id="lhtb7c4eeac01390d37c86910548be43099">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208241318879.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">JMM定义了线程和主内存之间的抽象关系</p>
+<p class="component-content component">1 线程之间的共享变量存储在主内存中(从硬件角度来说就是内存条)</p>
+<p class="component-content component">2 每个线程都有一个私有的本地工作内存，本地工作内存中存储了该线程用来读/写共享变量的副本(从硬件角度来说就是CPU的缓存，比如寄存器、L1、L2、L3缓存等)</p>
+
+<div class="component-content pagebody component">
+  <h3 id="42-小总结" class="pagebody-header">
+    4.2 小总结
+  </h3>
+</div><div class="component-content component"><ul>
+<li>我们定义的所有共享变量都储存在物理主内存中</li>
+<li>每个线程都有自己独立的工作内存，里面保存该线程使用到的变量的副本(主内存中该变量的一份拷贝)</li>
+<li>线程对共享变量所有的操作都必须先在线程自己的工作内存中进行后写回主内存，不能直接从主内存中读写(不能越级)</li>
+<li>不同线程之间也无法直接访问其他线程的工作内存中的变量，线程间变量值的传递需要通过主内存来进行(同级不能相互访问)</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="五jmm规范下多线程先行发生原则之happens-before" class="pagebody-header">
+    五、JMM规范下，多线程先行发生原则之happens-before
+  </h2>
+</div><p class="component-content component">在JMM中，如果一个操作执行的结果需要对另一个操作可见性或者 代码重排序，那么这两个操作之间必须存在happens-before关系</p>
+<p class="component-content component">x 、y案例说明</p>
+<div class="component-content component"><table>
+<thead>
+<tr>
+<th style="text-align:center">x = 5</th>
+<th style="text-align:center">线程A执行</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">y = x</td>
+<td style="text-align:center">线程B执行</td>
+</tr>
+<tr>
+<td style="text-align:center">上述称之为：写后读</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table></div>
+<p class="component-content component">y是否等于5呢？</p>
+<p class="component-content component">如果线程A的操作（x= 5）happens-before(先行发生)线程B的操作（y = x）,那么可以确定线程B执行后y = 5 一定成立;</p>
+<p class="component-content component">如果他们不存在happens-before原则，那么y = 5 不一定成立。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="51-先行发生原则说明" class="pagebody-header">
+    5.1 先行发生原则说明
+  </h3>
+</div><p class="component-content component">如果Java内存模型中所有的有序性都仅靠volatile和synchronized来完成，那么有很多操作都将会变得非常啰嗦，但是我们在编写Java并发代码的时候并没有察觉到这一点。</p>
+<p class="component-content component">我们没有时时、处处、次次，添加volatile和synchronized来完成程序，这是因为Java语言中JMM原则下有一个“先行发生”(Happens-Before)的原则限制和规矩</p>
+<p class="component-content component">这个原则非常重要：</p>
+<p class="component-content component">它是判断数据是否存在竞争，线程是否安全的非常有用的手段。依赖这个原则，我们可以通过几条简单规则一揽子解决并发环境下两个操作之间是否可能存在冲突的所有问题，而不需要陷入Java内存模型苦涩难懂的底层编译原理之中。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="52-happens-before总原则" class="pagebody-header">
+    5.2 happens-before总原则
+  </h3>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">如果一个操作happens-before另一个操作，那么第一个操作的执行结果将对第二个操作可见，而且第一个操作的执行顺序排在第二个操作之前。</p>
+</li>
+<li>
+<p class="component-content component">两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="53-happens-before之8条" class="pagebody-header">
+    5.3 happens-before之8条
+  </h3>
+</div><div class="component-content component"><ol>
+<li>
+<p class="component-content component">次序规则</p>
+<div class="component-content component"><ul>
+<li>一个线程内，按照代码顺序，写在前面的操作先行发生于写在后面的操作；</li>
+<li>前一个操作的结果可以被后续的操作获取。讲白点就是前面一个操作把变量X赋值为1，那后面一个操作肯定能知道X已经变成了1。</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">锁定规则</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">一个unLock操作先行发生于后面((这里的“后面”是指时间上的先后))对同一个锁的lock操作；</p>
+</li>
+<li>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HappenBeforeDemo</span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> Object objectLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//对于同一把锁objectLock，threadA一定先unlock同一把锁后B才能获得该锁，   A 先行发生于B
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>objectLock<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div></li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">volatile变量规则</p>
+<div class="component-content component"><ul>
+<li>对一个volatile变量的写操作先行发生于后面对这个变量的读操作，前面的写对后面的读是可见的，这里的“后面”同样是指时间上的先后。</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">传递规则</p>
+<div class="component-content component"><ul>
+<li>如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C；</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">线程启动规则(Thread Start Rule)</p>
+<div class="component-content component"><ul>
+<li>Thread对象的start()方法先行发生于此线程的每一个动作</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">线程中断规则(Thread Interruption Rule)</p>
+<div class="component-content component"><ul>
+<li>对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生；</li>
+<li>可以通过Thread.interrupted()检测到是否发生中断</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">线程终止规则(Thread Termination Rule)</p>
+<div class="component-content component"><ul>
+<li>线程中的所有操作都先行发生于对此线程的终止检测，我们可以通过Thread::join()方法是否结束、Thread::isAlive()的返回值等手段检测线程是否已经终止执行。</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">对象终结规则(Finalizer Rule)</p>
+<div class="component-content component"><ul>
+<li>一个对象的初始化完成（构造函数执行结束）先行发生于它的finalize()方法的开始</li>
+<li>简单说：对象没有完成初始化之前，是不能调用finalized()方法的</li>
+</ul></div>
+</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h3 id="54-案例说明" class="pagebody-header">
+    5.4 案例说明
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">demo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> value <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component">假设存在线程A和B，线程A先（时间上的先后）调用了setValue(1)，然后线程B调用了同一个对象的getValue()，那么线程B收到的返回值是什么？</p>
+</blockquote>
+<p class="component-content component">我们就这段简单的代码一次分析happens-before的规则（规则5、6、7、8 可以忽略，因为他们和这段代码毫无关系）：</p>
+<p class="component-content component">1 由于两个方法是由不同的线程调用，不在同一个线程中，所以肯定不满足程序次序规则；</p>
+<p class="component-content component">2 两个方法都没有使用锁，所以不满足锁定规则；</p>
+<p class="component-content component">3 变量不是用volatile修饰的，所以volatile变量规则不满足；</p>
+<p class="component-content component">4 传递规则肯定不满足；</p>
+<p class="component-content component">所以我们无法通过happens-before原则推导出线程A happens-before线程B，虽然可以确认在时间上线程A优先于线程B指定，但就是无法确认线程B获得的结果是什么，所以这段代码不是线程安全的。那么怎么修复这段代码呢？</p>
+<div class="component-content component"><ul>
+<li>把getter/setter方法都定义为synchronized方法</li>
+<li>把value定义为volatile变量，由于setter方法对value的修改不依赖value的原值，满足volatile关键字使用场景</li>
+</ul></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  August 24, 2022</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Vue之Vuex（一）" />
+<meta property="og:description" content="Vuex 一、基本概念 1.定义 Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。它采用 集中式存储管理 应用的所有组件的状态，并以相应的规则保证状态以一种可预测" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/vue%E4%B9%8Bvuex%E4%B8%80/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:45:04+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:45:04+00:00" />
+<title>Vue之Vuex（一）</title>
+
+    <link rel="canonical" href="/archives/vue%E4%B9%8Bvuex%E4%B8%80/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Vue
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 30, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Vue之Vuex（一）</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/vue" class="tag">
+                    Vue
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="vuex" class="pagebody-header">
+    Vuex
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一基本概念" class="pagebody-header">
+    一、基本概念
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="1定义" class="pagebody-header">
+    1.定义
+  </h5>
+</div><p class="component-content component">  <strong>Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。<strong>它采用 <strong>集中式存储管理</strong> 应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。看不懂就对了，因为这是官方的解释，下面看看小编的解释 (✿◡‿◡)
+  当组件1、组件2、组件3 三个组件之间</strong>共享某些状态</strong>的时候，我们不能将该状态定义在组件1中，也不能定义在组件2中，也不能定义在组件3中，因为我们没有办法确保三个组件之间是有关联的。
+  如果我们将该状态定义在组件1中，然后组件3想要用该状态，但是组件1在组件树的顶层，而组件3却在组件数的最底层，这样一层一层调用十分复杂，因此我们需要另外一个东西来存放并且管理组件之间共享的状态，这个东西就是Vuex。
+  综上所述，<strong>Vuex是一个管理共享状态的管家，并且该状态是响应式的</strong>。简单而又精辟的解释</p>
+
+<div class="component-content pagebody component">
+  <h5 id="2管理什么状态" class="pagebody-header">
+    2.管理什么状态？
+  </h5>
+</div><p class="component-content component">  不是所有的状态都可以放到Vuex的，只有<strong>多个组件中可能会共享的状态</strong>才放到Vuex中，比如下面的这些：
+<strong>① 用户相关</strong>：用户的登录状态、用户名称、头像、地理位置信息等等。
+<strong>② 商品相关</strong>：商品的收藏、购物车中的物品等等。
+  这些状态信息，我们都可以放在统一的地方，对它进行保存和管理，而且它们还是响应式的</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二状态管理" class="pagebody-header">
+    二、状态管理
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="1单页面状态管理" class="pagebody-header">
+    1.单页面状态管理
+  </h5>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-0d12d27d00224c6555d13641f4a7d141" id="lht0d12d27d00224c6555d13641f4a7d141">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/403.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">从上面的图给大家解释何为单页面状态管理：
+  首先<strong>state代表状态</strong>，可以简单理解成变量，因为变量也是可以用来保存状态的；<strong>View代表视图</strong>，状态的显示是通过视图显示的，所以State指向View；
+  然后如果视图中有一些<strong>行为</strong>，就会传递给<strong>Action</strong>，所以View指向Actions；
+最后该行为可能会<strong>修改某些状态</strong>，所以Action指向了State，具体的代码如下:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>   &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">message</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>   &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">counter</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>   &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;counter++&#34;</span> &gt;<span style="color:#f92672">+</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>   &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;counter--&#34;</span> &gt;<span style="color:#f92672">-</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;App&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;我是标题&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">counter</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">在该页面中，message 和 counter 都可以看成是State，然后 template 看作是View，@click点击事件可以看成Action。message的内容在template中显示，也是证实了State指向View；template中的button增加了点击事件，证实了View指向Action；当用户点击了“+ - ”时会就修改counter的数值，证实了Action指向State。
+<strong>因为State、View、Action都是在同一个页面中的，所以叫做单页面状态管理。</strong></p>
+
+<div class="component-content pagebody component">
+  <h5 id="2多页面管理" class="pagebody-header">
+    2.多页面管理
+  </h5>
+</div><p class="component-content component">  在上面例子的基础上，我们在创建一个页面，该页面和上个例子中的页面共享counter变量，我们用vuex实现的步骤如下：
+<strong>① 安装vuex</strong>：通过命令 <strong>npm install vuex &ndash;save</strong> 安装
+**② 引用插件：**因为vuex是一个插件，所以我们要通过 **Vue.use()**来引用插件
+<strong>③ 创建实例</strong>：通过命令 <strong>const store = new Vuex.store（）<strong>命令来创建，这里要注意的是，我们</strong>创建的是Vuex插件中的store方法</strong>
+**④ 书写共享状态：**在Vuex中一般有固定的内容填写，包括：state、mutations、action、getters、modules
+<strong>⑤ 使用共享状态</strong>：通过 <strong>$store.state.XXX</strong>来使用，代码具体如下：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">//vuex代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">Vuex</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;vuex&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 1.引用插件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">Vue</span>.<span style="color:#a6e22e">use</span>(<span style="color:#a6e22e">Vuex</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2.创建实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">store</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vuex</span>.<span style="color:#a6e22e">Store</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">counter</span><span style="color:#f92672">:</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mutations</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">actions</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">getters</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">modules</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//3.导出实例
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">store</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--</span><span style="color:#a6e22e">第一个组件的代码</span><span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">message</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">counter</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;counter++&#34;</span> &gt;<span style="color:#f92672">+</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;counter--&#34;</span> &gt;<span style="color:#f92672">-</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">hellovue</span>&gt;&lt;/<span style="color:#f92672">hellovue</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">import</span> <span style="color:#a6e22e">hellovue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./components/HelloWorld.vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;App&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hellovue</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;我是组件1&#34;</span>,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span><span style="color:#75715e">&lt;!--</span><span style="color:#a6e22e">第二个组件的代码</span><span style="color:#f92672">--&gt;</span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">message</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">counter</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;HelloWorld&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">data</span>(){
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;我是组件2&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">在上面的代码中，我们将共享的变量 counter 放在了vuex.store 的 state 中，并且通过 <strong>$store.stats.counter</strong> 使用该变量。效果图如下所示：</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-963ebde6b633356ac90b5eaaedf27126" id="lht963ebde6b633356ac90b5eaaedf27126">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/404.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">在此，已经实现了counter的共享，但是我们还没有实现当用户点击“+ - ”时counter的变化状态，下面小编先给你们分析一下原理</p>
+
+<div class="component-content pagebody component">
+  <h5 id="3状态变化的原理" class="pagebody-header">
+    3.状态变化的原理
+  </h5>
+</div><p class="component-content component">  基于上面的例子，如果当多个组件都想要修改counter的值时，就会可能遇到这样的情况，就是<strong>不知道到底是谁修改过counter的值</strong>，这样不利于后面代码的追踪，所以我们希望有一个东西来记录谁修改过状态，而下面的这幅图就是状态改变的实质</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b0adaa5eec63473892af1f48d275cfdc" id="lhtb0adaa5eec63473892af1f48d275cfdc">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/405.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">状态改变可以有两条路径：
+<strong>①Vue Components &ndash;&gt; State</strong>
+  通过这条路径修改状态的话，就会发生刚刚说的事情，<strong>根本不知道谁修改过state</strong>，所以官方是不建议这样直接修改state
+<strong>② Vue Components &ndash;&gt; Action &ndash;&gt; Mutations &ndash;&gt; State</strong>
+  <strong>Mutations:处理同步操作</strong>，内部有个叫 <strong>Devtools</strong>的插件，该插件的作用就是<strong>记录修改Vuex的状态</strong>；
+<strong>Action ：处理异步操作</strong>，比如网络请求，所以Action 的另外一头指向了backend（后端）</p>
+
+<div class="component-content pagebody component">
+  <h1 id="vuex基本使用和核心概念" class="pagebody-header">
+    Vuex基本使用和核心概念
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一基本使用1---devtool" class="pagebody-header">
+    一、基本使用1 - devtool
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="1定义-1" class="pagebody-header">
+    1.定义
+  </h5>
+</div><p class="component-content component">devtool 是浏览器的一个<strong>插件</strong>，主要用来<strong>记录和跟踪被修改过的state状态。</strong></p>
+
+<div class="component-content pagebody component">
+  <h5 id="2安装步骤" class="pagebody-header">
+    2.安装步骤
+  </h5>
+</div><p class="component-content component">既然是一个插件，那么我们首先的在浏览器中安装好，下面是安装的具体步骤：
+  点击Chrome浏览器<strong>右上角三个小点</strong> &ndash;&gt; <strong>更多工具 *<em>&ndash;&gt; **拓展程序 **&ndash;&gt; 点击 “**打开Chrome网上应用商店**” &ndash;&gt; 在搜索框中输入 **“devtools”** &ndash;&gt;安装*</em>“Vue.js.devtools”</strong> 即可。
+  安装完成之后，重新关闭浏览器，然后在浏览器中打开自己创建好的项目，如果在控制台的菜单栏中看到有<strong>Vue的字样</strong>说明安装成功了。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-4151c48d1f1d636d20c72bd150a41a8f" id="lht4151c48d1f1d636d20c72bd150a41a8f">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/406.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h5 id="3切换至vuex页面" class="pagebody-header">
+    3.切换至Vuex页面
+  </h5>
+</div><p class="component-content component">在上面安装好的插件中，我们可以点击 **“Vuex”**切换到Vuex来查看Vuex相关的东西。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-500195141bc1118323f9a8eaa534c022" id="lht500195141bc1118323f9a8eaa534c022">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/407.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">在这个页面中，我们就可以实时跟踪Vuex一些状态的变化。下面我们将昨天没有讲解到的通过 Vue Components &ndash;&gt; Action &ndash;&gt; Mutations &ndash;&gt; State 这个路径修改的状态通过mutation来实现。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二基本使用2---mutations" class="pagebody-header">
+    二、基本使用2 - Mutations
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="1定义-2" class="pagebody-header">
+    1.定义
+  </h5>
+</div><p class="component-content component">  通俗的理解就是里面装着一些<strong>改变数据方法的集合</strong>。把处理数据逻辑方法全部放在mutations里面，使得数据和视图分离。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="切记vuex中store数据改变的唯一方法就是mutation" class="pagebody-header">
+    切记：Vuex中store数据改变的唯一方法就是mutation！
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="2用法" class="pagebody-header">
+    2.用法
+  </h5>
+</div><p class="component-content component"><strong>① 在mutations中书写先关的操作</strong>。其实就是在mutation声明方法，代码如下所示：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">store</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vuex</span>.<span style="color:#a6e22e">Store</span>({
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">counter</span><span style="color:#f92672">:</span><span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mutations</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">increase</span>(<span style="color:#a6e22e">state</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">counter</span><span style="color:#f92672">++</span>
+</span></span><span style="display:flex;"><span>      },
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">decrease</span>(<span style="color:#a6e22e">state</span>){
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">counter</span><span style="color:#f92672">--</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>})</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">任何修改Vuex状态的数据都在mutations中处理，上述代码中，声明了两个方法 increase 和 decrease，默认的参数传递的都是state，然后主要的操作就是对counter进行加法运算和减法运算。
+<strong>② 在组件中引用mutations</strong>
+  在写好了相关的处理操作后，我们在需要的页面中引用mutations即可，引入时不是直接引入mutation的方法，而是通过commit提交相应的方法。具体代码如下：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-vue" data-lang="vue"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">message</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">h2</span>&gt;{{<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">counter</span>}}&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;addcounter&#34;</span> &gt;<span style="color:#f92672">+</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">button</span> <span style="color:#f92672">@click</span><span style="color:#e6db74">=&#34;deccounter&#34;</span> &gt;<span style="color:#f92672">-</span>&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">hellovue</span>&gt;&lt;/<span style="color:#f92672">hellovue</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">import</span> <span style="color:#a6e22e">hellovue</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;./components/HelloWorld.vue&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;App&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">hellovue</span>
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">addcounter</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;increase&#39;</span>)
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">deccounter</span>(){
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">$store</span>.<span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;decrease&#39;</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">data</span>(){
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#34;我是组件1&#34;</span>,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">上述代码中，定义了adcounter和deccounter两个方法，在两个方法中分别通过 <strong>this.$store.commit(&lsquo;decrease&rsquo;)</strong> 来获取mutations中的方法。实现后的效果如下所示</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ea723c6f26f509982aecc083b0c0eadf" id="lhtea723c6f26f509982aecc083b0c0eadf">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/408.gif" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">当点击 “+或者 - ”时，右上方就会跟踪到increate或者decreate方法，当点击其中一个方法时，在右下方会显示该状态下的counter具体数值是多少，从而达到了追踪和记录的目的。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="三核心概念1---state单一状态树" class="pagebody-header">
+    三、核心概念1 - state单一状态树
+  </h2>
+</div><p class="component-content component">  Vuex中有五个核心的概念，分别是 <strong>state、mutaion、action、getter、module</strong>。首先在state中有个比较关键的概念&ndash;<strong>单一状态树</strong></p>
+
+<div class="component-content pagebody component">
+  <h5 id="1引入背景" class="pagebody-header">
+    1.引入背景
+  </h5>
+</div><p class="component-content component">为了便于大家的理解，小编这里例举了一个例子。
+  我们知道，在国内我们有很多的信息需要被记录，比如上学时的个人档案，工作后的社保记录，公积金记录，结婚后的婚姻信息，以及其他相关的户口、医疗、文凭、房产记录等等（还有很多信息）。
+  这些信息被分散在很多地方进行管理，有一天你需要办某个业务时(比如入户某个城市)，你会发现你需要到各个对应的工作地点去打印、盖章各种资料信息，最后到一个地方提交证明你的信息无误。
+  这种保存信息的方案，不仅仅低效，而且不方便管理，以及日后的维护也是一个庞大的工作(需要大量的各个部门的人力来维护，当然国家目前已经在完善我们的这个系统了)。</p>
+
+<div class="component-content pagebody component">
+  <h5 id="2定义" class="pagebody-header">
+    2.定义
+  </h5>
+</div><p class="component-content component">英文名称是Single Source of Truth，也可以翻译成单一数据源。
+  为了<strong>不让状态信息保存到多个Store对象中的</strong>，Vuex使用了单一状态树来管理应用层级的全部状态。单一状态树能够让我们最直接的方式找到某个状态的片段，而且在之后的维护和调试过程中，也可以非常方便的管理和维护。
+  用一句话来概括就是：<strong>在项目中最好只new 一个store对象，然后所有状态有关的东西都放在一个store中的state进行统一的管理</strong></p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 30, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

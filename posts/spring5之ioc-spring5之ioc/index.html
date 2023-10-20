@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Spring5之IOC" />
+<meta property="og:description" content="一、概念和原理 1、什么是 IOC (1)控制反转，把对象创建和对象之间的调用过程，交给 Spring 进行管理 (2)使用 IOC 目的:为了耦合度降低 (3)做入门案例就是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/spring5%E4%B9%8Bioc-spring5%E4%B9%8Bioc/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:31:35+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:31:35+00:00" />
+<title>Spring5之IOC</title>
+
+    <link rel="canonical" href="/posts/spring5%E4%B9%8Bioc-spring5%E4%B9%8Bioc/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Spring5
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Spring5之IOC</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/spring5" class="tag">
+                    Spring5
+                  </a>
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="一概念和原理" class="pagebody-header">
+    一、概念和原理
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1什么是-ioc" class="pagebody-header">
+    1、什么是 IOC
+  </h2>
+</div><p class="component-content component">(1)控制反转，把对象创建和对象之间的调用过程，交给 Spring 进行管理</p>
+<p class="component-content component">(2)使用 IOC 目的:为了耦合度降低</p>
+<p class="component-content component">(3)做入门案例就是 IOC 实现</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2ioc-底层原理" class="pagebody-header">
+    2、IOC 底层原理
+  </h2>
+</div><p class="component-content component">(1)xml 解析、工厂模式、反射</p>
+
+<div class="component-content pagebody component">
+  <h2 id="3画图讲解-ioc-底层原理" class="pagebody-header">
+    3、画图讲解 IOC 底层原理
+  </h2>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7a7cceed6df30a50c76eaf86588aa33e" id="lht7a7cceed6df30a50c76eaf86588aa33e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/16.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h1 id="二beanfactory-接口" class="pagebody-header">
+    <strong>二、BeanFactory</strong> 接口
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1ioc-思想基于-ioc-容器完成ioc-容器底层就是对象工厂" class="pagebody-header">
+    1、IOC 思想基于 IOC 容器完成，IOC 容器底层就是对象工厂
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="2spring-提供-ioc-容器实现两种方式两个接口" class="pagebody-header">
+    2、Spring 提供 IOC 容器实现两种方式:(两个接口)
+  </h3>
+</div><p class="component-content component">(1)BeanFactory:IOC 容器基本实现，是 Spring 内部的使用接口，不提供开发人员进行使用</p>
+<div class="component-content component"><ul>
+<li>加载配置文件时候不会创建对象，在获取对象(使用)才去创建对象</li>
+</ul></div>
+<p class="component-content component">(2)ApplicationContext:BeanFactory 接口的子接口，提供更多更强大的功能，一般由开发人 员进行使用</p>
+<div class="component-content component"><ul>
+<li>加载配置文件时候就会把在配置文件对象进行创建</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="3applicationcontext-接口有实现类" class="pagebody-header">
+    3、ApplicationContext 接口有实现类
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ee5f49736df8c3a44ace373497cd2932" id="lhtee5f49736df8c3a44ace373497cd2932">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/17.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

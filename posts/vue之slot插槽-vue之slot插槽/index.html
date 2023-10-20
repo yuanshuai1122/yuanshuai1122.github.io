@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Vue之slot插槽" />
+<meta property="og:description" content="slot插槽 一、为什么要使用插槽 在生活中，电脑的USB接口对应不同的设备就提供不同的功能，可以接键盘、鼠标、音响、U盘…… 在组件中，slot" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD-vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:44:35+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:44:35+00:00" />
+<title>Vue之slot插槽</title>
+
+    <link rel="canonical" href="/posts/vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD-vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Vue
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月30日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Vue之slot插槽</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/vue" class="tag">
+                    Vue
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="slot插槽" class="pagebody-header">
+    slot插槽
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一为什么要使用插槽" class="pagebody-header">
+    一、为什么要使用插槽
+  </h2>
+</div><p class="component-content component">在生活中，电脑的USB接口对应不同的设备就提供不同的功能，可以接键盘、鼠标、音响、U盘……
+在组件中，slot的使用可以让封装的组件更有扩展性。
+使用者可以根据需要修改组件。
+比如一个搜索框组件，因为蓝色组件中会变成店铺，所以在封装搜索框组件时，就将这个容易变动的部分放在插槽中，使用者可以根据需要修改插槽部分。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d47005d3a02f8c37e8fbf179f621d02c" id="lhtd47005d3a02f8c37e8fbf179f621d02c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/213.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二slot的基本使用" class="pagebody-header">
+    二、slot的基本使用
+  </h2>
+</div><p class="component-content component">1.在子组件中用slot标签开启一个插槽</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-79f130bceedd8d071a674bd297b2cd8e" id="lht79f130bceedd8d071a674bd297b2cd8e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/214.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;&lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cpn&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">h2</span>&gt;固定展示部分&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">h2</span>&gt;可以变动的部分&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;js/vue.js&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#app&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">cpn</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">template</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#cpn&#39;</span>
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b9c1755ba37e9f038968832327492d8b" id="lhtb9c1755ba37e9f038968832327492d8b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/215.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">2.在父组件中修改slot</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;&lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">h2</span>&gt;代替插槽部分&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">p</span>&gt;我也是代替插槽的部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">父组件若不修改slot,则slot部分由子组件决定默认展示。
+父组件修改slot，则修改的内容会覆盖子组件slot的内容。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d2d1004a3d60e680468274484a0462a2" id="lhtd2d1004a3d60e680468274484a0462a2">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/216.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二具名插槽slot" class="pagebody-header">
+    二、具名插槽slot
+  </h2>
+</div><p class="component-content component">当子组件的功能增多时，一个组件中不只设置了一个插槽，那父组件想修改特定的插槽部分时，如何指定其中的一个插槽修改。这时就要给插槽取个名字做标识。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;&lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v-slot:left</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;修改left&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v-slot:default</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;修改center&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v-slot:footer</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;修改footer&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cpn&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;left&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;top部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;center部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;right&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;footer部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;             
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">template</span>&gt;     
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;js/vue.js&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#app&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">cpn</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">template</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#cpn&#39;</span>
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">在子组件中利用slot标签的name属性，给各自的slot标记id
+父组件在template标签中，利用v-slot的指令，并给v-slot指令指定属性值（子组件的name），从而修改并覆盖子组件中的slot
+注意：子组件中默认slot的name是default。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="三作用域插槽" class="pagebody-header">
+    三、作用域插槽
+  </h4>
+</div><p class="component-content component">父组件想要使用子组件中的数据，除了$emit()，作用域插槽也提供了方法。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;app&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">v-slot:center</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;slotProps&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;{{slotProps.message}}&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">cpn</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">template</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cpn&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;left&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;top部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;center&#34;</span> <span style="color:#a6e22e">:message</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;message&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;center部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;right&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;footer部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;             
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">template</span>&gt;     
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;js/vue.js&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span> <span style="color:#a6e22e">charset</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text/javascript&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">app</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Vue</span>({
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">el</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#app&#39;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">components</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">cpn</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">template</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;#cpn&#39;</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">data</span>(){
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>                                <span style="color:#a6e22e">message</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;子组件的数据&#39;</span>
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            })
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">script</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">子组件中的center插槽通过v-bind指令，将子组件中的message绑定到slot上</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>                &lt;<span style="color:#f92672">slot</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;center&#34;</span> <span style="color:#a6e22e">:message</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;message&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>                    &lt;<span style="color:#f92672">p</span>&gt;center部分&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;/<span style="color:#f92672">slot</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">slot上的数据被收集到slotProps中，父组件就可以使用slotProps获取子组件的message数据。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d12ac8a8b1eafaf741479740356862c0" id="lhtd12ac8a8b1eafaf741479740356862c0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/217.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月30日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

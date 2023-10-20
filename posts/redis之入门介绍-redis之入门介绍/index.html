@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Redis之入门介绍" />
+<meta property="og:description" content="1、入门概述 1.1、是什么 Redis:REmote DIctionary Server(远程字典服务器) 是完全开源免费的，用C语言编写的，遵守BSD协议，是一个高性能的(key/val" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D-redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:30:38+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:30:38+00:00" />
+<title>Redis之入门介绍</title>
+
+    <link rel="canonical" href="/posts/redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D-redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        数据库
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Redis之入门介绍</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93" class="tag">
+                    数据库
+                  </a>
+                
+                  
+                  <a href="/tags/redis" class="tag">
+                    Redis
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="1入门概述" class="pagebody-header">
+    1、<strong>入门概述</strong>
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="11是什么" class="pagebody-header">
+    1.1、是什么
+  </h2>
+</div><div class="component-content component"><ul>
+<li>Redis:REmote DIctionary Server(远程字典服务器)</li>
+<li>是完全开源免费的，用C语言编写的，遵守BSD协议，是一个高性能的(key/value)分布式内存数据库，基于内存运行并支持持久化的NoSQL数据库，是当前最热门的NoSql数据库之一,也被人们称为数据结构服务器</li>
+<li>Redis 与其他 key - value 缓存产品有以下三个特点
+<div class="component-content component"><ul>
+<li>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用</li>
+<li>Redis不仅仅支持简单的key-value类型的数据，同时还提供list，set，zset，hash等数据结构的存储</li>
+<li>Redis支持数据的备份，即master-slave模式的数据备份</li>
+</ul></div>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="12能干嘛" class="pagebody-header">
+    1.2、能干嘛
+  </h2>
+</div><div class="component-content component"><ul>
+<li>内存存储和持久化：redis支持异步将内存中的数据写到硬盘上，同时不影响继续服务</li>
+<li>取最新N个数据的操作，如：可以将最新的10条评论的ID放在Redis的List集合里面</li>
+<li>模拟类似于HttpSession这种需要设定过期时间的功能</li>
+<li>发布、订阅消息系统</li>
+<li>定时器、计数器</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="13去哪下" class="pagebody-header">
+    1.3、去哪下
+  </h2>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">Http://redis.io/</p>
+</li>
+<li>
+<p class="component-content component">Http://www.redis.cn/</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="14怎么玩" class="pagebody-header">
+    1.4、怎么玩
+  </h2>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">数据类型、基本操作和配置</p>
+</li>
+<li>
+<p class="component-content component">持久化和复制，RDB/AOF</p>
+</li>
+<li>
+<p class="component-content component">事务的控制</p>
+</li>
+<li>
+<p class="component-content component">复制</p>
+</li>
+<li>
+<p class="component-content component">&hellip;&hellip;</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h1 id="2vmwarevmtools千里之行始于足下" class="pagebody-header">
+    2、<strong>VMWare+VMTools</strong>千里之行始于足下
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="21vmware虚拟机的安装" class="pagebody-header">
+    2.1、VMWare虚拟机的安装
+  </h2>
+</div><p class="component-content component">这里不多啰嗦。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="22centos或者redhad5的安装" class="pagebody-header">
+    2.2、CentOS或者RedHad5的安装
+  </h2>
+</div><div class="component-content component"><ul>
+<li>如何查看自己的linux是32位还是64位</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7720da7309b457b73311b833ef8e011b" id="lht7720da7309b457b73311b833ef8e011b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/24.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">getconf LONG_BIT  返回是多少就是几位</p>
+<div class="component-content component"><ul>
+<li><strong>假如出现了不支持虚拟化的问题</strong></li>
+</ul></div>
+<p class="component-content component">我的笔记本cpu是64位的，操作系统也是64位的，问题应该如虚拟机右下角提示所说，</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9b4d4a1e8d109232c72c104f9e0908d3" id="lht9b4d4a1e8d109232c72c104f9e0908d3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/25.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">是“宿主机BIOS设置中的硬件虚拟化被禁用了。”</p>
+<p class="component-content component">需要打开笔记本BIOS中的IVT对虚拟化的支持。</p>
+<p class="component-content component">找到菜单“Security”–“System Security”，</p>
+<p class="component-content component">将Virtualization Technology(VTx)和Virtualization Technology DirectedI/O(VTd)设置为 Enabled。</p>
+<p class="component-content component">保存并退出BIOS设置，重启电脑，</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-af4271dfd8d32dee8a85a11cfe5968b3" id="lhtaf4271dfd8d32dee8a85a11cfe5968b3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/26.png" alt="26"  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        26
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="23vmtools的安装" class="pagebody-header">
+    2.3、VMTools的安装
+  </h2>
+</div><p class="component-content component">..</p>
+
+<div class="component-content pagebody component">
+  <h2 id="24设置共享目录" class="pagebody-header">
+    2.4、设置共享目录
+  </h2>
+</div><p class="component-content component">..</p>
+
+<div class="component-content pagebody component">
+  <h2 id="25上述环境都ok后开始进行redis的服务器安装配置" class="pagebody-header">
+    2.5、上述环境都OK后开始进行Redis的服务器安装配置
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h1 id="3redis的安装" class="pagebody-header">
+    3、<strong>Redis</strong>的安装
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="31windows版安装" class="pagebody-header">
+    3.1、Windows版安装
+  </h2>
+</div><p class="component-content component">Window 下安装</p>
+<p class="component-content component">下载地址：https://github.com/dmajkic/redis/downloads</p>
+<p class="component-content component">下载到的Redis支持32bit和64bit。根据自己实际情况选择，将64bit的内容cp到自定义盘符安装目录取名redis。 如 C:\reids</p>
+<p class="component-content component">打开一个cmd窗口 使用cd命令切换目录到 C:\redis 运行 redis-server.exe redis.conf 。</p>
+<p class="component-content component">如果想方便的话，可以把redis的路径加到系统的环境变量里，这样就省得再输路径了，后面的那个redis.conf可以省略，</p>
+<p class="component-content component">如果省略，会启用默认的。输入之后，会显示如下界面：</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f130a0ca6b4dc3e9463340e86b83b83b" id="lhtf130a0ca6b4dc3e9463340e86b83b83b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/27.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">这时候另启一个cmd窗口，原来的不要关闭，不然就无法访问服务端了。</p>
+<p class="component-content component">切换到redis目录下运行 redis-cli.exe -h 127.0.0.1 -p 6379 。</p>
+<p class="component-content component">设置键值对 set myKey abc</p>
+<p class="component-content component">取出键值对 get myKey</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-3a146a6f9047ac92f449b533ecfc8049" id="lht3a146a6f9047ac92f449b533ecfc8049">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/28.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="32重要提示" class="pagebody-header">
+    <strong>3.2、重要提示：</strong>
+  </h2>
+</div><p class="component-content component">由于企业里面做Redis开发，99%都是Linux版的运用和安装，几乎不会涉及到Windows版，上一步的讲解只是为了知识的完整性。Windows版不作为重点，可以下去自己玩，企业实战就认一个版：Linux</p>
+
+<div class="component-content pagebody component">
+  <h2 id="33linux版安装" class="pagebody-header">
+    3.3、Linux版安装
+  </h2>
+</div><div class="component-content component"><ol>
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="下载获得redis-304targz后将它放入我们的linux目录opt" class="pagebody-header">
+    下载获得redis-3.0.4.Tar.gz后将它放入我们的Linux目录/opt
+  </h4>
+</div></li>
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="opt目录下解压命令tar--zxvf-redis-304targz" class="pagebody-header">
+    /opt目录下，解压命令:tar -zxvf redis-3.0.4.Tar.gz
+  </h4>
+</div></li>
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="解压完成后出现文件夹redis-304" class="pagebody-header">
+    解压完成后出现文件夹：redis-3.0.4
+  </h4>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a6316f5fddd6d074469bbe9f1be09baa" id="lhta6316f5fddd6d074469bbe9f1be09baa">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/29.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+</li>
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="进入目录cd-redis-304" class="pagebody-header">
+    进入目录:cd redis-3.0.4
+  </h4>
+</div></li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-379652c45fb2d6763b197044e2aeba36" id="lht379652c45fb2d6763b197044e2aeba36">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/30.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="5">
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="在redis-304目录下执行make命令" class="pagebody-header">
+    在redis-3.0.4目录下执行make命令
+  </h4>
+</div></li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h5 id="51运行make命令时出现的错误解析" class="pagebody-header">
+    <strong>5.1、运行make命令时出现的错误解析：</strong>
+  </h5>
+</div><p class="component-content component">在linux环境下安装redis，在make编译步骤报如下错误信息：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@centos6 redis-3.2.6<span style="color:#f92672">]</span><span style="color:#75715e"># make</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd src <span style="color:#f92672">&amp;&amp;</span> make all
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>make<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>: Entering directory <span style="color:#e6db74">`</span>/var/redis-3.2.6/src<span style="color:#e6db74">&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  CC adlist.o
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">/bin/sh: cc: command not found
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">make[1]: *** [adlist.o] Error 127
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">make[1]: Leaving directory `/var/redis-3.2.6/src&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>make: *** <span style="color:#f92672">[</span>all<span style="color:#f92672">]</span> Error <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>...</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">错误原因： 原来<a href="https://www.baidu.com/s?wd=linux%E7%B3%BB%E7%BB%9F&amp;tn=44039180_cpr&amp;fenlei=mv6quAkxTZn0IZRqIHckPjm4nH00T1Y3nWbLuHIWuH9WnA7hmyRs0ZwV5Hcvrjm3rH6sPfKWUMw85HfYnjn4nH6sgvPsT6KdThsqpZwYTjCEQLGCpyw9Uz4Bmy-bIi4WUvYETgN-TLwGUv3EnHTLP1DYP1n1">L</a>inux系统没有装gcc，而Redis是C实现的，所以需要gcc来进行编译。</p>
+<div class="component-content component"><ul>
+<li>报错一 安装gcc</li>
+</ul></div>
+<p class="component-content component">gcc是linux下的一个编译程序，是C程序的编译工具。</p>
+<p class="component-content component">GCC(GNU Compiler Collection) 是 GNU(GNU&rsquo;s Not Unix) 计划提供的编译器家族，它能够支持 C, C++, Objective-C, Fortran, Java 和 Ada 等等程序设计语言前端，同时能够运行在 x86, x86-64, IA-64, PowerPC, SPARC 和 Alpha 等等几乎目前所有的硬件平台上。鉴于这些特征，以及 GCC 编译代码的高效性，使得 GCC 成为绝大多数自由软件开发编译的首选工具。虽然对于程序员们来说，编译器只是一个工具，除了开发和维护人员，很少有人关注编译器的发展，但是 GCC 的影响力是如此之大，它的性能提升甚至有望改善所有的自由软件的运行效率，同时它的内部结构的变化也体现出现代编译器发展的新特征。</p>
+<p class="component-content component">安装过程：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>  yum install cpp
+</span></span><span style="display:flex;"><span>  yum install binutils
+</span></span><span style="display:flex;"><span>  yum install glibc
+</span></span><span style="display:flex;"><span>  yum install glibc-kernheaders
+</span></span><span style="display:flex;"><span>  yum install glibc-common
+</span></span><span style="display:flex;"><span>  yum install glibc-devel
+</span></span><span style="display:flex;"><span>  yum install gcc
+</span></span><span style="display:flex;"><span>  yum install make
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  yum install tcl</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">注意gcc依赖了很多东西，有些包可能系统已经 装了，有些没有，防止出意外，最好都走一遍</p>
+<div class="component-content component"><ul>
+<li>报错二，没有tcl8.5, 安装tcl8.5,过程如下</li>
+</ul></div>
+<p class="component-content component">下载地址：http://downloads.sourceforge.net/tcl/tcl8.5.10-src.tar.gz</p>
+<p class="component-content component">安装过程：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -zxvf  tcl8.5.tar.gz
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>./configure
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>make
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>make install</span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>安装redis</li>
+</ul></div>
+<p class="component-content component">make</p>
+<p class="component-content component">如果make继续报错，信息如下：error: jemalloc/jemalloc.h: No such file or directory</p>
+<p class="component-content component">执行 make MALLOC=libc 就行</p>
+<p class="component-content component">注意的是，为了防止出意外，make失败后在make的话，清理一下，执行make clean</p>
+<ol start="6">
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="如果make完成后继续执行make-install" class="pagebody-header">
+    如果make完成后继续执行make install
+  </h4>
+</div></li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-c5d1daa48a13e910ba29773a32a28e3a" id="lhtc5d1daa48a13e910ba29773a32a28e3a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/31.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="7">
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="查看默认安装目录usrlocalbin" class="pagebody-header">
+    查看默认安装目录：usr/local/bin
+  </h4>
+</div></li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7fc07e0834103e67b3ed457d613b2d69" id="lht7fc07e0834103e67b3ed457d613b2d69">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/32.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">Redis-benchmark:性能测试工具，可以在自己本子运行，看看自己本子性能如何（服务启动起来后执行）</p>
+</li>
+<li>
+<p class="component-content component">Redis-check-aof：修复有问题的AOF文件，rdb和aof后面讲</p>
+</li>
+<li>
+<p class="component-content component">Redis-check-dump：修复有问题的dump.rdb文件</p>
+</li>
+<li>
+<p class="component-content component">Redis-cli：客户端，操作入口</p>
+</li>
+<li>
+<p class="component-content component">Redis-sentinel：redis集群使用</p>
+</li>
+<li>
+<p class="component-content component">Redis-server：Redis服务器启动命令</p>
+</li>
+</ul></div>
+<ol start="8">
+<li>
+
+<div class="component-content pagebody component">
+  <h4 id="启动" class="pagebody-header">
+    启动
+  </h4>
+</div></li>
+</ol></div>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">修改redis.conf文件将里面的daemonize no 改成 yes，让服务在后台启动</p>
+</li>
+<li>
+<p class="component-content component">将默认的redis.conf拷贝到自己定义好的一个路径下，比如/myconf</p>
+</li>
+<li>
+<p class="component-content component">启动</p>
+</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-583eed23f61be51785cbba85be3bc94d" id="lht583eed23f61be51785cbba85be3bc94d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/33.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>连通测试</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-06e6fe2e5c109c6c8f4130c9e150b908" id="lht06e6fe2e5c109c6c8f4130c9e150b908">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/34.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">/usr/local/bin目录下运行redis-server，运行拷贝出存放了自定义conf文件目录下的redis.conf文件</p>
+</li>
+<li>
+<p class="component-content component">永远的helloworld</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-29c44fb524cd163addb91a9efd515a76" id="lht29c44fb524cd163addb91a9efd515a76">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/35.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+</li>
+<li>
+<p class="component-content component">关闭</p>
+</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8cdee72b9c511724d5b68dc4d7aa1063" id="lht8cdee72b9c511724d5b68dc4d7aa1063">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/36.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h1 id="4redis启动后杂项基础知识讲解" class="pagebody-header">
+    4、<strong>Redis</strong>启动后杂项基础知识讲解
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="41单进程" class="pagebody-header">
+    4.1、单进程
+  </h4>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">单进程模型来处理客户端的请求。对读写等事件的响应是通过对epoll函数的包装来做到的。Redis的实际处理速度完全依靠主进程的执行效率</p>
+</li>
+<li>
+<p class="component-content component">Epoll是Linux内核为处理大批量文件描述符而作了改进的epoll，是Linux下多路复用IO接口select/poll的增强版本，它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h4 id="42默认16个数据库类似数组下表从零开始初始默认使用零号库" class="pagebody-header">
+    4.2、默认16个数据库，类似数组下表从零开始，初始默认使用零号库
+  </h4>
+</div><p class="component-content component">设置数据库的数量，默认数据库为0，可以使用SELECT &lt; dbid &gt;命令在连接上指定数据库id</p>
+<p class="component-content component">databases 16</p>
+
+<div class="component-content pagebody component">
+  <h4 id="43select命令切换数据库" class="pagebody-header">
+    4.3、Select命令切换数据库
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="44dbsize查看当前数据库的key的数量" class="pagebody-header">
+    4.4、Dbsize查看当前数据库的key的数量
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="45flushdb清空当前库" class="pagebody-header">
+    4.5、Flushdb：清空当前库
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="46flushall通杀全部库" class="pagebody-header">
+    4.6、Flushall；通杀全部库
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="47统一密码管理16个库都是同样密码要么都ok要么一个也连接不上" class="pagebody-header">
+    4.7、统一密码管理，16个库都是同样密码，要么都OK要么一个也连接不上
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="48redis索引都是从零开始" class="pagebody-header">
+    4.8、Redis索引都是从零开始
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="49为什么默认端口是6379" class="pagebody-header">
+    4.9、为什么默认端口是6379
+  </h4>
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

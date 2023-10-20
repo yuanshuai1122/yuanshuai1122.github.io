@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="JVM内存与垃圾回收篇第9章方法区" />
+<meta property="og:description" content="第 9 章 方法区 1、栈 堆 方法区的交互关系 从内存结构来看 这次所讲述的是运行时数据区的最后一个部分 从线程共享与否的角度来看 ThreadLocal：如" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC9%E7%AB%A0%E6%96%B9%E6%B3%95%E5%8C%BA-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC9%E7%AB%A0%E6%96%B9%E6%B3%95%E5%8C%BA/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:58:50+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:58:50+00:00" />
+<title>JVM内存与垃圾回收篇第9章方法区</title>
+
+    <link rel="canonical" href="/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC9%E7%AB%A0%E6%96%B9%E6%B3%95%E5%8C%BA-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC9%E7%AB%A0%E6%96%B9%E6%B3%95%E5%8C%BA/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月30日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">JVM内存与垃圾回收篇第9章方法区</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/jvm" class="tag">
+                    JVM
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="第-9-章-方法区" class="pagebody-header">
+    第 9 章 方法区
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1栈-堆-方法区的交互关系" class="pagebody-header">
+    1、栈 堆 方法区的交互关系
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>从内存结构来看</strong></p>
+</blockquote>
+<p class="component-content component">这次所讲述的是运行时数据区的最后一个部分</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-43311a6916e5e12b2892a92a3a082d41" id="lht43311a6916e5e12b2892a92a3a082d41">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/150.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>从线程共享与否的角度来看</strong></p>
+</blockquote>
+<p class="component-content component">ThreadLocal：如何保证多个线程在并发环境下的安全性？典型应用就是数据库连接管理，以及独立会话管理</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-0141d81aa208a1fc6c86ae76bcda19b7" id="lht0141d81aa208a1fc6c86ae76bcda19b7">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/151.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>栈、堆、方法区的交互关系</strong></p>
+</blockquote>
+<p class="component-content component"><strong>下面就涉及了对象的访问定位</strong></p>
+<div class="component-content component"><ol>
+<li>Person 类的 .class 信息存放在方法区中</li>
+<li>person 变量存放在 Java 栈的局部变量表中</li>
+<li>真正的 person 对象存放在 Java 堆中</li>
+<li>在 person 对象中，有个指针指向方法区中的 person 类型数据，表明这个 person 对象是用方法区中的 Person 类 new 出来的</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-1187905e49aadfc229f962a0548b1bc4" id="lht1187905e49aadfc229f962a0548b1bc4">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/152.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2方法区的理解" class="pagebody-header">
+    2、方法区的理解
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>官方文档</strong></p>
+</blockquote>
+<p class="component-content component"><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.4">https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5.4</a></p>
+
+<div class="component-content pagebody component">
+  <h3 id="21方法区的位置" class="pagebody-header">
+    2.1、方法区的位置
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>方法区的位置</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>《Java虚拟机规范》中明确说明：尽管所有的方法区在逻辑上是属于堆的一部分，但一些简单的实现可能不会选择去进行垃圾收集或者进行压缩。</li>
+<li>但对于HotSpotJVM而言，<strong>方法区还有一个别名叫做Non-Heap</strong>（非堆），目的就是要和堆分开。</li>
+<li>所以，<strong>方法区可以看作是一块独立于Java堆的内存空间</strong>。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-40554d3ce0bac3d9fa296ef24ac171d5" id="lht40554d3ce0bac3d9fa296ef24ac171d5">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/153.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="22方法区的理解" class="pagebody-header">
+    2.2、方法区的理解
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>方法区的基本理解</strong></p>
+</blockquote>
+<p class="component-content component"><strong>方法区主要存放的是 Class，而堆中主要存放的是实例化的对象</strong></p>
+<div class="component-content component"><ol>
+<li>方法区（Method Area）与Java堆一样，是<strong>各个线程共享的内存区域</strong></li>
+<li>多个线程同时加载统一个类时，只能有一个线程能加载该类，其他线程只能等等待该线程加载完毕，然后直接使用该类，即<strong>类只能加载一次</strong>。</li>
+<li>方法区在JVM启动的时候被创建，并且它的实际的物理内存空间中和Java堆区一样都可以是不连续的。</li>
+<li>方法区的大小，跟堆空间一样，可以选择<strong>固定大小或者可扩展</strong>。</li>
+<li>方法区的大小决定了系统可以保存多少个类，如果系统定义了太多的类，导致方法区溢出，虚拟机同样会抛出内存溢出错误：
+<div class="component-content component"><ul>
+<li>java.lang.OutofMemoryError:PermGen space</li>
+<li>或者</li>
+<li>java.lang.OutOfMemoryError:Metaspace</li>
+</ul></div>
+</li>
+<li>举例说明方法区 OOM
+<div class="component-content component"><ul>
+<li>加载大量的第三方的jar包</li>
+<li>Tomcat部署的工程过多（30~50个）</li>
+<li>大量动态的生成反射类</li>
+</ul></div>
+</li>
+<li>关闭JVM就会释放这个区域的内存。</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>代码举例</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EdenSurvivorTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;我只是来打个酱油~&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1000000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>简单的程序，加载了好多类</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-176fd6c8ff6545dc4aca3f9ee34cabee" id="lht176fd6c8ff6545dc4aca3f9ee34cabee">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/154.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="23方法区演进过程" class="pagebody-header">
+    2.3、方法区演进过程
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>Hotspot 方法区的演进过程</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li><strong>在 JDK7 及以前，习惯上把方法区，称为永久代。JDK8开始，使用元空间取代了永久代</strong>。JDK 1.8后，元空间存放在<strong>堆外内存中</strong></li>
+<li>我们可以将方法区类比为Java中的接口，将永久代或元空间类比为Java中具体的实现类</li>
+<li>本质上，方法区和永久代并不等价。仅是对Hotspot而言的可以看作等价。《Java虚拟机规范》对如何实现方法区，不做统一要求。例如：BEAJRockit / IBM J9 中不存在永久代的概念。</li>
+<li>现在来看，当年使用永久代，不是好的idea。导致Java程序更容易OOm（超过-XX:MaxPermsize上限）</li>
+<li>而到了JDK8，终于完全废弃了永久代的概念，改用与JRockit、J9一样在本地内存中实现的元空间（Metaspace）来代替</li>
+<li>元空间的本质和永久代类似，都是对JVM规范中方法区的实现。不过元空间与永久代最大的区别在于：<strong>元空间不在虚拟机设置的内存中，而是使用本地内存</strong></li>
+<li>永久代、元空间二者并不只是名字变了，<strong>内部结构也调整了</strong></li>
+<li>根据《Java虚拟机规范》的规定，如果方法区无法满足新的内存分配需求时，将抛出OOM异常</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8ee46e0813adcae81abfb1eed68142be" id="lht8ee46e0813adcae81abfb1eed68142be">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/155.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a176931b3ba9c97b55734a06d3a01c88" id="lhta176931b3ba9c97b55734a06d3a01c88">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/156.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="3设置方法区大小与-oom" class="pagebody-header">
+    3、设置方法区大小与 OOM
+  </h2>
+</div><p class="component-content component">方法区的大小不必是固定的，JVM可以根据应用的需要动态调整。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="31jdk7-永久代" class="pagebody-header">
+    3.1、JDK7 永久代
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>JDK7 之前版本设置永久代大小</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>通过-XX:Permsize来设置永久代初始分配空间。默认值是20.75M</li>
+<li>-XX:MaxPermsize来设定永久代最大可分配空间。32位机器默认是64M，64位机器模式是82M</li>
+<li>当JVM加载的类信息容量超过了这个值，会报异常OutofMemoryError:PermGen space。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-efd886dd6ae0c29b2f4e56a2c38f8662" id="lhtefd886dd6ae0c29b2f4e56a2c38f8662">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/157.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32jdk8-元空间" class="pagebody-header">
+    3.2、JDK8 元空间
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>JDK8 版本设置元空间大小</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>元数据区大小可以使用参数 <strong>-XX:MetaspaceSize</strong> 和 <strong>-XX:MaxMetaspaceSize</strong> 指定</li>
+<li>默认值依赖于平台，Windows下，-XX:MetaspaceSize 约为21M，<strong>-XX:MaxMetaspaceSize的值是-1，即没有限制</strong>。</li>
+<li>与永久代不同，如果不指定大小，默认情况下，虚拟机会耗尽所有的可用系统内存。如果元数据区发生溢出，虚拟机一样会抛出异常OutOfMemoryError:Metaspace</li>
+<li>-XX:MetaspaceSize：设置初始的元空间大小。对于一个 64位 的服务器端 JVM 来说，其默认的 -XX:MetaspaceSize值为21MB。这就是初始的高水位线，一旦触及这个水位线，Full GC将会被触发并卸载没用的类（即这些类对应的类加载器不再存活），<strong>然后这个高水位线将会重置</strong>。新的高水位线的值取决于GC后释放了多少元空间。
+<div class="component-content component"><ul>
+<li>如果释放的空间不足，那么在不超过MaxMetaspaceSize时，适当提高该值。</li>
+<li>如果释放空间过多，则适当降低该值。</li>
+</ul></div>
+</li>
+<li>如果初始化的高水位线设置过低，上述高水位线调整情况会发生很多次。通过垃圾回收器的日志可以观察到Full GC多次调用。<strong>为了避免频繁地GC，建议将-XX:MetaspaceSize设置为一个相对较高的值</strong>。</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>配置元空间大小示例</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 测试设置方法区大小参数的默认值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * jdk7及以前：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * -XX:PermSize=100m -XX:MaxPermSize=100m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * jdk8及以后：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * -XX:MetaspaceSize=100m  -XX:MaxMetaspaceSize=100m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author shkstart  shkstart@126.com
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020  12:16
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodAreaDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;start...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1000000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;end...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>JVM 参数</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">-XX:MetaspaceSize=100m  -XX:MaxMetaspaceSize=100m</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>CMD 命令查看设置的元空间大小</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\H</span>eygo&gt;jps
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\H</span>eygo&gt;jinfo -flag MetaspaceSize pId
+</span></span><span style="display:flex;"><span>C:<span style="color:#ae81ff">\U</span>sers<span style="color:#ae81ff">\H</span>eygo&gt;jinfo -flag MaxMetaspaceSize pId</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8290ec2c1627b3e0ed11c3a566917443" id="lht8290ec2c1627b3e0ed11c3a566917443">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/158.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="33方法区-oom" class="pagebody-header">
+    3.3、方法区 OOM
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>方法区 OOM 举例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码：OOMTest 类继承 ClassLoader 类，获得 defineClass() 方法，可自己进行类的加载</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * jdk6/7中：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * -XX:PermSize=10m -XX:MaxPermSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * jdk8中：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * -XX:MetaspaceSize=10m -XX:MaxMetaspaceSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author shkstart  shkstart@126.com
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020  22:24
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">OOMTest</span> <span style="color:#66d9ef">extends</span> ClassLoader <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            OOMTest test <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> OOMTest<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10000</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//创建ClassWriter对象，用于生成类的二进制字节码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                ClassWriter classWriter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ClassWriter<span style="color:#f92672">(</span><span style="color:#ae81ff">0</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//指明版本号，修饰符，类名，包名，父类，接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                classWriter<span style="color:#f92672">.</span><span style="color:#a6e22e">visit</span><span style="color:#f92672">(</span>Opcodes<span style="color:#f92672">.</span><span style="color:#a6e22e">V1_6</span><span style="color:#f92672">,</span> Opcodes<span style="color:#f92672">.</span><span style="color:#a6e22e">ACC_PUBLIC</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;Class&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;java/lang/Object&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//返回byte[]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> code <span style="color:#f92672">=</span> classWriter<span style="color:#f92672">.</span><span style="color:#a6e22e">toByteArray</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//类的加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                test<span style="color:#f92672">.</span><span style="color:#a6e22e">defineClass</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Class&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">,</span> code<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> code<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">);</span><span style="color:#75715e">//Class对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                j<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>j<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component"><strong>不设置元空间的上限</strong></p>
+<div class="component-content component"><ul>
+<li>使用默认的 JVM 参数，元空间不设置上限</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">10000</code></pre>
+  
+</div><p class="component-content component"><strong>设置元空间的上限</strong></p>
+<div class="component-content component"><ul>
+<li>JVM 参数</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">-XX:MetaspaceSize=10m -XX:MaxMetaspaceSize=10m</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>元空间出现 OOM</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">com.atguigu.java.OOMTest
+Exception in thread &#34;main&#34; java.lang.OutOfMemoryError: Metaspace
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:763)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:642)
+	at com.atguigu.java.OOMTest.main(OOMTest.java:29)
+8531</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="34解决-oom" class="pagebody-header">
+    3.4、解决 OOM
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>如何解决 OOM？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>要解决OOM异常或heap space的异常，一般的手段是首先通过内存映像分析工具（如Ec1ipse Memory Analyzer）对dump出来的堆转储快照进行分析，重点是确认内存中的对象是否是必要的，也就是要先分清楚到底是出现了内存泄漏（Memory Leak）还是内存溢出（Memory Overflow）</li>
+<li><strong>内存泄漏就是有大量的引用指向某些对象，但是这些对象以后不会使用了</strong>，但是因为它们还和GC ROOT有关联，所以导致以后这些对象也不会被回收，这就是内存泄漏的问题</li>
+<li>如果是内存泄漏，可进一步通过工具查看泄漏对象到GC Roots的引用链。于是就能<strong>找到泄漏对象是通过怎样的路径与GC Roots相关联并导致垃圾收集器无法自动回收它们的</strong>。掌握了泄漏对象的类型信息，以及GC Roots引用链的信息，就可以比较准确地定位出泄漏代码的位置。</li>
+<li>如果不存在内存泄漏，换句话说就是内存中的对象确实都还必须存活着，那就应当检查虚拟机的堆参数（-Xmx与-Xms），与机器物理内存对比看是否还可以调大，从代码上检查是否存在某些对象生命周期过长、持有状态时间过长的情况，尝试减少程序运行期的内存消耗。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="4方法区的内部结构" class="pagebody-header">
+    4、方法区的内部结构
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41方法区结构" class="pagebody-header">
+    4.1、方法区结构
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>方法区（Method Area）存储什么？</strong></p>
+</blockquote>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-eba85b24cd49b1291757ccc47efbe832" id="lhteba85b24cd49b1291757ccc47efbe832">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/159.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">《深入理解Java虚拟机》书中对方法区（Method Area）存储内容描述如下：它用于存储已被虚拟机<strong>加载的类型信息、常量、静态变量、即时编译器编译后的代码缓存</strong>等。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e1f7ea21f89112fec5f6b97485093370" id="lhte1f7ea21f89112fec5f6b97485093370">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/160.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>类型信息</strong></p>
+</blockquote>
+<p class="component-content component">对每个加载的类型（类class、接口interface、枚举enum、注解annotation），JVM必须在方法区中存储以下类型信息：</p>
+<div class="component-content component"><ol>
+<li>这个类型的完整有效名称（全名=包名.类名）</li>
+<li>这个类型直接父类的完整有效名（对于interface或是java.lang.Object，都没有父类）</li>
+<li>这个类型的修饰符（public，abstract，final的某个子集）</li>
+<li>这个类型直接接口的一个有序列表</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>域（Field）信息</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>JVM必须在方法区中保存类型的所有域的相关信息以及域的声明顺序。</li>
+<li>域的相关信息包括：
+<div class="component-content component"><ul>
+<li>域名称</li>
+<li>域类型</li>
+<li>域修饰符（public，private，protected，static，final，volatile，transient的某个子集）</li>
+</ul></div>
+</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>方法（Method）信息</strong></p>
+</blockquote>
+<p class="component-content component">JVM必须保存所有方法的以下信息，同域信息一样包括声明顺序：</p>
+<div class="component-content component"><ol>
+<li>方法名称</li>
+<li>方法的返回类型（包括 void 返回类型），void 在 Java 中对应的类为 void.class</li>
+<li>方法参数的数量和类型（按顺序）</li>
+<li>方法的修饰符（public，private，protected，static，final，synchronized，native，abstract的一个子集）</li>
+<li>方法的字节码（bytecodes）、操作数栈、局部变量表及大小（abstract和native方法除外）</li>
+<li>异常表（abstract和native方法除外），异常表记录每个异常处理的开始位置、结束位置、代码处理在程序计数器中的偏移地址、被捕获的异常类的常量池索引</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>代码示例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 测试方法区的内部构成 * * @author shkstart  shkstart@126.com * @create 2020  23:39 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodInnerStrucTest</span> <span style="color:#66d9ef">extends</span> Object <span style="color:#66d9ef">implements</span> Comparable<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;,</span> Serializable <span style="color:#f92672">{</span>    <span style="color:#75715e">//属性    public int num = 10;    private static String str = &#34;测试方法的内部结构&#34;;    //构造器没写    //方法    public void test1() {        int count = 20;        System.out.println(&#34;count = &#34; + count);    }    public static int test2(int cal) {        int result = 0;        try {            int value = 30;            result = value / cal;        } catch (Exception e) {            e.printStackTrace();        }        return result;    }    @Override    public int compareTo(String o) {        return 0;    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>反编译字节码文件，并输出值文本文件中，便于查看</li>
+<li>参数 -p 确保能查看 private 权限类型的字段或方法</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>javap -v -p MethodInnerStrucTest.class &gt; Text.txt</span></span></code></pre></div></div>
+  
+</div><hr>
+<p class="component-content component"><strong>类型信息</strong></p>
+<div class="component-content component"><ul>
+<li>插句嘴：在运行时方法区中，类信息中记录了哪个加载器加载了该类，同时类加载器也记录了它加载了哪些类</li>
+<li>从反编译文件可以看出，字节码文件记录了 MethodInnerStrucTest 继承了哪些类，实现了哪些方法</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">public class com.atguigu.java.MethodInnerStrucTest 	extends java.lang.Object 	implements java.lang.Comparable&lt;java.lang.String&gt;, java.io.Serializable</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>域信息</strong></p>
+<div class="component-content component"><ol>
+<li>descriptor: I 表示字段类型为 Integer</li>
+<li>flags: ACC_PUBLIC 表示字段权限修饰符为 public</li>
+</ol></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">  public int num;    descriptor: I    flags: ACC_PUBLIC  private static java.lang.String str;    descriptor: Ljava/lang/String;    flags: ACC_PRIVATE, ACC_STATIC</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>方法信息</strong></p>
+<div class="component-content component"><ol>
+<li>descriptor: ()V 表示方法返回值类型为 void</li>
+<li>flags: ACC_PUBLIC 表示方法权限修饰符为 public</li>
+<li>stack=3 表示操作数栈深度为 3</li>
+<li>locals=2 表示局部变量个数为 2 个（实力方法包含 this）</li>
+<li>test1() 方法虽然没有参数，但是其 args_size=1 ，这时因为将 this 作为了参数</li>
+</ol></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">  public void test1();    descriptor: ()V    flags: ACC_PUBLIC    Code:      stack=3, locals=2, args_size=1         0: bipush        20         2: istore_1         3: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;         6: new           #4                  // class java/lang/StringBuilder         9: dup        10: invokespecial #5                  // Method java/lang/StringBuilder.&#34;&lt;init&gt;&#34;:()V        13: ldc           #6                  // String count =        15: invokevirtual #7                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;        18: iload_1        19: invokevirtual #8                  // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;        22: invokevirtual #9                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;        25: invokevirtual #10                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V        28: return      LineNumberTable:        line 17: 0        line 18: 3        line 19: 28      LocalVariableTable:        Start  Length  Slot  Name   Signature            0      29     0  this   Lcom/atguigu/java/MethodInnerStrucTest;            3      26     1 count   I</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="42域信息特殊情况" class="pagebody-header">
+    4.2、域信息特殊情况
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>non-final 类型的类变量</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li><strong>静态变量和类关联在一起，随着类的加载而加载</strong>，他们成为类数据在逻辑上的一部分</li>
+<li>类变量被类的所有实例共享，即使没有类实例时，你也可以访问它</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>代码示例</strong></p>
+<div class="component-content component"><ol>
+<li>如下代码所示，即使我们把order设置为null，也不会出现空指针异常</li>
+<li>这更加表明了 static 类型的字段和方法随着类的加载而加载，并不属于特定的类实例</li>
+</ol></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * non-final的类变量 * @author shkstart  shkstart@126.com * @create 2020  20:37 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodAreaTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        Order order <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>        order<span style="color:#f92672">.</span><span style="color:#a6e22e">hello</span><span style="color:#f92672">();</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>order<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Order</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hello</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello!&#34;</span><span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span><span style="color:#75715e">// 程序运行结果hello!1
+</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component"><strong>全局常量：static final</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>全局常量就是使用 static final 进行修饰</li>
+<li>被声明为final的类变量的处理方法则不同，每个全局常量在编译的时候就会被分配了。</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>代码示例</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * non-final的类变量 * @author shkstart  shkstart@126.com * @create 2020  20:37 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodAreaTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        Order order <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>        order<span style="color:#f92672">.</span><span style="color:#a6e22e">hello</span><span style="color:#f92672">();</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>order<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Order</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">hello</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello!&#34;</span><span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>反编译，查看字节码指令，可以发现 number 的值已经写死在字节码文件中了</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">  public static int count;    descriptor: I    flags: ACC_PUBLIC, ACC_STATIC  public static final int number;    descriptor: I    flags: ACC_PUBLIC, ACC_STATIC, ACC_FINAL    ConstantValue: int 2</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="43运行时常量池" class="pagebody-header">
+    4.3、运行时常量池
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>运行时常量池 VS 常量池</strong></p>
+</blockquote>
+<p class="component-content component"><strong>官方文档</strong></p>
+<p class="component-content component"><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html">https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html</a></p>
+<hr>
+<div class="component-content component"><ol>
+<li><strong>方法区，内部包含了运行时常量池</strong></li>
+<li><strong>字节码文件，内部包含了常量池</strong></li>
+<li>要弄清楚方法区，需要理解清楚ClassFile，因为加载类的信息都在方法区。</li>
+<li>要弄清楚方法区的运行时常量池，需要理解清楚ClassFile中的常量池。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-0dff5cd5731ca9b0cbd276a23fc1ec1b" id="lht0dff5cd5731ca9b0cbd276a23fc1ec1b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/161.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>常量池</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>一个有效的字节码文件中除了包含类的版本信息、字段、方法以及接口等描述符信息外</li>
+<li>还包含一项信息就是<strong>常量池表</strong>（<strong>Constant Pool Table</strong>），包括<strong>各种字面量和对类型、域和方法的符号引用</strong></li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-39d54ce421d4ecfd76faaf0e1f1d1563" id="lht39d54ce421d4ecfd76faaf0e1f1d1563">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/162.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>为什么需要常量池？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>一个java源文件中的类、接口，编译后产生一个字节码文件。而Java中的字节码需要数据支持，通常这种数据会很大以至于不能直接存到字节码里，换另一种方式，可以存到常量池</li>
+<li>这个字节码包含了指向常量池的引用。在动态链接的时候会用到运行时常量池，之前有介绍</li>
+</ol></div>
+<hr>
+<p class="component-content component">比如：如下的代码：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleClass</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sayHello</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ol>
+<li>虽然上述代码只有194字节，但是里面却使用了String、System、PrintStream及Object等结构。</li>
+<li>如果不使用常量池，就需要将用到的类信息、方法信息等记录在当前的字节码文件中，造成文件臃肿</li>
+<li>所以我们将所需用到的结构信息记录在常量池中，并通过<strong>引用的方式</strong>，来加载、调用所需的结构</li>
+<li>这里的代码量其实很少了，如果代码多的话，引用的结构将会更多，这里就需要用到常量池了。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f776f8d9637286a701e318cd87976ba6" id="lhtf776f8d9637286a701e318cd87976ba6">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/163.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>常量池中有啥？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>数量值</li>
+<li>字符串值</li>
+<li>类引用</li>
+<li>字段引用</li>
+<li>方法引用</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>常量池代码举例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 测试方法区的内部构成 * * @author shkstart  shkstart@126.com * @create 2020  23:39 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodInnerStrucTest</span> <span style="color:#66d9ef">extends</span> Object <span style="color:#66d9ef">implements</span> Comparable<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;,</span> Serializable <span style="color:#f92672">{</span>    <span style="color:#75715e">//属性    public int num = 10;    private static String str = &#34;测试方法的内部结构&#34;;    //构造器没写    //方法    public void test1() {        int count = 20;        System.out.println(&#34;count = &#34; + count);    }    public static int test2(int cal) {        int result = 0;        try {            int value = 30;            result = value / cal;        } catch (Exception e) {            e.printStackTrace();        }        return result;    }    @Override    public int compareTo(String o) {        return 0;    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>来看下最简单的 test1() 方法，带 # 的字节码指令，就使用了常量池的引用</li>
+<li>通过字节码指令可以看出，<strong>拼接字符串时，编译器帮我们造了个 StringBuilder 对象，然后调用其 append() 方法完成了字符串的拼接</strong></li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">  public void test1();    descriptor: ()V    flags: ACC_PUBLIC    Code:      stack=3, locals=2, args_size=1         0: bipush        20         2: istore_1         3: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;         6: new           #4                  // class java/lang/StringBuilder         9: dup        10: invokespecial #5                  // Method java/lang/StringBuilder.&#34;&lt;init&gt;&#34;:()V        13: ldc           #6                  // String count =        15: invokevirtual #7                  // Method java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;        18: iload_1        19: invokevirtual #8                  // Method java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;        22: invokevirtual #9                  // Method java/lang/StringBuilder.toString:()Ljava/lang/String;        25: invokevirtual #10                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V        28: return      LineNumberTable:        line 20: 0        line 21: 3        line 22: 28      LocalVariableTable:        Start  Length  Slot  Name   Signature            0      29     0  this   Lcom/atguigu/java/MethodInnerStrucTest;            3      26     1 count   I</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>常量池</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">Constant pool:   #1 = Methodref          #18.#52        // java/lang/Object.&#34;&lt;init&gt;&#34;:()V   #2 = Fieldref           #17.#53        // com/atguigu/java/MethodInnerStrucTest.num:I   #3 = Fieldref           #54.#55        // java/lang/System.out:Ljava/io/PrintStream;   #4 = Class              #56            // java/lang/StringBuilder   #5 = Methodref          #4.#52         // java/lang/StringBuilder.&#34;&lt;init&gt;&#34;:()V   #6 = String             #57            // count =   #7 = Methodref          #4.#58         // java/lang/StringBuilder.append:(Ljava/lang/String;)Ljava/lang/StringBuilder;   #8 = Methodref          #4.#59         // java/lang/StringBuilder.append:(I)Ljava/lang/StringBuilder;   #9 = Methodref          #4.#60         // java/lang/StringBuilder.toString:()Ljava/lang/String;  #10 = Methodref          #61.#62        // java/io/PrintStream.println:(Ljava/lang/String;)V  #11 = Class              #63            // java/lang/Exception  #12 = Methodref          #11.#64        // java/lang/Exception.printStackTrace:()V  #13 = Class              #65            // java/lang/String  #14 = Methodref          #17.#66        // com/atguigu/java/MethodInnerStrucTest.compareTo:(Ljava/lang/String;)I  #15 = String             #67            // 测试方法的内部结构  #16 = Fieldref           #17.#68        // com/atguigu/java/MethodInnerStrucTest.str:Ljava/lang/String;  #17 = Class              #69            // com/atguigu/java/MethodInnerStrucTest  #18 = Class              #70            // java/lang/Object  #19 = Class              #71            // java/lang/Comparable  #20 = Class              #72            // java/io/Serializable  #21 = Utf8               num  #22 = Utf8               I  #23 = Utf8               str  #24 = Utf8               Ljava/lang/String;  #25 = Utf8               &lt;init&gt;  #26 = Utf8               ()V  #27 = Utf8               Code  #28 = Utf8               LineNumberTable  #29 = Utf8               LocalVariableTable  #30 = Utf8               this  #31 = Utf8               Lcom/atguigu/java/MethodInnerStrucTest;  #32 = Utf8               test1  #33 = Utf8               count  #34 = Utf8               test2  #35 = Utf8               (I)I  #36 = Utf8               value  #37 = Utf8               e  #38 = Utf8               Ljava/lang/Exception;  #39 = Utf8               cal  #40 = Utf8               result  #41 = Utf8               StackMapTable  #42 = Class              #63            // java/lang/Exception  #43 = Utf8               compareTo  #44 = Utf8               (Ljava/lang/String;)I  #45 = Utf8               o  #46 = Utf8               (Ljava/lang/Object;)I  #47 = Utf8               &lt;clinit&gt;  #48 = Utf8               Signature  #49 = Utf8               Ljava/lang/Object;Ljava/lang/Comparable&lt;Ljava/lang/String;&gt;;Ljava/io/Serializable;  #50 = Utf8               SourceFile  #51 = Utf8               MethodInnerStrucTest.java  #52 = NameAndType        #25:#26        // &#34;&lt;init&gt;&#34;:()V  #53 = NameAndType        #21:#22        // num:I  #54 = Class              #73            // java/lang/System  #55 = NameAndType        #74:#75        // out:Ljava/io/PrintStream;  #56 = Utf8               java/lang/StringBuilder  #57 = Utf8               count =  #58 = NameAndType        #76:#77        // append:(Ljava/lang/String;)Ljava/lang/StringBuilder;  #59 = NameAndType        #76:#78        // append:(I)Ljava/lang/StringBuilder;  #60 = NameAndType        #79:#80        // toString:()Ljava/lang/String;  #61 = Class              #81            // java/io/PrintStream  #62 = NameAndType        #82:#83        // println:(Ljava/lang/String;)V  #63 = Utf8               java/lang/Exception  #64 = NameAndType        #84:#26        // printStackTrace:()V  #65 = Utf8               java/lang/String  #66 = NameAndType        #43:#44        // compareTo:(Ljava/lang/String;)I  #67 = Utf8               测试方法的内部结构  #68 = NameAndType        #23:#24        // str:Ljava/lang/String;  #69 = Utf8               com/atguigu/java/MethodInnerStrucTest  #70 = Utf8               java/lang/Object  #71 = Utf8               java/lang/Comparable  #72 = Utf8               java/io/Serializable  #73 = Utf8               java/lang/System  #74 = Utf8               out  #75 = Utf8               Ljava/io/PrintStream;  #76 = Utf8               append  #77 = Utf8               (Ljava/lang/String;)Ljava/lang/StringBuilder;  #78 = Utf8               (I)Ljava/lang/StringBuilder;  #79 = Utf8               toString  #80 = Utf8               ()Ljava/lang/String;  #81 = Utf8               java/io/PrintStream  #82 = Utf8               println  #83 = Utf8               (Ljava/lang/String;)V  #84 = Utf8               printStackTrace</code></pre>
+  
+</div><blockquote>
+<p class="component-content component"><strong>常量池总结</strong></p>
+</blockquote>
+<p class="component-content component">常量池、可以看做是一张表，虚拟机指令根据这张常量表找到要执行的类名、方法名、参数类型、字面量等类型</p>
+<blockquote>
+<p class="component-content component"><strong>运行时常量池</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li><strong>运行时常量池（Runtime Constant Pool）是方法区的一部分</strong>。</li>
+<li><strong>常量池表（Constant Pool Table）是Class字节码文件的一部分，用于存放编译期生成的各种字面量与符号引用，这部分内容将在类加载后存放到方法区的运行时常量池中</strong>。</li>
+<li>运行时常量池，在加载类和接口到虚拟机后，就会创建对应的运行时常量池。</li>
+<li><strong>JVM为每个已加载的类型（类或接口）都维护一个常量池。池中的数据项像数组项一样，是通过索引访问的</strong>。</li>
+<li>运行时常量池中包含多种不同的常量，包括编译期就已经明确的数值字面量，也包括到运行期解析后才能够获得的方法或者字段引用。<strong>此时不再是常量池中的符号地址了，这里换为真实地址</strong>。</li>
+<li>运行时常量池，相对于Class文件常量池的另一重要特征是：具备动态性。</li>
+<li>运行时常量池类似于传统编程语言中的符号表（symbol table），但是它所包含的数据却比符号表要更加丰富一些。</li>
+<li>当创建类或接口的运行时常量池时，如果构造运行时常量池所需的内存空间超过了方法区所能提供的最大值，则JVM会抛OutofMemoryError异常。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="5方法区的使用举例" class="pagebody-header">
+    5、方法区的使用举例
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>方法区图解示例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * @author shkstart  shkstart@126.com * @create 2020  14:28 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MethodAreaDemo</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">500</span><span style="color:#f92672">;</span>        <span style="color:#66d9ef">int</span> y <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span><span style="color:#f92672">;</span>        <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> x <span style="color:#f92672">/</span> y<span style="color:#f92672">;</span>        <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span><span style="color:#f92672">;</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a <span style="color:#f92672">+</span> b<span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span></span></span></code></pre></div></div>
+  
+</div><hr>
+<p class="component-content component"><strong>图解字节码指令执行流程</strong></p>
+<div class="component-content component"><ul>
+<li>字节码执行过程展示：初始状态</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-6598c92fc849a5560081b067cfa28dd3" id="lht6598c92fc849a5560081b067cfa28dd3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/164.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>首先将操作数500压入操作数栈中</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-0c4eb9f0710c265d29ef26fb9372af3a" id="lht0c4eb9f0710c265d29ef26fb9372af3a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/165.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>然后操作数 500 从操作数栈中取出，存储到局部变量表中索引为 1 的位置</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d33c9fde0e2434115ff740bd1795fb9e" id="lhtd33c9fde0e2434115ff740bd1795fb9e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/166.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>然后操作数 100 从操作数栈中取出，存储到局部变量表中索引为 2 的位置</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-4e1a7738bac0ff9c8f1ad1c1cf7be538" id="lht4e1a7738bac0ff9c8f1ad1c1cf7be538">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/167.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>将操作数 100 从</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2c87216682da5fdb8bcb0a2cfb78cab1" id="lht2c87216682da5fdb8bcb0a2cfb78cab1">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/168.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>读取本地变量 1 ，压入操作数栈</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-80fbff44b6a3aee86ec5b4a04657617b" id="lht80fbff44b6a3aee86ec5b4a04657617b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/169.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>读取本地变量 2 ，压入操作数栈</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2e142038b48e19cae4845350b2c5bcae" id="lht2e142038b48e19cae4845350b2c5bcae">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/170.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>两数相除，计算结果放在操作数栈顶，之后执行 istore_3 指令，将计算结果从操作数栈中弹出，存入局部变量 3 中</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-41b03809de32dcfd83b239ef37b755a0" id="lht41b03809de32dcfd83b239ef37b755a0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/171.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>将操作数 50 压入操作数栈</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-5d088de013bfac7b9790799c5147d0e0" id="lht5d088de013bfac7b9790799c5147d0e0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/172.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>将操作数 50 从栈顶弹出，保存在局部变量 4 中</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-23f334f5c06af1e4e50ed482696ef0af" id="lht23f334f5c06af1e4e50ed482696ef0af">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/173.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>获取 System.out 输出流的引用（我不太确定）</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-adc76c976c1be8e412f3288277c6b863" id="lhtadc76c976c1be8e412f3288277c6b863">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/174.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>将本地变量 3 的值取出，压入操作数栈中，准备进行加法运算</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d92aa80de77e71b819c0b194b49e2205" id="lhtd92aa80de77e71b819c0b194b49e2205">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/175.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>执行加法运算后，将计算结果放在操作数栈顶</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f9a953bebf580d2e2a3106d1d565f19b" id="lhtf9a953bebf580d2e2a3106d1d565f19b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/176.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>调用静态方法 println() ，输出加法结果</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-02a226c1e6ec8f90feceeba63145c0c1" id="lht02a226c1e6ec8f90feceeba63145c0c1">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/177.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>main() 方法执行结束</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-791e2f9bec74afc6db8ce3b42f087c68" id="lht791e2f9bec74afc6db8ce3b42f087c68">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/178.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>关于【符号引用 &ndash;&gt; 直接饮用】的理解</strong></p>
+<div class="component-content component"><ol>
+<li>上面代码调用 System.out.println() 方法时，首先需要看看 System 类有没有加载，再看看 PrintStream 类有没有加载</li>
+<li>如果没有加载，则执行加载，<strong>执行时，将常量池中的符号引用（字面量）转换为直接引用（真正的地址值）</strong></li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>关于程序计数器的说明</strong></p>
+<p class="component-content component">程序计数器始终计算的都是当前代码运行的位置，目的是为了方便记录方法调用后能够正常返回，或者是进行了CPU切换后，也能回来到原来的代码进行执行。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="6方法区演进细节" class="pagebody-header">
+    6、方法区演进细节
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="61永久代演进过程" class="pagebody-header">
+    6.1、永久代演进过程
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>关于永久代的说明</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>首先明确：只有Hotspot才有永久代。</li>
+<li>BEA JRockit、IBMJ9等来说，是不存在永久代的概念的。原则上如何实现方法区属于虚拟机实现细节，不受《Java虚拟机规范》管束，并不要求统一</li>
+<li>Hotspot中方法区的变化：</li>
+</ol></div>
+<div class="component-content component"><table>
+<thead>
+<tr>
+<th>JDK 版本</th>
+<th>演变细节</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JDK1.6及以前</td>
+<td>有永久代（permanent generation），静态变量存储在永久代上</td>
+</tr>
+<tr>
+<td>JDK1.7</td>
+<td>有永久代，但已经逐步 “去永久代”，<strong>字符串常量池，静态变量移除，保存在堆中</strong></td>
+</tr>
+<tr>
+<td>JDK1.8</td>
+<td>无永久代，类型信息，字段，方法，常量保存在本地内存的元空间，但字符串常量池、静态变量仍然在堆中。</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<p class="component-content component"><strong>JDK6</strong></p>
+<p class="component-content component">方法区由永久代实现，使用 JVM 虚拟机内存</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a3531f5eebeb06aca59f9d6518965d6d" id="lhta3531f5eebeb06aca59f9d6518965d6d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/179.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>JDK7</strong></p>
+<p class="component-content component">方法区由永久代实现，使用 JVM 虚拟机内存</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2272d2bee125c2af9a5725a365e3c554" id="lht2272d2bee125c2af9a5725a365e3c554">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/180.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>JDK8</strong></p>
+<p class="component-content component">方法区由元空间实现，使用物理机本地内存</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-42040ef97c156daa2cf33a7fcfeb4ef1" id="lht42040ef97c156daa2cf33a7fcfeb4ef1">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/181.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="62元空间出现原因" class="pagebody-header">
+    6.2、元空间出现原因
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>永久代为什么要被元空间替代？</strong></p>
+</blockquote>
+<p class="component-content component"><strong>官方文档</strong></p>
+<p class="component-content component"><a href="http://openjdk.java.net/jeps/122">http://openjdk.java.net/jeps/122</a></p>
+<hr>
+<div class="component-content component"><ol>
+<li>官方的牵强解释：JRockit是和HotSpot融合后的结果，因为JRockit没有永久代，所以他们不需要配置永久代</li>
+<li>随着Java8的到来，HotSpot VM中再也见不到永久代了。但是这并不意味着类的元数据信息也消失了。这些数据被移到了一个与堆不相连的本地内存区域，这个区域叫做元空间（Metaspace）。</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>由于类的元数据分配在本地内存中，元空间的最大可分配空间就是系统可用内存空间，这项改动是很有必要的，原因有：</strong></p>
+<div class="component-content component"><ol>
+<li>为永久代设置空间大小是很难确定的。
+<div class="component-content component"><ul>
+<li>在某些场景下，如果动态加载类过多，容易产生Perm区的OOM。比如某个实际Web工
+程中，因为功能点比较多，在运行过程中，要不断动态加载很多类，经常出现致命错误。<code>Exception in thread 'dubbo client x.x connector' java.lang.OutOfMemoryError:PermGen space</code></li>
+<li>而元空间和永久代之间最大的区别在于：<strong>元空间并不在虚拟机中，而是使用本地内存</strong>。
+因此，<strong>默认情况下，元空间的大小仅受本地内存限制</strong>。</li>
+</ul></div>
+</li>
+<li>对永久代进行调优是很困难的。
+<div class="component-content component"><ul>
+<li>方法区的垃圾收集主要回收两部分内容：常量池中废弃的常量和不再用的类型，方法区的调优主要是为了降低Full GC</li>
+<li>有些人认为方法区（如HotSpot虚拟机中的元空间或者永久代）是没有垃圾收集行为的，其实不然。《Java虚拟机规范》对方法区的约束是非常宽松的，提到过可以不要求虚拟机在方法区中实现垃圾收集。事实上也确实有未实现或未能完整实现方法区类型卸载的收集器存在（如JDK11时期的ZGC收集器就不支持类卸载）。</li>
+<li><strong>一般来说这个区域的回收效果比较难令人满意，尤其是类型的卸载，条件相当苛刻</strong>。但是这部分区域的回收有时又确实是必要的。以前Sun公司的Bug列表中，曾出现过的若干个严重的Bug就是由于低版本的HotSpot虚拟机对此区域未完全回收而导致内存泄漏</li>
+</ul></div>
+</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h3 id="63字符串常量池" class="pagebody-header">
+    6.3、字符串常量池
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>字符串常量池 StringTable 为什么要调整位置？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li><strong>JDK7中将StringTable放到了堆空间中</strong>。因为永久代的回收效率很低，在Full GC的时候才会执行永久代的垃圾回收，而Full GC是老年代的空间不足、永久代不足时才会触发。</li>
+<li>这就<strong>导致StringTable回收效率不高</strong>，而我们开发中会有大量的字符串被创建，回收效率低，导致永久代内存不足。<strong>放到堆里，能及时回收内存</strong>。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h3 id="64静态变量位置" class="pagebody-header">
+    6.4、静态变量位置
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>静态变量存放在那里？</strong></p>
+</blockquote>
+<p class="component-content component"><strong>代码示例 1</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 结论： *  静态变量在jdk6/7存在与永久代中，在jdk8存在于堆中 *  静态引用对应的对象实体始终都存在堆空间 * * jdk7： * -Xms200m -Xmx200m -XX:PermSize=300m -XX:MaxPermSize=300m -XX:+PrintGCDetails * jdk 8： * -Xms200m -Xmx200m -XX:MetaspaceSize=300m -XX:MaxMetaspaceSize=300m -XX:+PrintGCDetails * @author shkstart  shkstart@126.com * @create 2020  21:20 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StaticFieldTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span><span style="color:#f92672">];</span><span style="color:#75715e">//100MB    public static void main(String[] args) {        System.out.println(StaticFieldTest.arr);    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>运行环境 JDK8 ，JVM 参数</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">-Xms200m -Xmx200m -XX:MetaspaceSize=300m -XX:MaxMetaspaceSize=300m -XX:&#43;PrintGCDetails</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>通过 GC 日志可以看出：<strong>静态变量引用对应的对象实体始终都存在堆空间</strong>（arr 数组对象直接怼到老年区去了）</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[B@4554617cHeap PSYoungGen      total 59904K, used 5171K [0x00000000fbd80000, 0x0000000100000000, 0x0000000100000000)  eden space 51712K, 10% used [0x00000000fbd80000,0x00000000fc28ceb0,0x00000000ff000000)  from space 8192K, 0% used [0x00000000ff800000,0x00000000ff800000,0x0000000100000000)  to   space 8192K, 0% used [0x00000000ff000000,0x00000000ff000000,0x00000000ff800000) ParOldGen       total 136704K, used 102400K [0x00000000f3800000, 0x00000000fbd80000, 0x00000000fbd80000)  object space 136704K, 74% used [0x00000000f3800000,0x00000000f9c00010,0x00000000fbd80000) Metaspace       used 3473K, capacity 4496K, committed 4864K, reserved 1056768K  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>代码示例 2</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 《深入理解Java虚拟机》中的案例： * staticObj、instanceObj、localObj存放在哪里？ * * @author shkstart  shkstart@126.com * @create 2020  11:39 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StaticObjTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>        <span style="color:#66d9ef">static</span> ObjectHolder staticObj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectHolder<span style="color:#f92672">();</span>        ObjectHolder instanceObj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectHolder<span style="color:#f92672">();</span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">foo</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>            ObjectHolder localObj <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ObjectHolder<span style="color:#f92672">();</span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;done&#34;</span><span style="color:#f92672">);</span>        <span style="color:#f92672">}</span>    <span style="color:#f92672">}</span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectHolder</span> <span style="color:#f92672">{</span>    <span style="color:#f92672">}</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        Test test <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StaticObjTest<span style="color:#f92672">.</span><span style="color:#a6e22e">Test</span><span style="color:#f92672">();</span>        test<span style="color:#f92672">.</span><span style="color:#a6e22e">foo</span><span style="color:#f92672">();</span>    <span style="color:#f92672">}}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>可以使用 JHSDB.exe，在JDK9的时候才引入的</li>
+<li>分析：staticObj随着Test的类型信息存放在方法区，instanceObj随着Test的对象实例存放在Java堆，localObject则是存放在foo()方法栈帧的局部变量表中。</li>
+<li>测试发现：三个对象的数据在内存中的地址都落在Eden区范围内，所以结论：<strong>只要是对象实例必然会在Java堆中分配</strong>。</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9295082ca6465d12dd5a14c175bb1a79" id="lht9295082ca6465d12dd5a14c175bb1a79">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/182.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>接着，找到了一个引用该staticObj对象的地方，是在一个java.lang.Class的实例里，并且给出了这个实例的地址，通过Inspector查看该对象实例，可以清楚看到这确实是一个java.lang.Class类型的对象实例，里面有一个名为staticobj的实例字段：</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a300e9e96bfd18707cbfdffb06a90504" id="lhta300e9e96bfd18707cbfdffb06a90504">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/183.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>从《Java虚拟机规范》所定义的概念模型来看，所有Class相关的信息都应该存放在方法区之中，但方法区该如何实现，《Java虚拟机规范》并未做出规定，这就成了一件允许不同虚拟机自己灵活把握的事情。JDK7及其以后版本的HotSpot虚拟机选择把静态变量与类型在Java语言一端的映射Class对象存放在一起，<strong>存储于Java堆之中</strong>，从我们的实验中也明确验证了这一点</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="7方法区的垃圾回收" class="pagebody-header">
+    7、方法区的垃圾回收
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>方法区垃圾收集</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>有些人认为方法区（如Hotspot虚拟机中的元空间或者永久代）是没有垃圾收集行为的，其实不然。</li>
+<li>《Java虚拟机规范》对方法区的约束是非常宽松的，提到过可以不要求虚拟机在方法区中实现垃圾收集。事实上也确实有未实现或未能完整实现方法区类型卸载的收集器存在（如JDK11时期的ZGC收集器就不支持类卸载）。</li>
+<li>一般来说这个区域的回收效果比较难令人满意，尤其是类型的卸载，条件相当苛刻。但是这部分区域的回收有时又确实是必要的。以前sun公司的Bug列表中，曾出现过的若干个严重的Bug就是由于低版本的HotSpot虚拟机对此区域未完全回收而导致内存泄漏。</li>
+<li>方法区的垃圾收集主要回收两部分内容：<strong>常量池中废弃的常量和不再使用的类型</strong>。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>方法区常量的回收</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>先来说说方法区内常量池之中主要存放的两大类常量：字面量和符号引用
+<div class="component-content component"><ul>
+<li>字面量比较接近Java语言层次的常量概念，如文本字符串、被声明为final的常量值等</li>
+<li>而符号引用则属于编译原理方面的概念，包括下面三类常量：
+<div class="component-content component"><ul>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+</ul></div>
+</li>
+</ul></div>
+</li>
+<li>HotSpot虚拟机对常量池的回收策略是很明确的，只要常量池中的常量没有被任何地方引用，就可以被回收。</li>
+<li>回收废弃常量与回收Java堆中的对象非常类似。（关于常量的回收比较简单，重点是类的回收）</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>方法区类的回收</strong></p>
+</blockquote>
+<p class="component-content component">判定一个常量是否“废弃”还是相对简单，而要判定一个类型是否属于“不再被使用的类”的条件就比较苛刻了。需要同时满足下面三个条件：</p>
+<div class="component-content component"><ol>
+<li>该类所有的实例都已经被回收，也就是Java堆中不存在该类及其任何派生子类的实例。</li>
+<li>加载该类的类加载器已经被回收，这个条件除非是经过精心设计的可替换类加载器的场景，如OSGi、JSP的重加载等，否则通常是很难达成的。</li>
+<li>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</li>
+</ol></div>
+<p class="component-content component">Java虚拟机被允许对满足上述三个条件的无用类进行回收，这里说的仅仅是“被允许”，而并不是和对象一样，没有引用了就必然会回收。关于是否要对类型进行回收，HotSpot虚拟机提供了<code>-Xnoclassgc</code>参数进行控制，还可以使用<code>-verbose:class</code> 以及 <code>-XX：+TraceClass-Loading</code>、<code>-XX：+TraceClassUnLoading</code>查看类加载和卸载信息</p>
+<p class="component-content component">在大量使用反射、动态代理、CGLib等字节码框架，动态生成JSP以及OSGi这类频繁自定义类加载器的场景中，通常都需要Java虚拟机具备类型卸载的能力，以保证不会对方法区造成过大的内存压力。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="8运行时数据区总结" class="pagebody-header">
+    8、运行时数据区总结
+  </h2>
+</div><div class="component-content component"><ul>
+<li>线程私有结构：程序计数器、虚拟机栈、本地方法栈</li>
+<li>每个虚拟机栈由由具体的栈帧组成，在栈帧的动态链接中，保存至对方法的引用</li>
+<li>方法区在 JDK7 之前，使用永久代实现，在 JDK8 之后，使用元空间实现</li>
+<li>Minor GC 针对于新生区，Major GC 针对于老年区，Full GC 针对于整个堆空间和方法区</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e162472e517477e62fa5ca9a7b03c929" id="lhte162472e517477e62fa5ca9a7b03c929">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/184.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="9大场面试题" class="pagebody-header">
+    9、大场面试题
+  </h2>
+</div><div class="component-content component"><ol>
+<li>百度
+<div class="component-content component"><ul>
+<li>三面：说一下JVM内存模型吧，有哪些区？分别干什么的？</li>
+</ul></div>
+</li>
+<li>蚂蚁金服：
+<div class="component-content component"><ul>
+<li>Java8的内存分代改进</li>
+<li>JVM内存分哪几个区，每个区的作用是什么？</li>
+<li>一面：JVM内存分布/内存结构？栈和堆的区别？堆的结构？为什么两个survivor区？</li>
+<li>二面：Eden和survior的比例分配</li>
+</ul></div>
+</li>
+<li>小米：
+<div class="component-content component"><ul>
+<li>jvm内存分区，为什么要有新生代和老年代</li>
+</ul></div>
+</li>
+<li>字节跳动：
+<div class="component-content component"><ul>
+<li>二面：Java的内存分区</li>
+<li>二面：讲讲vm运行时数据库区</li>
+<li>什么时候对象会进入老年代？</li>
+</ul></div>
+</li>
+<li>京东：
+<div class="component-content component"><ul>
+<li>JVM的内存结构，Eden和Survivor比例。</li>
+<li>JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和survivor。</li>
+</ul></div>
+</li>
+<li>天猫：
+<div class="component-content component"><ul>
+<li>一面：Jvm内存模型以及分区，需要详细到每个区放什么。</li>
+<li>一面：JVM的内存模型，Java8做了什么改</li>
+</ul></div>
+</li>
+<li>拼多多：
+<div class="component-content component"><ul>
+<li>JVM内存分哪几个区，每个区的作用是什么？</li>
+</ul></div>
+</li>
+<li>美团：
+<div class="component-content component"><ul>
+<li>java内存分配</li>
+<li>jvm的永久代中会发生垃圾回收吗？</li>
+<li>一面：jvm内存分区，为什么要有新生代和老年代？</li>
+</ul></div>
+</li>
+</ol></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月30日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

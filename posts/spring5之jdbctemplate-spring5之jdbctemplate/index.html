@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Spring5之JdbcTemplate" />
+<meta property="og:description" content="一、概念和准备 1、什么是 JdbcTemplate Spring 框架对 JDBC 进行封装，使用 JdbcTemplate 方便实现对数据库操作 2、准备工作 (1)引入相关 jar 包 (2)在 spring 配置文件配置数据库连接池 &lt;!-- 数" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/spring5%E4%B9%8Bjdbctemplate-spring5%E4%B9%8Bjdbctemplate/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:31:53+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:31:53+00:00" />
+<title>Spring5之JdbcTemplate</title>
+
+    <link rel="canonical" href="/posts/spring5%E4%B9%8Bjdbctemplate-spring5%E4%B9%8Bjdbctemplate/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Spring5
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Spring5之JdbcTemplate</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/spring5" class="tag">
+                    Spring5
+                  </a>
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="一概念和准备" class="pagebody-header">
+    一、概念和准备
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1什么是-jdbctemplate" class="pagebody-header">
+    <strong>1</strong>、什么是 JdbcTemplate
+  </h2>
+</div><p class="component-content component">Spring 框架对 JDBC 进行封装，使用 JdbcTemplate 方便实现对数据库操作</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2准备工作" class="pagebody-header">
+    <strong>2</strong>、准备工作
+  </h2>
+</div><p class="component-content component">(1)引入相关 jar 包</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e83bcc28fa7509f10ca6b0a83403506e" id="lhte83bcc28fa7509f10ca6b0a83403506e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/24.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">(2)在 spring 配置文件配置数据库连接池</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>   <span style="color:#75715e">&lt;!-- 数据库连接池 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;dataSource&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;com.alibaba.druid.pool.DruidDataSource&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">destroy-method=</span><span style="color:#e6db74">&#34;close&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;url&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;jdbc:mysql:///user_db&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;username&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;root&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;password&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;root&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;driverClassName&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;com.mysql.jdbc.Driver&#34;</span> <span style="color:#f92672">/&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">(3)配置 JdbcTemplate 对象，注入 DataSource</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- JdbcTemplate对象 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;jdbcTemplate&#34;</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.jdbc.core.JdbcTemplate&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!--注入dataSource--&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;dataSource&#34;</span> <span style="color:#a6e22e">ref=</span><span style="color:#e6db74">&#34;dataSource&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/bean&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">(4)创建 service 类，注入dao,创建 dao 类，在 dao 注入 jdbcTemplate 对象</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserService</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//注入dao
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> UserDao userDao<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Repository</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserDaoImpl</span> <span style="color:#66d9ef">implements</span> UserDao <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> JdbcTemplate jdbcTemplate<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="二jdbctemplate-操作数据库添加" class="pagebody-header">
+    <strong>二、JdbcTemplate</strong> 操作数据库(添加)
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1对应数据库创建实体类" class="pagebody-header">
+    <strong>1</strong>、对应数据库创建实体类
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String userId<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String username<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String ustatus<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setUserId</span><span style="color:#f92672">(</span>String userId<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">userId</span> <span style="color:#f92672">=</span> userId<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setUsername</span><span style="color:#f92672">(</span>String username<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">username</span> <span style="color:#f92672">=</span> username<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setUstatus</span><span style="color:#f92672">(</span>String ustatus<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ustatus</span> <span style="color:#f92672">=</span> ustatus<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="2编写-service-和-dao" class="pagebody-header">
+    <strong>2</strong>、编写 <strong>service</strong> 和 **dao
+  </h2>
+</div><p class="component-content component">(1)在 dao 进行数据库添加操作</p>
+<p class="component-content component">(2)调用 JdbcTemplate 对象里面 update 方法实现添加操作</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-db5fe54c88872aaa263c85a507b62867" id="lhtdb5fe54c88872aaa263c85a507b62867">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/25.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">有两个参数</p>
+<div class="component-content component"><ul>
+<li>第一个参数:sql语句</li>
+<li>第二个参数:可变参数，设置sql语句值</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Repository</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookDaoImpl</span> <span style="color:#66d9ef">implements</span> BookDao <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//注入 JdbcTemplate
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">@Autowired</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">private</span> JdbcTemplate jdbcTemplate<span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//添加的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>Book book<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//1 创建 sql 语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;insert into t_book values(?,?,?)&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//2 调用方法实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Object<span style="color:#f92672">[]</span> args <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUserId</span><span style="color:#f92672">(),</span> book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUsername</span><span style="color:#f92672">(),</span>book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUstatus</span><span style="color:#f92672">()};</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">int</span> update <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">update</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span>args<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  	System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>update<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="3测试类" class="pagebody-header">
+    <strong>3</strong>、测试类
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">、</span>测试类
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Test</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">testJdbcTemplate</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>  ApplicationContext context <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">new</span> ClassPathXmlApplicationContext<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bean1.xml&#34;</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  BookService bookService <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;bookService&#34;</span><span style="color:#f92672">,</span>BookService<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	Book book <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Book<span style="color:#f92672">();</span> 
+</span></span><span style="display:flex;"><span>  book<span style="color:#f92672">.</span><span style="color:#a6e22e">setUserId</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;1&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>  book<span style="color:#f92672">.</span><span style="color:#a6e22e">setUsername</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;java&#34;</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  book<span style="color:#f92672">.</span><span style="color:#a6e22e">setUstatus</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  bookService<span style="color:#f92672">.</span><span style="color:#a6e22e">addBook</span><span style="color:#f92672">(</span>book<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结果：</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f6dc505fdf0917b0aba2957c72f42271" id="lhtf6dc505fdf0917b0aba2957c72f42271">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/26.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h1 id="三jdbctemplate-操作数据库修改和删除" class="pagebody-header">
+    <strong>三、JdbcTemplate</strong> 操作数据库(修改和删除)
+  </h1>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">、</span>修改
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateBook</span><span style="color:#f92672">(</span>Book book<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;update t_book set username=?,ustatus=? where user_id=?&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  Object<span style="color:#f92672">[]</span> args <span style="color:#f92672">=</span> <span style="color:#f92672">{</span>book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUsername</span><span style="color:#f92672">(),</span> book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUstatus</span><span style="color:#f92672">(),</span>book<span style="color:#f92672">.</span><span style="color:#a6e22e">getUserId</span><span style="color:#f92672">()};</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> update <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">update</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> args<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>update<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">、</span>删除
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delete</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;delete from t_book where user_id=?&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> update <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">update</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> id<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>update<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="四jdbctemplate-操作数据库查询返回某个值" class="pagebody-header">
+    <strong>四、JdbcTemplate</strong> 操作数据库(查询返回某个值)
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1查询表里面有多少条记录返回是某个值" class="pagebody-header">
+    <strong>1</strong>、查询表里面有多少条记录，返回是某个值
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="2使用-jdbctemplate-实现查询返回某个值代码" class="pagebody-header">
+    <strong>2</strong>、使用 <strong>JdbcTemplate</strong> 实现查询返回某个值代码
+  </h2>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-48aec2fadc9d15a624c40609ef9a7ade" id="lht48aec2fadc9d15a624c40609ef9a7ade">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/27.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">有两个参数</p>
+<div class="component-content component"><ul>
+<li>第一个参数:sql语句</li>
+<li>第二个参数:返回类型Class</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//查询表记录数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">selectCount</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;select count(*) from t_book&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	Integer count <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">queryForObject</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> count<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="五jdbctemplate-操作数据库查询返回对象" class="pagebody-header">
+    五、<strong>JdbcTemplate</strong> 操作数据库(查询返回对象)
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1场景查询图书详情" class="pagebody-header">
+    <strong>1</strong>、场景:查询图书详情
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="2jdbctemplate-实现查询返回对象" class="pagebody-header">
+    <strong>2</strong>、<strong>JdbcTemplate</strong> 实现查询返回对象
+  </h2>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a17183f5574d1172199196d9307f392a" id="lhta17183f5574d1172199196d9307f392a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/28.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">有三个参数：</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">第一个参数:sql语句</p>
+</li>
+<li>
+<p class="component-content component">第二个参数:RowMapper 是接口，针对返回不同类型数据，使用这个接口里面实现类完成数据封装</p>
+</li>
+<li>
+<p class="component-content component">第三个参数:sql语句值</p>
+</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//查询返回对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Book <span style="color:#a6e22e">findBookInfo</span><span style="color:#f92672">(</span>String id<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;select * from t_book where user_id=?&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//调用方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	Book book <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">queryForObject</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> newBeanPropertyRowMapper<span style="color:#f92672">&lt;</span>Book<span style="color:#f92672">&gt;(</span>Book<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">),</span> id<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> book<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span> </span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="六jdbctemplate-操作数据库查询返回集合" class="pagebody-header">
+    <strong>六、JdbcTemplate</strong> 操作数据库(查询返回集合)
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1场景查询图书列表分页" class="pagebody-header">
+    <strong>1</strong>、场景:查询图书列表分页&hellip;
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="2调用-jdbctemplate-方法实现查询返回集合" class="pagebody-header">
+    <strong>2</strong>、调用 <strong>JdbcTemplate</strong> 方法实现查询返回集合
+  </h2>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-aaec2200157b3cb8055ff29c92ebe54c" id="lhtaaec2200157b3cb8055ff29c92ebe54c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/29.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">有三个参数</p>
+<div class="component-content component"><ul>
+<li>第一个参数:sql语句</li>
+<li>第二个参数:RowMapper 是接口，针对返回不同类型数据，使用这个接口里面实现类完成数据封装</li>
+<li>第三个参数:sql语句值</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//查询返回集合
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Book<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">findAllBook</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;select * from t_book&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">//调用方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	List<span style="color:#f92672">&lt;</span>Book<span style="color:#f92672">&gt;</span> bookList <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">query</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> newBeanPropertyRowMapper<span style="color:#f92672">&lt;</span>Book<span style="color:#f92672">&gt;(</span>Book<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">));</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> bookList<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="七jdbctemplate-操作数据库批量操作" class="pagebody-header">
+    <strong>七、JdbcTemplate</strong> 操作数据库(批量操作)
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1批量操作操作表里面多条记录" class="pagebody-header">
+    <strong>1</strong>、批量操作:操作表里面多条记录
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="2jdbctemplate-实现批量添加操作" class="pagebody-header">
+    <strong>2</strong>、<strong>JdbcTemplate</strong> 实现批量添加操作
+  </h2>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-af83eea25f765d74a63f96ff66de1582" id="lhtaf83eea25f765d74a63f96ff66de1582">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/30.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">有两个参数</p>
+<div class="component-content component"><ul>
+<li>第一个参数:sql语句</li>
+<li>第二个参数:List集合，添加多条记录数据</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//批量添加
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">batchAddBook</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>  String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;insert into t_book values(?,?,?)&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> ints <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">batchUpdate</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> batchArgs<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>ints<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//批量添加测试
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span> 
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o1 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;java&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;a&#34;</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o2 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;4&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;c++&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;b&#34;</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o3 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;5&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;MySQL&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;c&#34;</span><span style="color:#f92672">};</span> 
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o2<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o3<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//调用批量添加 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>bookService<span style="color:#f92672">.</span><span style="color:#a6e22e">batchAdd</span><span style="color:#f92672">(</span>batchArgs<span style="color:#f92672">);</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="3jdbctemplate-实现批量修改操作" class="pagebody-header">
+    <strong>3</strong>、<strong>JdbcTemplate</strong> 实现批量修改操作
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//批量修改
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">batchUpdateBook</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;update t_book set username=?,ustatus=? where user_id=?&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> ints <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">batchUpdate</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> batchArgs<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>ints<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//批量修改
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span> 
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o1 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;java0909&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;a3&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">};</span> 
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o2 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;c++1010&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;b4&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;4&#34;</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o3 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;MySQL1111&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;c5&#34;</span><span style="color:#f92672">,</span><span style="color:#e6db74">&#34;5&#34;</span><span style="color:#f92672">};</span> 
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//调用方法实现批量修改
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>bookService<span style="color:#f92672">.</span><span style="color:#a6e22e">batchUpdate</span><span style="color:#f92672">(</span>batchArgs<span style="color:#f92672">);</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="4jdbctemplate-实现批量删除操作" class="pagebody-header">
+    <strong>4</strong>、<strong>JdbcTemplate</strong> 实现批量删除操作
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//批量删除
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">batchDeleteBook</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>  String sql <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;delete from t_book where user_id=?&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> ints <span style="color:#f92672">=</span> jdbcTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">batchUpdate</span><span style="color:#f92672">(</span>sql<span style="color:#f92672">,</span> batchArgs<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>  System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Arrays<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>ints<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//批量删除
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">[]&gt;</span> batchArgs <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o1 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;3&#34;</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>Object<span style="color:#f92672">[]</span> o2 <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;4&#34;</span><span style="color:#f92672">};</span> 
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o1<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>batchArgs<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>o2<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//调用方法实现批量删除 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>bookService<span style="color:#f92672">.</span><span style="color:#a6e22e">batchDelete</span><span style="color:#f92672">(</span>batchArgs<span style="color:#f92672">);</span></span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

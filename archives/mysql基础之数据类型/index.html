@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="MySQL基础之数据类型" />
+<meta property="og:description" content="-: | :&mdash;&ndash;: | :&mdash;&mdash;: | :&mdash;&mdash;-: | :&mdash;&mdash;&mdash;: | :&mdash;-: | | 字节数 | 1 | 2 | 3 | 4 | 8 | 特点： ① 如果不设置无符号还是有符号，默认是有符号，如果想设置无符号，需要添加unsig" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T08:53:53+00:00" />
+<meta property="article:modified_time" content="2021-11-24T08:53:53+00:00" />
+<title>MySQL基础之数据类型</title>
+
+    <link rel="canonical" href="/archives/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        mysql
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 24, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">MySQL基础之数据类型</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/mysql" class="tag">
+                    mysql
+                  </a>
+                
+                  
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93" class="tag">
+                    数据库
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">-: | :&mdash;&ndash;: | :&mdash;&mdash;: | :&mdash;&mdash;-: | :&mdash;&mdash;&mdash;: | :&mdash;-: |
+| 字节数 |    1    |    2     |     3     |      4      |   8    |</p>
+<p class="component-content component">特点：
+① 如果不设置无符号还是有符号，默认是有符号，如果想设置无符号，需要添加unsigned关键字
+② 如果插入的数值超出了整型的范围,会报out of range异常，并且插入临界值
+③ 如果不设置长度，会有默认的长度
+长度代表了显示的最大宽度，如果不够会用0在左边填充，但必须搭配zerofill使用！</p>
+
+<div class="component-content pagebody component">
+  <h3 id="1如何设置无符号和有符号" class="pagebody-header">
+    1.如何设置无符号和有符号
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> tab_int;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_int</span>(
+</span></span><span style="display:flex;"><span>	t1 <span style="color:#66d9ef">INT</span>(<span style="color:#ae81ff">7</span>) <span style="color:#66d9ef">ZEROFILL</span>,
+</span></span><span style="display:flex;"><span>	t2 <span style="color:#66d9ef">INT</span>(<span style="color:#ae81ff">7</span>) <span style="color:#66d9ef">ZEROFILL</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DESC</span> tab_int;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_int <span style="color:#66d9ef">VALUES</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">123456</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_int <span style="color:#66d9ef">VALUES</span>(<span style="color:#f92672">-</span><span style="color:#ae81ff">123456</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">123456</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_int <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">2147483648</span>,<span style="color:#ae81ff">4294967296</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_int <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">123</span>,<span style="color:#ae81ff">123</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> tab_int;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="二小数" class="pagebody-header">
+    二、小数
+  </h2>
+</div><p class="component-content component">分类：</p>
+
+<div class="component-content pagebody component">
+  <h3 id="1浮点型" class="pagebody-header">
+    1.浮点型
+  </h3>
+</div><p class="component-content component">float(M,D)
+double(M,D)</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2定点型" class="pagebody-header">
+    2.定点型
+  </h3>
+</div><p class="component-content component">dec(M，D)
+decimal(M,D)</p>
+<p class="component-content component">特点：</p>
+<p class="component-content component">①
+M：整数部位+小数部位
+D：小数部位
+如果超过范围，则插入临界值</p>
+<p class="component-content component">②
+M和D都可以省略
+如果是decimal，则M默认为10，D默认为0
+如果是float和double，则会根据插入的数值的精度来决定精度</p>
+<p class="component-content component">③定点型的精确度较高，如果要求插入数值的精度较高如货币运算等则考虑使用</p>
+
+<div class="component-content pagebody component">
+  <h3 id="测试m和d" class="pagebody-header">
+    测试M和D
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> tab_float;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_float</span>(
+</span></span><span style="display:flex;"><span>	f1 <span style="color:#66d9ef">FLOAT</span>,
+</span></span><span style="display:flex;"><span>	f2 <span style="color:#66d9ef">DOUBLE</span>,
+</span></span><span style="display:flex;"><span>	f3 <span style="color:#66d9ef">DECIMAL</span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> tab_float;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DESC</span> tab_float;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_float <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4523</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4523</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4523</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_float <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">456</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">456</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">456</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_float <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">123</span>.<span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_float <span style="color:#66d9ef">VALUES</span>(<span style="color:#ae81ff">1523</span>.<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1523</span>.<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1523</span>.<span style="color:#ae81ff">4</span>);</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">原则：</p>
+<p class="component-content component"><strong>所选择的类型越简单越好，能保存数值的类型越小越好</strong></p>
+
+<div class="component-content pagebody component">
+  <h2 id="三字符型" class="pagebody-header">
+    三、字符型
+  </h2>
+</div><p class="component-content component">较短的文本：</p>
+<p class="component-content component">char
+varchar</p>
+<p class="component-content component">其他：</p>
+<p class="component-content component">binary和varbinary用于保存较短的二进制
+enum用于保存枚举
+set用于保存集合</p>
+<p class="component-content component">较长的文本：
+text
+blob(较大的二进制)</p>
+<p class="component-content component">特点：</p>
+<div class="component-content component"><table>
+<thead>
+<tr>
+<th>写法</th>
+<th>M的意思</th>
+<th>特点</th>
+<th>空间的耗费</th>
+<th>效率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>char	char(M)</td>
+<td>最大的字符数，可以省略，默认为1</td>
+<td>固定长度的字符</td>
+<td>比较耗费</td>
+<td>高</td>
+</tr>
+<tr>
+<td>varchar varchar(M)</td>
+<td>最大的字符数，不可以省略</td>
+<td>可变长度的字符</td>
+<td>比较节省</td>
+<td>低</td>
+</tr>
+</tbody>
+</table></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_char</span>(
+</span></span><span style="display:flex;"><span>	c1 <span style="color:#66d9ef">ENUM</span>(<span style="color:#e6db74">&#39;a&#39;</span>,<span style="color:#e6db74">&#39;b&#39;</span>,<span style="color:#e6db74">&#39;c&#39;</span>)
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_char <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;a&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_char <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;b&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_char <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;c&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_char <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;m&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_char <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;A&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> tab_set;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_set</span>(
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>s1 <span style="color:#66d9ef">SET</span>(<span style="color:#e6db74">&#39;a&#39;</span>,<span style="color:#e6db74">&#39;b&#39;</span>,<span style="color:#e6db74">&#39;c&#39;</span>,<span style="color:#e6db74">&#39;d&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_set <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;a&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_set <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;A,B&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_set <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;a,c,d&#39;</span>);</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="四日期型" class="pagebody-header">
+    四、日期型
+  </h2>
+</div><p class="component-content component">分类：
+date只保存日期
+time 只保存时间
+year只保存年</p>
+<p class="component-content component">datetime保存日期+时间
+timestamp保存日期+时间</p>
+<p class="component-content component">特点：</p>
+<div class="component-content component"><table>
+<thead>
+<tr>
+<th>日期</th>
+<th>字节</th>
+<th>范围</th>
+<th>时区等的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>datetime</td>
+<td>8</td>
+<td>1000——9999</td>
+<td>不受</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>4</td>
+<td>1970-2038</td>
+<td>受</td>
+</tr>
+</tbody>
+</table></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_date</span>(
+</span></span><span style="display:flex;"><span>	t1 <span style="color:#66d9ef">DATETIME</span>,
+</span></span><span style="display:flex;"><span>	t2 <span style="color:#66d9ef">TIMESTAMP</span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> tab_date <span style="color:#66d9ef">VALUES</span>(<span style="color:#a6e22e">NOW</span>(),<span style="color:#a6e22e">NOW</span>());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> tab_date;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;time_zone&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SET</span> time_zone<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;+9:00&#39;</span>;</span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 24, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

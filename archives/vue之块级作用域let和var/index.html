@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Vue之块级作用域let和var" />
+<meta property="og:description" content="1.背景 js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Br" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:43:04+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:43:04+00:00" />
+<title>Vue之块级作用域let和var</title>
+
+    <link rel="canonical" href="/archives/vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Vue
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 30, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Vue之块级作用域let和var</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/vue" class="tag">
+                    Vue
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h2 id="1背景" class="pagebody-header">
+    1.背景
+  </h2>
+</div><p class="component-content component">js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Brendan Eich就修复了这个问题，添加了一个新的关键词：let
+let可以看做是更完美的var</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2var" class="pagebody-header">
+    2.var
+  </h2>
+</div><p class="component-content component">1.var
+<strong>var在声明一个变量时，该变量只有在函数中才有自己的作用，在if和for中没有自己的作用域。</strong>
+作用域是什么？
+作用域就是变量和函数生效的区域。</p>
+<p class="component-content component">2.var-function</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            function text(){
+</span></span><span style="display:flex;"><span>                var a = 123;
+</span></span><span style="display:flex;"><span>                console.log(&#39;在函数内打印:&#39; + a);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            text();
+</span></span><span style="display:flex;"><span>            console.log(&#39;在函数外打印:&#39; + a);</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">在函数内var的a有自己的作用域，a生效的区域只在这个函数内，外部打印a会显示a is not defined，因为a不存在在外部</p>
+<p class="component-content component">这就是作用域的作用</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-da55d98686ae1b0c5a30b5026041321a" id="lhtda55d98686ae1b0c5a30b5026041321a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/45.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">声明在if或for中的变量没有自己的作用域</p>
+
+<div class="component-content pagebody component">
+  <h2 id="3var-if" class="pagebody-header">
+    3.var-if
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>        if(true) {
+</span></span><span style="display:flex;"><span>            var a = 123;
+</span></span><span style="display:flex;"><span>            console.log(a);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        console.log(a);</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">因为if没有作用域的概念，所以在if内var的a可以被共享，即使在if外也能使用a</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9b5e812e409c70076c1e3d12f7235642" id="lht9b5e812e409c70076c1e3d12f7235642">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/46.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="4var-for" class="pagebody-header">
+    4.var-for
+  </h2>
+</div><p class="component-content component">实现点击按钮，显示该按钮的序号</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span style="display:flex;"><span>            for(var i = 0; i &lt; <span style="color:#f92672">btns.length</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">++)</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">btns</span><span style="color:#960050;background-color:#1e0010">[</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">].</span><span style="color:#a6e22e">onclick </span><span style="color:#f92672">=</span> <span style="color:#e6db74">function()</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">console</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">log</span><span style="color:#960050;background-color:#1e0010">(</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">重大缺陷：无论点击哪个，i都是最后一个。
+在for中的i是没有自己的作用域的，且js是异步执行，在js执行完后，才开始渲染页面，那就意味着我们在点击已经渲染出的button时，for循环已经遍历到最后一个，且这个for中的i没有自己的作用域，他是被共享的，遍历四次他就被改变了四次，所以我们无论点击哪个按钮出现的i都是4.</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ac0d0e597a7e7e688c2b05fa79da456f" id="lhtac0d0e597a7e7e688c2b05fa79da456f">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/47.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">那这时候，为了实现效果就会引入函数（因为var在函数中有自己的作用域），借助函数的作用域让每个i都有自己的作用域，点击按钮出现相应序号。<strong>这就是我们js常用的闭包。</strong></p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span style="display:flex;"><span>            for(var i = 0; i &lt; <span style="color:#f92672">btns.length</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">++)</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">(</span><span style="color:#a6e22e">function</span><span style="color:#960050;background-color:#1e0010">(</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">){</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">btns</span><span style="color:#960050;background-color:#1e0010">[</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">].</span><span style="color:#a6e22e">onclick </span><span style="color:#f92672">=</span> <span style="color:#e6db74">function()</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">console</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">log</span><span style="color:#960050;background-color:#1e0010">(&#39;</span><span style="color:#a6e22e">点击了第</span><span style="color:#960050;background-color:#1e0010">&#39;</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#a6e22e">i</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">个按钮</span><span style="color:#960050;background-color:#1e0010">&#39;);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">}(</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">))</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9b377198ddf99686d8a31ff53b0a3239" id="lht9b377198ddf99686d8a31ff53b0a3239">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/48.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">在function中声明的i都有自己的作用域，这四个作用域互不影响</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            i=0
+</span></span><span style="display:flex;"><span>            (function(i){
+</span></span><span style="display:flex;"><span>                btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }(0))
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            i=1
+</span></span><span style="display:flex;"><span>            (function(i){
+</span></span><span style="display:flex;"><span>                btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }(1))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            i=2
+</span></span><span style="display:flex;"><span>            (function(i){
+</span></span><span style="display:flex;"><span>                btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }(2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            i=3
+</span></span><span style="display:flex;"><span>            (function(i){
+</span></span><span style="display:flex;"><span>                btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }(3))   </span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="3let" class="pagebody-header">
+    3.let
+  </h2>
+</div><p class="component-content component">用let声明的变量在if、for、function内都有自己的作用域
+用let解决点击按钮的问题</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span style="display:flex;"><span>            for(let i = 0; i &lt; <span style="color:#f92672">btns.length</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">++)</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">btns</span><span style="color:#960050;background-color:#1e0010">[</span><span style="color:#a6e22e">i</span><span style="color:#960050;background-color:#1e0010">].</span><span style="color:#a6e22e">onclick </span><span style="color:#f92672">=</span> <span style="color:#e6db74">function()</span> <span style="color:#960050;background-color:#1e0010">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">console</span><span style="color:#960050;background-color:#1e0010">.</span><span style="color:#a6e22e">log</span><span style="color:#960050;background-color:#1e0010">(&#39;</span><span style="color:#a6e22e">点击了第</span><span style="color:#960050;background-color:#1e0010">&#39;</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#a6e22e">i</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">个按钮</span><span style="color:#960050;background-color:#1e0010">&#39;);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#960050;background-color:#1e0010">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">因为用let声明的变量有自己的作用域，不用像var一样需要借助function生成自己的作用域。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f875f2081251b20082807c5e2a00ca67" id="lhtf875f2081251b20082807c5e2a00ca67">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/49.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>            i=0
+</span></span><span style="display:flex;"><span>            btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            i=1
+</span></span><span style="display:flex;"><span>            btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            i=2
+</span></span><span style="display:flex;"><span>            btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            i=3
+</span></span><span style="display:flex;"><span>            btns[i].onclick = function() {
+</span></span><span style="display:flex;"><span>                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span style="display:flex;"><span>            }   </span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="let和var的区别" class="pagebody-header">
+    let和var的区别
+  </h3>
+</div><p class="component-content component"><strong>用let声明的变量在if、for、function内都有自己的作用域
+用var声明的变量只有在function内有自己的作用域</strong></p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 30, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

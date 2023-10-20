@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="MySQL基础之事务" />
+<meta property="og:description" content="&mdash;&mdash;&mdash;&ndash;: | :&ndash;: | :&mdash;&mdash;&ndash;: | :&ndash;: | | read uncommitted | √ | √ | √ | | read committed | × | √ | √ | | repeatable read | × | × | √ | | serializable | × | × | × | mysql中默认 第三个隔离级别 repeatable read oracle" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%BA%8B%E5%8A%A1-mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%BA%8B%E5%8A%A1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T08:53:59+00:00" />
+<meta property="article:modified_time" content="2021-11-24T08:53:59+00:00" />
+<title>MySQL基础之事务</title>
+
+    <link rel="canonical" href="/posts/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%BA%8B%E5%8A%A1-mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%BA%8B%E5%8A%A1/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        mysql
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月24日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">MySQL基础之事务</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/mysql" class="tag">
+                    mysql
+                  </a>
+                
+                  
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93" class="tag">
+                    数据库
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">&mdash;&mdash;&mdash;&ndash;: | :&ndash;: | :&mdash;&mdash;&ndash;: | :&ndash;: |
+| read uncommitted |  √   |     √      |  √   |
+|  read committed  |  ×   |     √      |  √   |
+| repeatable read  |  ×   |     ×      |  √   |
+|   serializable   |  ×   |     ×      |  ×   |</p>
+<p class="component-content component">mysql中默认 第三个隔离级别 repeatable read
+oracle中默认第二个隔离级别 read committed</p>
+
+<div class="component-content pagebody component">
+  <h3 id="1-未提交读read-uncommitted-写加锁读不加锁" class="pagebody-header">
+    <strong>1. 未提交读(Read uncommitted)。 （写加锁，读不加锁）</strong>
+  </h3>
+</div><p class="component-content component">写操作加写锁，读操作不加锁。禁止第一类丢失更新，但是会出现所有其他数据并发问题。</p>
+<p class="component-content component">**
+**</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2提交读read-committed写加锁读加锁" class="pagebody-header">
+    <strong>2.提交读(Read committed)。（写加锁，读加锁）</strong>
+  </h3>
+</div><p class="component-content component">写操作加写锁，读操作加读锁。禁止第一类丢失更新和脏读。</p>
+<p class="component-content component">就是你已经开始读了数据，然后一个事物开始写，然后写的事物不提交的话，是不能进行读的事物，避免了脏读。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3可重复读read-repeatable写加锁读加锁" class="pagebody-header">
+    <strong>3.可重复读(Read repeatable)。（写加锁，读加锁）</strong>
+  </h3>
+</div><p class="component-content component">对于读操作加读锁到事务结束，其他事务的更新操作只能等到事务结束之后进行。和提交 读的区别在于，</p>
+<p class="component-content component">提交读的读操作是加读锁到本次读操作结束，可重复读的锁粒度更大。禁止两类丢失更新，禁止脏读和不可 重复度，但是可能出现幻读.</p>
+<p class="component-content component">一个事物读的时候，我们把两次读看成整体，在读的过程中，不允许写的操作，这样就可以禁止不可重复读。就是两次读操作不允许其他事物。</p>
+<p class="component-content component"><strong>这是大部分关系数据库的默认 隔离级别。</strong></p>
+
+<div class="component-content pagebody component">
+  <h3 id="4序列化serializable对表级读-写加锁" class="pagebody-header">
+    <strong>4.序列化(Serializable)。（对表级读 写加锁）</strong>
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="五如何设置" class="pagebody-header">
+    五、如何设置
+  </h2>
+</div><p class="component-content component">读操作加表级读锁至事务结束。可以禁止幻读。</p>
+<p class="component-content component">查看隔离级别</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">@@</span>tx_isolation;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">设置隔离级别</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">set</span> session<span style="color:#f92672">|</span>global transaction isolation level <span style="color:#960050;background-color:#1e0010">隔离级别</span>;</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">开启事务的语句</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> <span style="color:#960050;background-color:#1e0010">表</span> <span style="color:#66d9ef">set</span> <span style="color:#960050;background-color:#1e0010">张三丰的余额</span><span style="color:#f92672">=</span><span style="color:#ae81ff">500</span> <span style="color:#66d9ef">where</span> name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;张三丰&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> <span style="color:#960050;background-color:#1e0010">表</span> <span style="color:#66d9ef">set</span> <span style="color:#960050;background-color:#1e0010">郭襄的余额</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1500</span> <span style="color:#66d9ef">where</span> name<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;郭襄&#39;</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">结束事务的语句</span>;</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;autocommit&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> ENGINES;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1演示事务的使用步骤" class="pagebody-header">
+    1.演示事务的使用步骤
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e">#开启事务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SET</span> autocommit<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>START TRANSACTION;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#编写一组事务的语句
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">UPDATE</span> account <span style="color:#66d9ef">SET</span> balance <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">WHERE</span> username<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;张无忌&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> account <span style="color:#66d9ef">SET</span> balance <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">WHERE</span> username<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;赵敏&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#结束事务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ROLLBACK;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#commit;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> account;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="2演示事务对于delete和truncate的处理的区别" class="pagebody-header">
+    2.演示事务对于delete和truncate的处理的区别
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SET</span> autocommit<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>START TRANSACTION;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> account;
+</span></span><span style="display:flex;"><span>ROLLBACK;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="3演示savepoint-的使用" class="pagebody-header">
+    3.演示savepoint 的使用
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SET</span> autocommit<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>START TRANSACTION;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> account <span style="color:#66d9ef">WHERE</span> id<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span>;
+</span></span><span style="display:flex;"><span>SAVEPOINT a;<span style="color:#75715e">#设置保存点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> account <span style="color:#66d9ef">WHERE</span> id<span style="color:#f92672">=</span><span style="color:#ae81ff">28</span>;
+</span></span><span style="display:flex;"><span>ROLLBACK <span style="color:#66d9ef">TO</span> a;<span style="color:#75715e">#回滚到保存点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> account;</span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月24日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

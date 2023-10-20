@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="webAPIs04-页面尺寸和位置、时间" />
+<meta property="og:description" content="Web APIs - 第4天 进一步学习 DOM 相关知识，实现可交互的网页特效 能够插入、删除和替换元素节点 能够依据元素节点关系查找节点 日期对象 掌握 Date 日期对象的使用，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/webapis04-%E9%A1%B5%E9%9D%A2%E5%B0%BA%E5%AF%B8%E5%92%8C%E4%BD%8D%E7%BD%AE%E6%97%B6%E9%97%B4-webapis-day04/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-10T18:34:57+00:00" />
+<meta property="article:modified_time" content="2022-08-10T18:34:57+00:00" />
+<title>webAPIs04-页面尺寸和位置、时间</title>
+
+    <link rel="canonical" href="/posts/webapis04-%E9%A1%B5%E9%9D%A2%E5%B0%BA%E5%AF%B8%E5%92%8C%E4%BD%8D%E7%BD%AE%E6%97%B6%E9%97%B4-webapis-day04/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        javascript
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2022年8月10日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">webAPIs04-页面尺寸和位置、时间</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/javascript" class="tag">
+                    javascript
+                  </a>
+                
+                  
+                  <a href="/tags/webapi" class="tag">
+                    webapi
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="web-apis---第4天" class="pagebody-header">
+    Web APIs - 第4天
+  </h1>
+</div><blockquote>
+<p class="component-content component">进一步学习 DOM 相关知识，实现可交互的网页特效</p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>能够插入、删除和替换元素节点</li>
+<li>能够依据元素节点关系查找节点</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="日期对象" class="pagebody-header">
+    日期对象
+  </h2>
+</div><p class="component-content component">掌握 Date 日期对象的使用，动态获取当前计算机的时间。</p>
+<p class="component-content component">ECMAScript 中内置了获取系统时间的对象 Date，使用 Date 时与之前学习的内置对象 console 和 Math 不同，它需要借助 new 关键字才能使用。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="实例化" class="pagebody-header">
+    实例化
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 实例化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// const date = new Date(); // 系统默认时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#e6db74">&#39;2020-05-01&#39;</span>) <span style="color:#75715e">// 指定时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// date 变量即所谓的时间对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">date</span>)</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="方法" class="pagebody-header">
+    方法
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span> <span style="color:#75715e">// 1. 实例化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2. 调用时间对象方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 通过方法分别获取年、月、日，时、分、秒
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">year</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getFullYear</span>(); <span style="color:#75715e">// 四位年份
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">month</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getMonth</span>(); <span style="color:#75715e">// 0 ~ 11
+</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">getFullYear 获取四位年份</p>
+<p class="component-content component">getMonth 获取月份，取值为 0 ~ 11</p>
+<p class="component-content component">getDate 获取月份中的每一天，不同月份取值也不相同</p>
+<p class="component-content component">getDay 获取星期，取值为 0 ~ 6</p>
+<p class="component-content component">getHours 获取小时，取值为 0 ~ 23</p>
+<p class="component-content component">getMinutes 获取分钟，取值为 0 ~ 59</p>
+<p class="component-content component">getSeconds 获取秒，取值为 0 ~ 59</p>
+
+<div class="component-content pagebody component">
+  <h3 id="时间戳" class="pagebody-header">
+    时间戳
+  </h3>
+</div><p class="component-content component">时间戳是指1970年01月01日00时00分00秒起至现在的总秒数或毫秒数，它是一种特殊的计量时间的方式。</p>
+<p class="component-content component">注：ECMAScript 中时间戳是以毫秒计的。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span>    <span style="color:#75715e">// 1. 实例化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date()
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 获取时间戳
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">date</span>.<span style="color:#a6e22e">getTime</span>())
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 还有一种获取时间戳的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#f92672">+</span><span style="color:#66d9ef">new</span> Date())
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 还有一种获取时间戳的方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(Date.<span style="color:#a6e22e">now</span>())</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">获取时间戳的方法，分别为 getTime 和 Date.now 和  +new Date()</p>
+
+<div class="component-content pagebody component">
+  <h2 id="dom-节点" class="pagebody-header">
+    DOM 节点
+  </h2>
+</div><blockquote>
+<p class="component-content component">掌握元素节点创建、复制、插入、删除等操作的方法，能够依据元素节点的结构关系查找节点</p>
+</blockquote>
+<p class="component-content component">回顾之前 DOM 的操作都是针对元素节点的属性或文本的，除此之外也有专门针对元素节点本身的操作，如插入、复制、删除、替换等。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="插入节点" class="pagebody-header">
+    插入节点
+  </h3>
+</div><p class="component-content component">在已有的 DOM 节点中插入新的 DOM 节点时，需要关注两个关键因素：首先要得到新的 DOM 节点，其次在哪个位置插入这个节点。</p>
+<p class="component-content component">如下代码演示：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h3</span>&gt;插入节点&lt;/<span style="color:#f92672">h3</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span>&gt;在现有 dom 结构基础上插入新的元素节点&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">hr</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 普通盒子 --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;box&#34;</span>&gt;&lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 点击按钮向 box 盒子插入节点 --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;btn&#34;</span>&gt;插入节点&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 点击按钮，在网页中插入节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">btn</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.btn&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">btn</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 1. 获得一个 DOM 元素节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">p</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#39;p&#39;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;创建的新的p标签&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">className</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;info&#39;</span>
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 复制原有的 DOM 节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">p2</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;p&#39;</span>).<span style="color:#a6e22e">cloneNode</span>(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">p2</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">color</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;red&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 2. 插入盒子 box 盒子
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.box&#39;</span>).<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">p</span>)
+</span></span><span style="display:flex;"><span>      document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.box&#39;</span>).<span style="color:#a6e22e">appendChild</span>(<span style="color:#a6e22e">p2</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component"><code>createElement</code> 动态创建任意 DOM 节点</p>
+</li>
+<li>
+<p class="component-content component"><code>cloneNode</code> 复制现有的 DOM 节点，传入参数 true 会复制所有子节点</p>
+</li>
+<li>
+<p class="component-content component"><code>appendChild</code> 在末尾（结束标签前）插入节点</p>
+</li>
+</ul></div>
+<p class="component-content component">再来看另一种情形的代码演示：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">h3</span>&gt;插入节点&lt;/<span style="color:#f92672">h3</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">p</span>&gt;在现有 dom 结构基础上插入新的元素节点&lt;/<span style="color:#f92672">p</span>&gt;
+</span></span><span style="display:flex;"><span>	&lt;<span style="color:#f92672">hr</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;btn1&#34;</span>&gt;在任意节点前插入&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;HTML&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;CSS&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;JavaScript&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 点击按钮，在已有 DOM 中插入新节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">btn1</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.btn1&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">btn1</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 第 2 个 li 元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">relative</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;li:nth-child(2)&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 1. 动态创建新的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">li1</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">createElement</span>(<span style="color:#e6db74">&#39;li&#39;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">li1</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">color</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;red&#39;</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">li1</span>.<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Web APIs&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 复制现有的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">li2</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;li:first-child&#39;</span>).<span style="color:#a6e22e">cloneNode</span>(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">li2</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">color</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;blue&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 2. 在 relative 节点前插入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;ul&#39;</span>).<span style="color:#a6e22e">insertBefore</span>(<span style="color:#a6e22e">li1</span>, <span style="color:#a6e22e">relative</span>)
+</span></span><span style="display:flex;"><span>      document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;ul&#39;</span>).<span style="color:#a6e22e">insertBefore</span>(<span style="color:#a6e22e">li2</span>, <span style="color:#a6e22e">relative</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component"><code>createElement</code> 动态创建任意 DOM 节点</p>
+</li>
+<li>
+<p class="component-content component"><code>cloneNode</code> 复制现有的 DOM 节点，传入参数 true 会复制所有子节点</p>
+</li>
+<li>
+<p class="component-content component"><code>insertBefore</code> 在父节点中任意子节点之前插入新节点</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="删除节点" class="pagebody-header">
+    删除节点
+  </h3>
+</div><p class="component-content component">删除现有的 DOM 节点，也需要关注两个因素：首先由父节点删除子节点，其次是要删除哪个子节点。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 点击按钮删除节点 --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">button</span>&gt;删除节点&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;HTML&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;CSS&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;Web APIs&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">btn</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;button&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">btn</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 获取 ul 父节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">ul</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;ul&#39;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 待删除的子节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">lis</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelectorAll</span>(<span style="color:#e6db74">&#39;li&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 删除节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">ul</span>.<span style="color:#a6e22e">removeChild</span>(<span style="color:#a6e22e">lis</span>[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：<code>removeChild</code> 删除节点时一定是由父子关系。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="查找节点" class="pagebody-header">
+    查找节点
+  </h3>
+</div><p class="component-content component">DOM 树中的任意节点都不是孤立存在的，它们要么是父子关系，要么是兄弟关系，不仅如此，我们可以依据节点之间的关系查找节点。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="父子关系" class="pagebody-header">
+    父子关系
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;btn1&#34;</span>&gt;所有的子节点&lt;/<span style="color:#f92672">button</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- 获取 ul 的子节点 --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;HTML&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;CSS&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;JavaScript 基础&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;Web APIs&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">btn1</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;.btn1&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">btn1</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 父节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ul</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;ul&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 所有的子节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">ul</span>.<span style="color:#a6e22e">childNodes</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 只包含元素子节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">ul</span>.<span style="color:#a6e22e">children</span>)
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：</p>
+<div class="component-content component"><ul>
+<li><code>childNodes</code> 获取全部的子节点，回车换行会被认为是空白文本节点</li>
+<li><code>children</code> 只获取元素类型节点</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">table</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;60&#34;</span>&gt;序号&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;课程名&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;难度&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span> <span style="color:#a6e22e">width</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;80&#34;</span>&gt;操作&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;1&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">span</span>&gt;HTML&lt;/<span style="color:#f92672">span</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;初级&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">button</span>&gt;变色&lt;/<span style="color:#f92672">button</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;2&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">span</span>&gt;CSS&lt;/<span style="color:#f92672">span</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;初级&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">button</span>&gt;变色&lt;/<span style="color:#f92672">button</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;3&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">span</span>&gt;Web APIs&lt;/<span style="color:#f92672">span</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;中级&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>      &lt;<span style="color:#f92672">td</span>&gt;&lt;<span style="color:#f92672">button</span>&gt;变色&lt;/<span style="color:#f92672">button</span>&gt;&lt;/<span style="color:#f92672">td</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">table</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取所有 button 节点，并添加事件监听
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">buttons</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelectorAll</span>(<span style="color:#e6db74">&#39;table button&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">buttons</span>.<span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">buttons</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// console.log(this.parentNode); // 父节点 td
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// console.log(this.parentNode.parentNode); // 爷爷节点 tr
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">parentNode</span>.<span style="color:#a6e22e">parentNode</span>.<span style="color:#a6e22e">style</span>.<span style="color:#a6e22e">color</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;red&#39;</span>
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：<code>parentNode</code> 获取父节点，以相对位置查找节点，实际应用中非常灵活。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="兄弟关系" class="pagebody-header">
+    兄弟关系
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">body</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;HTML&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;CSS&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;JavaScript 基础&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">li</span>&gt;Web APIs&lt;/<span style="color:#f92672">li</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">ul</span>&gt;
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取所有 li 节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">lis</span> <span style="color:#f92672">=</span> document.<span style="color:#a6e22e">querySelectorAll</span>(<span style="color:#e6db74">&#39;ul li&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 对所有的 li 节点添加事件监听
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">lis</span>.<span style="color:#a6e22e">length</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">lis</span>[<span style="color:#a6e22e">i</span>].<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, <span style="color:#66d9ef">function</span> () {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 前一个节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">previousSibling</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 下一下节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">nextSibling</span>)
+</span></span><span style="display:flex;"><span>      })
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  &lt;/<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">body</span>&gt;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结论：</p>
+<div class="component-content component"><ul>
+<li><code>previousSibling</code> 获取前一个节点，以相对位置查找节点，实际应用中非常灵活。</li>
+<li><code>nextSibling</code> 获取后一个节点，以相对位置查找节点，实际应用中非常灵活。</li>
+</ul></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2022年8月10日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

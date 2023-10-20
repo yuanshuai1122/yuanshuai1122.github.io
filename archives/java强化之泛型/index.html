@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Java强化之泛型" />
+<meta property="og:description" content="Java强化之泛型 一、什么是泛型 1.背景： JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-03T18:17:37+00:00" />
+<meta property="article:modified_time" content="2021-12-03T18:17:37+00:00" />
+<title>Java强化之泛型</title>
+
+    <link rel="canonical" href="/archives/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">December 3, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Java强化之泛型</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="java强化之泛型" class="pagebody-header">
+    Java强化之泛型
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一什么是泛型" class="pagebody-header">
+    一、什么是泛型
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1背景" class="pagebody-header">
+    1.背景：
+  </h3>
+</div><p class="component-content component">JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型对象，而在使用该集合的过程中，需要程序员明确知道存储每个元素的数据类型，否则很容易引发ClassCastException异常。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2概念" class="pagebody-header">
+    2.概念：
+  </h3>
+</div><p class="component-content component">Java泛型（generics）是JDK5中引入的一个新特性，泛型提供了编译时类型安全监测机制，该机制允许我们在编译时检测到非法的类型数据结构。泛型的本质就是参数化类型，也就是所操作的数据类型被指定为一个参数。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3好处" class="pagebody-header">
+    3.好处：
+  </h3>
+</div><p class="component-content component">类型安全</p>
+<p class="component-content component">消除了强制类型的转换</p>
+
+<div class="component-content pagebody component">
+  <h3 id="4类型" class="pagebody-header">
+    4.类型：
+  </h3>
+</div><p class="component-content component">E - Element (在集合中使用，因为集合中存放的是元素)
+T - Type（表示Java 类，包括基本的类和我们自定义的类）
+K - Key（表示键，比如Map中的key）
+V - Value（表示值）
+N - Number（表示数值类型）
+？ - （表示不确定的java类型）
+S、U、V - 2nd、3rd、4th types</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二泛型类接口" class="pagebody-header">
+    二、泛型类、接口
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1泛型类" class="pagebody-header">
+    1.泛型类
+  </h3>
+</div><p class="component-content component">（1）使用语法
+类名&lt;具体的数据类型&gt; 对象名 = new 类名&lt;具体的数据类型&gt;();</p>
+<p class="component-content component">（2）Java1.7以后，后面的&lt;&gt;中的具体的数据类型可以省略不写
+类名&lt;具体的数据类型&gt; 对象名 = new 类名&lt;&gt;(); 菱形语法</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2泛型类注意事项" class="pagebody-header">
+    2.泛型类注意事项：
+  </h3>
+</div><p class="component-content component">泛型类，如果没有指定具体的数据类型，此时，操作类型是Object
+泛型的类型参数只能是类类型，不能是基本数据类型
+泛型类型在逻辑上可以看成是多个不同的类型，但实际上都是相同类型</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>有Generic<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>这个类
+</span></span><span style="display:flex;"><span>		 Generic<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> strGeneric <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;,</span>
+</span></span><span style="display:flex;"><span>		 Generic<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> intGeneric <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generic<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>		 intGeneric<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> strGeneric<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">()</span><span style="color:#960050;background-color:#1e0010">，</span>
+</span></span><span style="display:flex;"><span>		 结果是true</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">可以结合后面的泛型擦除理解，泛型擦除之后 Generic &lt; String &gt; 和Generic&lt; Integer &gt;都是Generic类。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3从泛型类派生子类" class="pagebody-header">
+    3.从泛型类派生子类
+  </h3>
+</div><p class="component-content component">子类也是泛型类，子类和父类的泛型类型要一致
+<code>class ChildGeneric&lt;T&gt; extends Generic&lt;T&gt;</code></p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">//父类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> E value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>E value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 泛型类派生子类，子类也是泛型类，那么子类的泛型标识要和父类一致。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @param &lt;T&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChildFirst</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Parent<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>子类不是泛型类，父类要明确泛型的数据类型
+<code>class ChildGeneric extends Generic&lt;String&gt;</code></li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 泛型类派生子类，如果子类不是泛型类，那么父类要明确数据类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChildSecond</span> <span style="color:#66d9ef">extends</span> Parent<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Integer <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getValue</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>Integer value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setValue</span><span style="color:#f92672">(</span>value<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="4泛型接口" class="pagebody-header">
+    4.泛型接口
+  </h3>
+</div><p class="component-content component"><strong>泛型接口的定义语法：</strong></p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">接口名称</span> <span style="color:#f92672">&lt;</span>泛型标识<span style="color:#960050;background-color:#1e0010">，</span>泛型标识<span style="color:#960050;background-color:#1e0010">，…</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	泛型标识 <span style="color:#a6e22e">方法名</span><span style="color:#f92672">();</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">.....</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="5泛型接口的使用" class="pagebody-header">
+    5.泛型接口的使用
+  </h3>
+</div><div class="component-content component"><ul>
+<li>实现类也是泛型类，实现类和接口的泛型类型要一致</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 泛型接口
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @param &lt;T&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Generator</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    T <span style="color:#a6e22e">getKey</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 泛型接口的实现类，是一个泛型类，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 那么要保证实现接口的泛型类泛型标识包含泛型接口的泛型标识
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @param &lt;T&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @param &lt;E&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pair</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Generator<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> T key<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> E value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Pair</span><span style="color:#f92672">(</span>T key<span style="color:#f92672">,</span> E value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> key<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">value</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">getKey</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> key<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">getValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>实现类不是泛型类，接口要明确数据类型</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 实现泛型接口的类，不是泛型类，需要明确实现泛型接口的数据类型。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Apple</span> <span style="color:#66d9ef">implements</span> Generator<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getKey</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;hello generic&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="三泛型方法" class="pagebody-header">
+    三、泛型方法
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1用法" class="pagebody-header">
+    1.用法
+  </h3>
+</div><p class="component-content component">泛型方法是在调用方法的时候指明泛型的具体类型。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2语法" class="pagebody-header">
+    2.语法:
+  </h3>
+</div><p class="component-content component">修饰符 &lt;T，E, &hellip;&gt; 返回值类型 方法名(形参列表) { 方法体&hellip; }</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3说明" class="pagebody-header">
+    3.说明：
+  </h3>
+</div><p class="component-content component">public与返回值中间非常重要，可以理解为声明此方法为泛型方法。
+只有声明了的方法才是泛型方法，泛型类中的使用了泛型的成员方法并不是泛型方法。
+&lt; T &gt;表明该方法将使用泛型类型T，此时才可以在方法中使用泛型类型T。
+与泛型类的定义一样，此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型。
+4.泛型方法与可变参数</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">(</span>E<span style="color:#f92672">...</span> e<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>E e1 <span style="color:#f92672">:</span> e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="5泛型方法总结" class="pagebody-header">
+    5.泛型方法总结
+  </h3>
+</div><div class="component-content component"><ul>
+<li>泛型方法能使方法独立于类而产生变化</li>
+<li>如果static方法要使用泛型能力，就必须使其成为泛型方法</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 静态的泛型方法，采用多个泛型类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param t
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param e
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param k
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param &lt;T&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param &lt;E&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param &lt;K&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">,</span>E<span style="color:#f92672">,</span>K<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">printType</span><span style="color:#f92672">(</span>T t<span style="color:#f92672">,</span> E e<span style="color:#f92672">,</span> K k<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>t <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\t&#34;</span> <span style="color:#f92672">+</span> t<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getSimpleName</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>e <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\t&#34;</span> <span style="color:#f92672">+</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getSimpleName</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>k <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\t&#34;</span> <span style="color:#f92672">+</span> k<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getSimpleName</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="四类型通配符" class="pagebody-header">
+    四、类型通配符
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1什么是类型通配符" class="pagebody-header">
+    1.什么是类型通配符
+  </h3>
+</div><p class="component-content component">类型通配符一般是使用&quot;?&ldquo;代替具体的类型实参。
+所以，类型通配符是类型实参，而不是类型形参。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2类型通配符的上限" class="pagebody-header">
+    2.类型通配符的上限
+  </h3>
+</div><p class="component-content component">语法：
+类/接口&lt;? extends 实参类型&gt;
+要求该泛型的类型，只能是实参类型，或实参类型的子类类型。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3类型通配符的下限" class="pagebody-header">
+    3.类型通配符的下限
+  </h3>
+</div><p class="component-content component">语法：
+类/接口&lt;? super 实参类型&gt;
+要求该泛型的类型，只能是实参类型，或实参类型的父类类型。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="五类型擦除" class="pagebody-header">
+    五、类型擦除
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1概念" class="pagebody-header">
+    1.概念
+  </h3>
+</div><p class="component-content component">泛型是Java 1.5版本才引进的概念，在这之前是没有泛型的，但是泛型代码能够很好地和之前版本的代码兼容。那是因为，泛型信息只存在于代码编译阶段，在进入JVM之前，与泛型相关的信息会被擦除掉，我们称之为–类型擦除。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2分类" class="pagebody-header">
+    2.分类：
+  </h3>
+</div><p class="component-content component">无限制类型擦除</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a9628ed38a0d73bf1ce7fb13f07eb39e" id="lhta9628ed38a0d73bf1ce7fb13f07eb39e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>有限制类型擦除</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7ec9b3c811c29cf59b3b0504d25f64da" id="lht7ec9b3c811c29cf59b3b0504d25f64da">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>桥接方法</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-f2e783fb84c815019cdf516f4eb6923e" id="lhtf2e783fb84c815019cdf516f4eb6923e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="六泛型与数组" class="pagebody-header">
+    六、泛型与数组
+  </h2>
+</div><p class="component-content component"><strong>泛型数组的创建</strong></p>
+<div class="component-content component"><ul>
+<li>可以声明带泛型的数组引用，但是不能直接创建带泛型的数组对象</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;[]</span> listArr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">5</span><span style="color:#f92672">&gt;();</span> <span style="color:#75715e">//会报错
+</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">会报错</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>ArrayList<span style="color:#f92672">[]</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">[</span><span style="color:#ae81ff">5</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;[]</span> listArr <span style="color:#f92672">=</span> list<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>或者
+</span></span><span style="display:flex;"><span>ArrayList<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;[]</span> listArr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">[</span><span style="color:#ae81ff">5</span><span style="color:#f92672">];</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">不会报错</p>
+<div class="component-content component"><ul>
+<li>可以通过java.lang.reflect.Array的newInstance(Class,int)创建T[]数组</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fruit</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> T<span style="color:#f92672">[]</span> array<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Fruit</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> clz<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> length<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//通过Array.newInstance创建泛型数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        array <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>T<span style="color:#f92672">[])</span>Array<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">(</span>clz<span style="color:#f92672">,</span> length<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="七泛型和反射" class="pagebody-header">
+    七、泛型和反射
+  </h2>
+</div><div class="component-content component"><ul>
+<li>反射常用的泛型类
+Class
+Constructor</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 泛型与反射
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test11</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	     Class<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> personClass <span style="color:#f92672">=</span> Person<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	     Constructor<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> constructor <span style="color:#f92672">=</span> personClass<span style="color:#f92672">.</span><span style="color:#a6e22e">getConstructor</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	     Person person <span style="color:#f92672">=</span> constructor<span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	 <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  December 3, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

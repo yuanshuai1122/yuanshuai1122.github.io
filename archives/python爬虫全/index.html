@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Python爬虫（全）" />
+<meta property="og:description" content="（编码encode()） pat=r&quot;(.*?)&quot; data=re.findall(pat,reponse) print(data[0]) ```python #创建自定义opener from urllib import request #构建HTTP处理器对象（专门处理HTTP请求的对象） http_hander=request.HTTPHandler() #创建自定义open" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/python%E7%88%AC%E8%99%AB%E5%85%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:52:17+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:52:17+00:00" />
+<title>Python爬虫（全）</title>
+
+    <link rel="canonical" href="/archives/python%E7%88%AC%E8%99%AB%E5%85%A8/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Python
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 26, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Python爬虫（全）</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/python" class="tag">
+                    Python
+                  </a>
+                
+                  
+                  <a href="/tags/%E7%88%AC%E8%99%AB" class="tag">
+                    爬虫
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">（编码encode()）</p>
+<p class="component-content component">pat=r&quot;<!-- raw HTML omitted -->(.*?)<!-- raw HTML omitted -->&quot;</p>
+<p class="component-content component">data=re.findall(pat,reponse)</p>
+<p class="component-content component">print(data[0])</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">
+```python
+#创建自定义opener
+
+from urllib import request
+
+#构建HTTP处理器对象（专门处理HTTP请求的对象）
+http_hander=request.HTTPHandler()
+
+#创建自定义opener
+opener=request.build_opener(http_hander)
+
+#创建自定义请求对象
+req=request.Request(&#34;http://www.baidu.com&#34;)
+
+#发送请求，获取响应
+#reponse=opener.open(req).read()
+
+#把自定义opener设置为全局，这样用urlopen发送的请求也会使用自定义的opener;
+request.install_opener(opener)
+
+reponse=request.urlopen(req).read()
+
+
+print(reponse)</code></pre>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#反爬虫2：判断请求来源的ip地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#措施：使用代理IP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>proxylist<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>	{<span style="color:#e6db74">&#34;http&#34;</span>:<span style="color:#e6db74">&#34;101.248.64.82:80&#34;</span>}
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>proxy<span style="color:#f92672">=</span>random<span style="color:#f92672">.</span>choice(proxylist)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构建代理处理器对象</span>
+</span></span><span style="display:flex;"><span>proxyHandler<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>ProxyHandler(proxy)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建自定义opener</span>
+</span></span><span style="display:flex;"><span>opener<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>build_opener(proxyHandler)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建请求对象</span>
+</span></span><span style="display:flex;"><span>req<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>Request(<span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>res<span style="color:#f92672">=</span>opener<span style="color:#f92672">.</span>open(req)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(res<span style="color:#f92672">.</span>read())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#处理get请求</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#http://www.baidu.com/s?wd=%E5%8C%97%E4%BA%AC #url编码</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wd<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;wd&#34;</span>:<span style="color:#e6db74">&#34;北京&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.baidu.com/s?&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造url编码</span>
+</span></span><span style="display:flex;"><span>wdd<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlencode(wd)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span>url<span style="color:#f92672">+</span>wdd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>req<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>Request(url)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>reponse<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(reponse)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 实战：贴吧爬虫</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>header<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>:<span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; U; An</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">droid 8.1.0; zh-cn; BLA-AL00 Build/HUAW</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">EIBLA-AL00) AppleWebKit/537.36 (KHTML, l</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">ike Gecko) Version/4.0 Chrome/57.0.2987.13</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">2 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#url规律</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=0  #第一页 （1-1）*50</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=50 #第二页 （2-1）*50</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=100 #第三页 （3-1）*50</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=150 #第四页（4-1）*50</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for i in range(1,4):</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	print(&#34;http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=&#34;+str((i-1)*50))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">loadpage</span>(fullurl,filename):
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;正在下载：&#34;</span>,filename)
+</span></span><span style="display:flex;"><span>	req<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>Request(fullurl,headers<span style="color:#f92672">=</span>header)
+</span></span><span style="display:flex;"><span>	resp<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> resp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">writepage</span>(html,filename):
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;正在保存：&#34;</span>,filename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">with</span> open(filename,<span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>		f<span style="color:#f92672">.</span>write(html)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;---------------------------&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造url</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tiebaSpider</span>(url,begin,end):
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> page <span style="color:#f92672">in</span> range(begin,end<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>		pn<span style="color:#f92672">=</span>(page<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>		fullurl<span style="color:#f92672">=</span>url<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&amp;pn=&#34;</span><span style="color:#f92672">+</span>str(pn) <span style="color:#75715e">#每次请求的完整url</span>
+</span></span><span style="display:flex;"><span>		filename<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;c:/第&#34;</span><span style="color:#f92672">+</span>str(page)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;页.html&#34;</span> <span style="color:#75715e">#每次请求后保存的文件名</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		html<span style="color:#f92672">=</span>loadpage(fullurl,filename) <span style="color:#75715e">#调用爬虫，爬取网页</span>
+</span></span><span style="display:flex;"><span>		writepage(html,filename) <span style="color:#75715e">#把获取到的网页信息写入本地</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	kw<span style="color:#f92672">=</span>input(<span style="color:#e6db74">&#34;请输入贴吧名：&#34;</span>)
+</span></span><span style="display:flex;"><span>	begin<span style="color:#f92672">=</span>int(input(<span style="color:#e6db74">&#34;请输入起始页：&#34;</span>))
+</span></span><span style="display:flex;"><span>	end<span style="color:#f92672">=</span>int(input(<span style="color:#e6db74">&#34;请输入结束页：&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://tieba.baidu.com/f?&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	key<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlencode({<span style="color:#e6db74">&#34;kw&#34;</span>:kw})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	url<span style="color:#f92672">=</span>url<span style="color:#f92672">+</span>key
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	tiebaSpider(url,begin,end)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">10</span>)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 实战：贴吧爬虫</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> random
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#反爬虫1 ： 伪装浏览器的爬虫</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>agent1<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>agent2<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; Android 8.1; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.143 Crosswalk/24.53.595.0 XWEB/358 MMWEBSDK/23 Mobile Safari/537.36 MicroMessenger/6.7.2.1340(0x2607023A) NetType/4G Language/zh_CN&#34;</span>
+</span></span><span style="display:flex;"><span>agent3<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; U; Android 8.0.0; zh-CN; MHA-AL00 Build/HUAWEIMHA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.1.4.994 Mobile Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>agent4<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>agent5<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>list1<span style="color:#f92672">=</span>[agent1,agent2,agent3,agent4,agent5]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>agent<span style="color:#f92672">=</span>random<span style="color:#f92672">.</span>choice(list1)
+</span></span><span style="display:flex;"><span>print(agent)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 反爬虫2：判断请求来源的ip地址</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 措施：使用代理IP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># proxylist = [</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	#{&#34;http&#34;: &#34;101.248.64.82:80&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	#{&#34;http&#34;: &#34;49.89.87.40:3000&#34;},</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	#{&#34;http&#34;: &#34;36.249.109.42:9999&#34;},</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	#{&#34;http&#34;: &#34;58.254.220.116:53579&#34;},</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	#{&#34;http&#34;: &#34;183.166.136.49:8888&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># proxy = random.choice(proxylist)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(proxy)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># # 构建代理处理器对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># proxyHandler = request.ProxyHandler(proxy)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># # 创建自定义opener</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># opener = request.build_opener(proxyHandler)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #把自定义opener设置为全局，这样用urlopen发送的请求也会使用自定义的opener;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># request.install_opener(opener)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>header<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>:agent
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#key=&#34;自学&#34;</span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;请输入要翻译的文字：&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#post请求需要提交的参数</span>
+</span></span><span style="display:flex;"><span>formdata<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;i&#34;</span>:key,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;from&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;to&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;smartresult&#34;</span>:<span style="color:#e6db74">&#34;dict&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;client&#34;</span>:<span style="color:#e6db74">&#34;fanyideskweb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;salt&#34;</span>:<span style="color:#e6db74">&#34;15503049709404&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sign&#34;</span>:<span style="color:#e6db74">&#34;3da914b136a37f75501f7f31b11e75fb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;ts&#34;</span>:<span style="color:#e6db74">&#34;1550304970940&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;bv&#34;</span>:<span style="color:#e6db74">&#34;ab57a166e6a56368c9f95952de6192b5&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;doctype&#34;</span>:<span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;keyfrom&#34;</span>:<span style="color:#e6db74">&#34;fanyi.web&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;action&#34;</span>:<span style="color:#e6db74">&#34;FY_BY_REALTIME&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;typoResult&#34;</span>:<span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#转码</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlencode(formdata)<span style="color:#f92672">.</span>encode(encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>req<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>Request(url,data<span style="color:#f92672">=</span>data,headers<span style="color:#f92672">=</span>header)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resp<span style="color:#f92672">=</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#正则表达式 提取&#34;tgt&#34;:&#34;和&#34;}]]中间的任意内容</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;tgt&#34;:&#34;(.*?)&#34;}]]&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat,resp)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result[<span style="color:#ae81ff">0</span>])</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#异常处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>list1<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http://www.jiswiswissnduehduehd.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> url <span style="color:#f92672">in</span> list1:
+</span></span><span style="display:flex;"><span>	i<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>		request<span style="color:#f92672">.</span>urlopen(url)
+</span></span><span style="display:flex;"><span>		print(<span style="color:#e6db74">&#34;第&#34;</span>,i,<span style="color:#e6db74">&#34;次请求完成&#34;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>		print(e)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Cookie</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib <span style="color:#f92672">import</span> request
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;http://i.baidu.com/&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;User-Agent&#34;</span> : <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) App</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">    leWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;</span>,
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Cookie&#34;</span>:<span style="color:#e6db74">&#34;BAIDUID=F1676F6D91D12CF987A81C35B5683EF5:FG=1; PSTM=1543068715; BIDUPSID=F1676F6D91D12CF987A81C35B5683EF5; BDUSS=k4VllQdW9-ZDR6fmo1LWxIeEo5LWd1OTMxLUhCQkY5eUZlZXY0OEtKSzdVSEZjQVFBQUFBJCQAAAAAAAAAAAEAAABATb2F1~OwttK76ti0s8zs0cQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALvDSVy7w0lca3; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; PHPSESSID=e1sso19h9qnjugdq974cpofk50; __guid=62687476.678578182179940700.1550386788528.5847; Hm_lvt_4010fd5075fcfe46a16ec4cb65e02f04=1550386790; monitor_count=4; Hm_lpvt_4010fd5075fcfe46a16ec4cb65e02f04=1550387997&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>req <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>Request(url, headers <span style="color:#f92672">=</span> headers)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>urlopen(req)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(response<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="二requests" class="pagebody-header">
+    二、requests
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">pleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Sa</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">fari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wd<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;wd&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com/s?&#34;</span>,params<span style="color:#f92672">=</span>wd,headers<span style="color:#f92672">=</span>headers)  <span style="color:#75715e">#get请求的参数为params</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>text <span style="color:#75715e">#返回一个字符串形式的数据</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>content <span style="color:#75715e">#返回一个二进制形式的数据</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(data2<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>header<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>:<span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; U; An</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">droid 8.1.0; zh-cn; BLA-AL00 Build/HUAW</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">EIBLA-AL00) AppleWebKit/537.36 (KHTML, l</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">ike Gecko) Version/4.0 Chrome/57.0.2987.13</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">2 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#key=&#34;自学&#34;</span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;请输入要翻译的文字：&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#post请求需要提交的参数</span>
+</span></span><span style="display:flex;"><span>formdata<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;i&#34;</span>:key,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;from&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;to&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;smartresult&#34;</span>:<span style="color:#e6db74">&#34;dict&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;client&#34;</span>:<span style="color:#e6db74">&#34;fanyideskweb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;salt&#34;</span>:<span style="color:#e6db74">&#34;15503049709404&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sign&#34;</span>:<span style="color:#e6db74">&#34;3da914b136a37f75501f7f31b11e75fb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;ts&#34;</span>:<span style="color:#e6db74">&#34;1550304970940&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;bv&#34;</span>:<span style="color:#e6db74">&#34;ab57a166e6a56368c9f95952de6192b5&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;doctype&#34;</span>:<span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;keyfrom&#34;</span>:<span style="color:#e6db74">&#34;fanyi.web&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;action&#34;</span>:<span style="color:#e6db74">&#34;FY_BY_REALTIME&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;typoResult&#34;</span>:<span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>post(url,headers<span style="color:#f92672">=</span>header,data<span style="color:#f92672">=</span>formdata)   <span style="color:#75715e">#post请求的参数为data</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#正则表达式 提取&#34;tgt&#34;:&#34;和&#34;}]]中间的任意内容</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;tgt&#34;:&#34;(.*?)&#34;}]]&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat,response<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#设置ip地址</span>
+</span></span><span style="display:flex;"><span>proxy<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http&#34;</span>:<span style="color:#e6db74">&#34;http://101.248.64.72:80&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http&#34;</span>:<span style="color:#e6db74">&#34;http://101.248.64.68:80&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;https&#34;</span>:<span style="color:#e6db74">&#34;https://101.248.64.72:80&#34;</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,proxies<span style="color:#f92672">=</span>proxy)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(response<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#1.获取返回的cookiejar对象</span>
+</span></span><span style="display:flex;"><span>cookiejar<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>cookies
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#2.将cookiejar转换成字典</span>
+</span></span><span style="display:flex;"><span>cookiedict<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>dict_from_cookiejar(cookiejar)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#print(cookiejar)</span>
+</span></span><span style="display:flex;"><span>print(cookiedict)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#使用session实现登陆</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># import requests</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># headers = {&#34;User-Agent&#34;: &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #创建session对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ses=requests.session()</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #构造登陆需要的参数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data={&#34;email&#34;:&#34;3254272716@qq.com&#34;,&#34;password&#34;:&#34;123321a&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #通过传递用户名密码得到cookie信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ses.post(&#34;http://www.renren.com/PLogin.do&#34;,data=data)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #请求需要的页面</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># response=ses.get(&#34;http://www.renren.com/880151247/profile&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(response.text)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建session对象</span>
+</span></span><span style="display:flex;"><span>ses<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>session()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造登陆需要的参数</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;email&#34;</span>:<span style="color:#e6db74">&#34;18232336174@163.com&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#e6db74">&#34;18232336174...&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过传递用户名密码得到cookie信息</span>
+</span></span><span style="display:flex;"><span>ses<span style="color:#f92672">.</span>post(<span style="color:#e6db74">&#34;http://mail.163.com&#34;</span>,data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#请求需要的页面</span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>ses<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://mail.163.com/js6/main.jsp?sid=KAOGBblSlxmIGlAAmDSSXTjrBseNxEhE&amp;df=mail163_letter#module=contact.ContactModule%7C%7B%7D&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(response<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re   <span style="color:#75715e"># python 的正则库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests     <span style="color:#75715e"># python 的requests库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># page=int(input(&#34;请输入您要爬取的页数：&#34;))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>songID<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>songName<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>page_size <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;请问要爬取第几页呢：&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,page_size):
+</span></span><span style="display:flex;"><span>	url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.htqyy.com/top/musicList/hot?pageIndex=&#34;</span><span style="color:#f92672">+</span>str(i)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&amp;pageSize=20&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#$url = &#34;http://www.htqyy.com/top/hot&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>header <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept&#34;</span>: <span style="color:#e6db74">&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip, deflate&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept-Language&#34;</span>: <span style="color:#e6db74">&#34;zh-CN,zh;q=0.9&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Cache-Control&#34;</span>: <span style="color:#e6db74">&#34;max-age=0&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Connection&#34;</span>: <span style="color:#e6db74">&#34;keep-alive&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#&#34;Cookie&#34;:&#34; __cfduid=d54ff2470d42e999d942b3b64cc266a9f1594821751; BAIDU_SSP_lcr=https://www.baidu.com/link?url=zPqjAbMqG9O52ECGWPxIoo5nIDVDpw6DO0i0JHZqbgy&amp;wd=&amp;eqid=e3b52e830007c46a000000035f0f0c70; blk=0; Hm_lvt_74e11efe27096f6ef1745cd53f168168=1594821752; isPlay=0; jploop=false; Hm_lpvt_74e11efe27096f6ef1745cd53f168168=1594828497&#34;,</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;www.htqyy.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Referer&#34;</span>: <span style="color:#e6db74">&#34;http://www.htqyy.com/top/hot&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Upgrade-Insecure-Requests&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取音乐榜单的网页信息</span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url,headers <span style="color:#f92672">=</span> header)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;title=&#34;(.*?)&#34; sid&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;sid=&#34;(.*?)&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>idlist<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat2,strr)
+</span></span><span style="display:flex;"><span>titlelist<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat1,strr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>songID<span style="color:#f92672">.</span>extend(idlist)
+</span></span><span style="display:flex;"><span>songName<span style="color:#f92672">.</span>extend(titlelist)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(songID)):
+</span></span><span style="display:flex;"><span>	songurl<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://f2.htqyy.com/play8/&#34;</span><span style="color:#f92672">+</span>str(songID[i])<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/mp3/7&#34;</span>
+</span></span><span style="display:flex;"><span>	songname<span style="color:#f92672">=</span>songName[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	data<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(songurl)<span style="color:#f92672">.</span>content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;正在下载第&#34;</span>,i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;首,&#34;&#34;歌曲名为：&#34;</span>,songName[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;/Users/yuanshuai/Downloads/music/</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">.mp3&#34;</span><span style="color:#f92672">.</span>format(songname),<span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>		f<span style="color:#f92672">.</span>write(data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0.5</span>)</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="三正则表达式" class="pagebody-header">
+    三、正则表达式
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#原子：正则表达式中实现匹配的基本单位</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#元字符：正则表达式中具有特殊含义的字符</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#以普通字符作为原子（匹配一个普通字符）</span>
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;湖南湖北广东广西&#34;</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;湖北&#34;</span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>search(pat,a)
+</span></span><span style="display:flex;"><span>print(result)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#匹配通用字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\w 任意字母/数字/下划线 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\W 和小写w相反 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\d 十进制数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\D 除了十进制数以外的值</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\s 空白字符 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#\S 非空白字符 </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>b<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;136892763900&#34;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1\d\d\d\d\d\d\d\d\d\d&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat2,b))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;@@@@@@@@@@##@!_tdyuhdihdiw&#34;</span>
+</span></span><span style="display:flex;"><span>pat3<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\W\w\w&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat3,c))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#匹配数字、英文、中文</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数字 [0-9]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 英文 [a-z][A-Z]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 中文 [\u4e00-\u9fa5]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>d<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;!@#$@#@##$张三%$^%$%#@$boy#@%##$%$$@#@#23@#@#@#@##$%$%$&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[\u4e00-\u9fa5][\u4e00-\u9fa5]&#34;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[a-z][a-z][a-z]&#34;</span>
+</span></span><span style="display:flex;"><span>pat3<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[0-9][0-9]&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>search(pat1,d)
+</span></span><span style="display:flex;"><span>result2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>search(pat2,d)
+</span></span><span style="display:flex;"><span>result3<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>search(pat3,d)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result1,result2,result3)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#原子表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#定义一组平等的原子</span>
+</span></span><span style="display:flex;"><span>b<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;18689276390&#34;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;1[3578]\d\d\d\d\d\d\d\d\d&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat2,b))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>c<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nsiwsoiwpythonjsoksosj&#34;</span>
+</span></span><span style="display:flex;"><span>pat3<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;py[abcdt]hon&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat2,b))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#元字符--正则表达式中具有特殊含义的字符</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># . 匹配任意字符 \n除外</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ^ 匹配字符串开始位置  ^136</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># $ 匹配字符串中结束的位置 6666$</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># * 重复0次1次多次前面的原子 \d*</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ? 重复一次或者0次前面的原子 \d?</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># + 重复一次或多次前面的原子  \d+</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>d<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;135738484941519874888813774748687&#34;</span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;...&#34;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;^135\d\d\d\d\d\d\d\d&#34;</span>
+</span></span><span style="display:flex;"><span>pat3<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;.*8687$&#34;</span>
+</span></span><span style="display:flex;"><span>pat4<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;8*&#34;</span>
+</span></span><span style="display:flex;"><span>pat5<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;8+&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat5,d))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#匹配固定次数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#{n}前面的原子出现了n次</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#{n,}至少出现n次</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#{n,m}出现次数介于n-m之间</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;234ded65de45667888991jisw&#34;</span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d{8,10}&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat1,a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #多个表达式 | </span>
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;13699998888&#34;</span>
+</span></span><span style="display:flex;"><span>b<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;027-1234567&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;1[3578]\d</span><span style="color:#e6db74">{9}</span><span style="color:#e6db74">|\d</span><span style="color:#e6db74">{3}</span><span style="color:#e6db74">-\d</span><span style="color:#e6db74">{7}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat1,a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#分组 ()</span>
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;jiwdjeodjo@$#python%$$^^&amp;*&amp;^%$java#@!!!!!!!!!!!!!!13688889999!!!!!!!!!!!!!!!!!#@#$#$&#34;</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;(python).{0,}(java).{0,}(1[3578]\d</span><span style="color:#e6db74">{9}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat,a)<span style="color:#f92672">.</span>group(<span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;jiwdjeodjo@$#python%$$^^&amp;*&amp;^%$java#@!!!!!!!!!!!!!!aaa我要自学网bbb!!!!!!!!!!!!!!!!!#@#$#$&#34;</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;aaa(.*?)bbb&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>findall(pat,a))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#贪婪模式和非贪婪模式</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#贪婪模式：在整个表达式匹配成功的前提下，尽可能多的匹配；</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#非贪婪模式：在整个表达式匹配成功的前提下，尽可能少的匹配 ( ? )；</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Python里默认是贪婪的。</span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;aa&lt;div&gt;test1&lt;/div&gt;bb&lt;div&gt;test2&lt;/div&gt;cc&#39;</span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;&lt;div&gt;.*&lt;/div&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>search(pat1,strr)) <span style="color:#75715e">#贪婪模式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;aa&lt;div&gt;test1&lt;/div&gt;bb&lt;div&gt;test2&lt;/div&gt;cc&#39;</span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;&lt;div&gt;.*?&lt;/div&gt;&#34;</span>
+</span></span><span style="display:flex;"><span>print(re<span style="color:#f92672">.</span>findall(pat1,strr)) <span style="color:#75715e">#非贪婪模式</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#compile函数---将正则表达式转换成内部格式，提高执行效率</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;PYTHON666Java&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;Python&#34;</span>,re<span style="color:#f92672">.</span>I) <span style="color:#75715e">#模式修正符：忽略大小写</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(pat<span style="color:#f92672">.</span>search(strr))</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#match函数和search函数</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># match函数--匹配开头</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># search函数--匹配任意位置</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#这两个函数都是一次匹配，匹配到一次就不再往后继续匹配了</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;javapythonjavahtmlpythonjs&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;python&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(pat<span style="color:#f92672">.</span>search(strr)<span style="color:#f92672">.</span>group())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#findall()   查找所有匹配的内容，装到列表中</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#finditer()  查找所有匹配的内容，装到迭代器中</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello--------hello-----------</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">---------hello-----------------</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">---------hello--hello----------------</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">----------hello---------hello----hello----------&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;hello&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#print(pat.findall(strr))</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>pat<span style="color:#f92672">.</span>finditer(strr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>list1<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> data:
+</span></span><span style="display:flex;"><span>	list1<span style="color:#f92672">.</span>append(i<span style="color:#f92672">.</span>group())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(list1)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#split()  按照能够匹配的子串将字符串分割后返回列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#sub()    sub方法 用于替换</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr1<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;张三,,,李四,,,,,,,,,王五,,,,,,,,赵六&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;,+&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result1<span style="color:#f92672">=</span>pat1<span style="color:#f92672">.</span>split(strr1)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr2<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello 123,hello 456!&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d+&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result2<span style="color:#f92672">=</span>pat2<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">&#34;666&#34;</span>,strr2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result2)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">pleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Sa</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">fari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://changyongdianhuahaoma.51240.com/&#34;</span>,headers<span style="color:#f92672">=</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pattern1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat1)
+</span></span><span style="display:flex;"><span>pattern2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data1<span style="color:#f92672">=</span>pattern1<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>pattern2<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resultlist<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(data1)):
+</span></span><span style="display:flex;"><span>	resultlist<span style="color:#f92672">.</span>append(data1[i]<span style="color:#f92672">+</span>data2[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(resultlist)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib.request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 全局取消证书验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> ssl
+</span></span><span style="display:flex;"><span>ssl<span style="color:#f92672">.</span>_create_default_https_context <span style="color:#f92672">=</span> ssl<span style="color:#f92672">.</span>_create_unverified_context
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span> : <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>page_num <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;请问要爬取第几页呢：&#34;</span>))
+</span></span><span style="display:flex;"><span>page<span style="color:#f92672">=</span>str((page_num<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://movie.douban.com/j/chart/top_list?type=11&amp;interval_id=100%3A90&amp;action=&amp;start=&#34;</span><span style="color:#f92672">+</span>page<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&amp;limit=20&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>req<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>Request(url,headers<span style="color:#f92672">=</span>headers)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;rating&#34;:\[&#34;(.*?)&#34;,&#34;\d+&#34;\]&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;title&#34;:&#34;(.*?)&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pattern1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat1,re<span style="color:#f92672">.</span>I)
+</span></span><span style="display:flex;"><span>pattern2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat2,re<span style="color:#f92672">.</span>I)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data1<span style="color:#f92672">=</span>pattern1<span style="color:#f92672">.</span>findall(data)
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>pattern2<span style="color:#f92672">.</span>findall(data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(len(data1)):
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;排名：&#34;</span>,x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;电影名：&#34;</span>,data2[x],<span style="color:#e6db74">&#34;豆瓣评分:&#34;</span>,data1[x])</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="四xpath表达式" class="pagebody-header">
+    四、xpath表达式
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#xpath表达式</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#有同学说，我正则用的不好，处理HTML文档很累，有没有其他的方法？</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#有！那就是XPath，我们可以先将 HTML文件 转换成 XML文档，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#然后用 XPath 查找 HTML 节点或元素。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#我们需要安装lxml模块来支持xpath的操作。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#使用 pip 安装：pip install lxml</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#解析字符串形式html</span>
+</span></span><span style="display:flex;"><span>text <span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &lt;ul&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         &lt;li class=&#34;item-0&#34;&gt;&lt;a href=&#34;link1.html&#34;&gt;张三&lt;/a&gt;&lt;/li&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         &lt;li class=&#34;item-1&#34;&gt;&lt;a href=&#34;link2.html&#34;&gt;李四&lt;/a&gt;&lt;/li&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         &lt;li class=&#34;item-inactive&#34;&gt;&lt;a href=&#34;link3.html&#34;&gt;王五&lt;/a&gt;&lt;/li&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         &lt;li class=&#34;item-1&#34;&gt;&lt;a href=&#34;link4.html&#34;&gt;赵六&lt;/a&gt;&lt;/li&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">         &lt;li class=&#34;item-0&#34;&gt;&lt;a href=&#34;link5.html&#34;&gt;老七&lt;/a&gt; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">     &lt;/ul&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"> &lt;/div&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#etree.HTML()将字符串解析成了特殊的html对象</span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#将html对象转成字符串</span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>tostring(html,encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>)<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#解析本地html</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#爬虫中网页处理方式：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#1，在爬虫中，数据获取和数据清洗一体，HTML()</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#2、数据获取和数据清洗分开，parse()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取本地html文档</span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;C:\file\hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>tostring(html,encoding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf-8&#34;</span>)<span style="color:#f92672">.</span>decode()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#获取一类标签</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;C:\file\hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//a&#34;</span>) <span style="color:#75715e">#获取所有span标签的信息</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>text)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#获取指定属性的标签</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>html <span style="color:#f92672">=</span> etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">&#34;c:/file/hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># result1=html.xpath(&#34;//li[@class=&#39;item-88&#39;]&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result2<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//li/a[@href=&#39;link2.html&#39;]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result2)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取标签的属性</span>
+</span></span><span style="display:flex;"><span>html <span style="color:#f92672">=</span> etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">&#34;c:/file/hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># result1=html.xpath(&#34;//li/@class&#34;)</span>
+</span></span><span style="display:flex;"><span>result2<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//li/a/@href&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> result2:
+</span></span><span style="display:flex;"><span>	requests<span style="color:#f92672">.</span>get(i)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#获取子标签</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>html <span style="color:#f92672">=</span> etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">&#34;c:/file/hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result1<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//li/a&#34;</span>) <span style="color:#75715e">#获取下一级子标签</span>
+</span></span><span style="display:flex;"><span>result2<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//li//span&#34;</span>) <span style="color:#75715e">#获取所有符合条件子标签</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#print(result2[1].text)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取li标签下a标签里所有的class</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result3<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//li/a//@class&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result3)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#获取标签名和内容</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>html <span style="color:#f92672">=</span> etree<span style="color:#f92672">.</span>parse(<span style="color:#e6db74">&#34;c:/file/hello.html&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取倒数第二个li元素下a的内容</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#result1=html.xpath(&#34;//li[last()-1]/a&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># result2=html.xpath(&#34;//li/a&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(result1[-2].text) #.text获取标签内容</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取 class 值为 bold 的标签名</span>
+</span></span><span style="display:flex;"><span>result3<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//*[@class=&#39;bold&#39;]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result3[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>tag) <span style="color:#75715e">#.tag表示获取标签名</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#爬取糗事百科段子</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://www.qiushibaike.com/&#39;</span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#39;User-Agent&#39;</span>: <span style="color:#e6db74">&#39;Mozilla/5.0 (Windows NT 10.0; WOW64)</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">	AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">	.2743.116 Safari/537.36&#39;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#39;Accept-Language&#39;</span>: <span style="color:#e6db74">&#39;zh-CN,zh;q=0.8&#39;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url,headers<span style="color:#f92672">=</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result1<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div//a[@class=&#34;recmd-content&#34;]/@href&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#print(result1)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#https://www.qiushibaike.com/article/121207030</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> site <span style="color:#f92672">in</span> result1:
+</span></span><span style="display:flex;"><span>	xurl<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.qiushibaike.com&#34;</span><span style="color:#f92672">+</span>site
+</span></span><span style="display:flex;"><span>	response2<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(xurl)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>	html2<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(response2)
+</span></span><span style="display:flex;"><span>	result2<span style="color:#f92672">=</span>html2<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#34;//div[@class=&#39;content&#39;]&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	print(result2[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>text)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#百度贴吧图片爬虫</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> urllib.request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 全局取消证书验证</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> ssl
+</span></span><span style="display:flex;"><span>ssl<span style="color:#f92672">.</span>_create_default_https_context <span style="color:#f92672">=</span> ssl<span style="color:#f92672">.</span>_create_unverified_context
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Spider</span>(object):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>beginPage<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>endPage<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://tieba.baidu.com/f?&#34;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>ua_header <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span> : <span style="color:#e6db74">&#34;Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1 Trident/5.0;&#34;</span>}
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fileName<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#构造url</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tiebaSpider</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> page <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>beginPage,self<span style="color:#f92672">.</span>endPage<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            pn<span style="color:#f92672">=</span>(page<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">*</span><span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>            wo<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#39;pn&#39;</span>:pn,<span style="color:#e6db74">&#39;kw&#39;</span>:tiebaName}
+</span></span><span style="display:flex;"><span>            word<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>parse<span style="color:#f92672">.</span>urlencode(wo)
+</span></span><span style="display:flex;"><span>            myurl<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>url<span style="color:#f92672">+</span>word
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>loadPage(myurl)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#爬取页面内容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">loadPage</span>(self,url):
+</span></span><span style="display:flex;"><span>        req<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>Request(url,headers<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>ua_header)
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(data)
+</span></span><span style="display:flex;"><span>        links<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div[@class=&#34;threadlist_lz clearfix&#34;]/div/a/@href&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> link <span style="color:#f92672">in</span> links:
+</span></span><span style="display:flex;"><span>            link<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://tieba.baidu.com&#34;</span><span style="color:#f92672">+</span>link
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>loadImages(link)
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#爬取帖子详情页，获得图片的链接</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">loadImages</span>(self,link):
+</span></span><span style="display:flex;"><span>        req<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>Request(link,headers<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>ua_header)
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>urlopen(req)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>        html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(data)
+</span></span><span style="display:flex;"><span>        links<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//img[@class=&#34;BDE_Image&#34;]/@src&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> imageslink <span style="color:#f92672">in</span> links:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>writeImages(imageslink)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#通过图片所在链接，爬取图片并保存图片到本地：</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">writeImages</span>(self,imagesLink):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;正在存储图片：&#34;</span>,self<span style="color:#f92672">.</span>fileName,<span style="color:#e6db74">&#34;....&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        image<span style="color:#f92672">=</span>urllib<span style="color:#f92672">.</span>request<span style="color:#f92672">.</span>urlopen(imagesLink)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">#保存图片到本地</span>
+</span></span><span style="display:flex;"><span>        file<span style="color:#f92672">=</span>open(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;/Users/yuanshuai/Desktop/img//&#34;</span><span style="color:#f92672">+</span>str(self<span style="color:#f92672">.</span>fileName)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;.jpg&#34;</span>,<span style="color:#e6db74">&#34;wb&#34;</span>)
+</span></span><span style="display:flex;"><span>        file<span style="color:#f92672">.</span>write(image)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        file<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fileName<span style="color:#f92672">+=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tiebaName <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;请输入要爬取的贴吧名：&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    mySpider<span style="color:#f92672">=</span>Spider()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    mySpider<span style="color:#f92672">.</span>tiebaSpider()</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="五beautifulsoup" class="pagebody-header">
+    五、BeautifulSoup
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#BeautifulSoup模块简介和安装</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> bs4 <span style="color:#f92672">import</span> BeautifulSoup
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#CSS 选择器：BeautifulSoup4</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#和lxml 一样，Beautiful Soup 也是一个HTML/XML的解析器</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#主要的功能也是如何解析和提取 HTML/XML 数据。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#模块下载安装：pip install bs4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#基础例子</span>
+</span></span><span style="display:flex;"><span>html <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#39;s story&lt;/title&gt;&lt;/head&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;body&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;p class=&#34;title&#34; name=&#34;dromouse&#34;&gt;&lt;b&gt;The Dormouse&#39;s story&lt;/b&gt;&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;p class=&#34;story&#34;&gt;Once upon a time there were three little sisters; and their names were
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;a href=&#34;http://example.com/elsie&#34; class=&#34;sister&#34; id=&#34;link1&#34;&gt;&lt;!-- Elsie --&gt;&lt;/a&gt;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;a href=&#34;http://example.com/lacie&#34; class=&#34;sister&#34; id=&#34;link2&#34;&gt;Lacie&lt;/a&gt; and
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;a href=&#34;http://example.com/tillie&#34; class=&#34;sister&#34; id=&#34;link3&#34;&gt;Tillie&lt;/a&gt;;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">and they lived at the bottom of a well.&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&lt;p class=&#34;story&#34;&gt;...&lt;/p&gt;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#解析字符串形式的html</span>
+</span></span><span style="display:flex;"><span>soup<span style="color:#f92672">=</span>BeautifulSoup(html,<span style="color:#e6db74">&#34;lxml&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #解析本地html文件</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># soup2=BeautifulSoup(open(&#34;index.html&#34;))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#格式化输出soup对象</span>
+</span></span><span style="display:flex;"><span>print(soup<span style="color:#f92672">.</span>prettify())
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #根据标签名获取标签信息 soup.标签名</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(soup.title)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #获取标签内容</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(soup.title.string)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #获取标签名</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(soup.title.name)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #获取标签内所有属性</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(soup.p.attrs[&#34;name&#34;])</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取直接子标签，结果是一个列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(soup.head.contents)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取直接子标签，结果是一个生成器</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for i in soup.head.children:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	print(i)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取所有子标签，结果是一个生成器</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> soup<span style="color:#f92672">.</span>p<span style="color:#f92672">.</span>descendants:
+</span></span><span style="display:flex;"><span>	print(i)
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#根据字符串查找所有的a标签，返回一个结果集，里面装的是标签对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data=soup.find_all(&#34;a&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for i in data:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	print(i.string)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#根据正则表达式查找标签</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data2=soup.find_all(re.compile(&#34;^b&#34;))</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for i in data2:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	print(i.string)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#根据属性查找标签</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data3=soup.find_all(id=&#34;link2&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># for i in data3:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 	print(i)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#根据标签内容获取标签内容</span>
+</span></span><span style="display:flex;"><span>data4<span style="color:#f92672">=</span>soup<span style="color:#f92672">.</span>find_all(text<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Lacie&#34;</span>)
+</span></span><span style="display:flex;"><span>data5<span style="color:#f92672">=</span>soup<span style="color:#f92672">.</span>find_all(text<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;Lacie&#34;</span>,<span style="color:#e6db74">&#34;Tillie&#34;</span>])
+</span></span><span style="display:flex;"><span>data6<span style="color:#f92672">=</span>soup<span style="color:#f92672">.</span>find_all(text<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">&#34;Do&#34;</span>))
+</span></span><span style="display:flex;"><span>print(data6)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#CSS选择器类型：标签选择器、类选择器、id选择器</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过标签名查找</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data=soup.select(&#34;a&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过类名查找</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data=soup.select(&#34;.sister&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过id查找</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data=soup.select(&#34;#link2&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#组合查找</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data=soup.select(&#34;p #link1&#34;)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过其他属性查找</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>soup<span style="color:#f92672">.</span>select(<span style="color:#e6db74">&#39;a[href=&#34;http://example.com/tillie&#34;]&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(data)</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="六多线程" class="pagebody-header">
+    六、多线程
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> threading
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(name):
+</span></span><span style="display:flex;"><span>    print(name,<span style="color:#e6db74">&#34;线程执行了！&#34;</span>)
+</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建2个线程对象</span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">=</span>threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>run,args<span style="color:#f92672">=</span>(<span style="color:#e6db74">&#34;t1&#34;</span>,))
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">=</span>threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>run,args<span style="color:#f92672">=</span>(<span style="color:#e6db74">&#34;t2&#34;</span>,))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#启动线程</span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#等待子线程执行完毕后再执行主线程后面的内容</span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;执行完毕&#34;</span>)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 使用 threading 模块创建线程 </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建一个新的子类继承threading.Thread.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 并实例化后调用 start() 方法启动新线程，即它调用了线程的 run() 方法</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> threading
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#线程类</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">myThread</span>(threading<span style="color:#f92672">.</span>Thread):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self,name):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread<span style="color:#f92672">.</span>__init__(self)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>name <span style="color:#f92672">=</span> name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;开始线程&#34;</span>,self<span style="color:#f92672">.</span>name)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;线程执行中---1&#34;</span>)
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;线程执行中---2&#34;</span>)
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;线程执行中---3&#34;</span>)
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;线程执行中---4&#34;</span>)
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;线程执行中---5&#34;</span>)
+</span></span><span style="display:flex;"><span>        time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;结束线程&#34;</span>,self<span style="color:#f92672">.</span>name)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建线程</span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">=</span>myThread(<span style="color:#e6db74">&#34;t1&#34;</span>)
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">=</span>myThread(<span style="color:#e6db74">&#34;t2&#34;</span>)
+</span></span><span style="display:flex;"><span>t3<span style="color:#f92672">=</span>myThread(<span style="color:#e6db74">&#34;t3&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#开启线程</span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>t3<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>t1<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>t2<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>t3<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;执行完毕&#34;</span>)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#队列Queue</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> queue
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Queue是python标准库中的线程安全的实现,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#提供了一个适用于多线程编程的先进先出的数据结构，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#即队列，用来在生产者和消费者线程之间的信息传递。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#对于资源，加锁是个重要的环节。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#因为python原生的list,dict等，都是非线程安全的。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#而Queue，是线程安全的，因此在满足使用条件下，建议使用队列。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建队列</span>
+</span></span><span style="display:flex;"><span>q<span style="color:#f92672">=</span>queue<span style="color:#f92672">.</span>Queue(maxsize<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">11</span>):
+</span></span><span style="display:flex;"><span>    q<span style="color:#f92672">.</span>put(i) <span style="color:#75715e">#往队列里面放值</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(q.get())</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#判断队列是否为空，循环取出所有值</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> q<span style="color:#f92672">.</span>empty():
+</span></span><span style="display:flex;"><span>    print(q<span style="color:#f92672">.</span>get())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#多线程爬取糗事百科</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用了线程库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> threading
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> queue
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/1/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/2/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/3/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#&#39;//div/a[@class=&#34;recmd-content&#34;]&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#采集网页线程--爬取段子列表所在的网页，放进队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread1</span>(threading<span style="color:#f92672">.</span>Thread):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, threadName,pageQueue,dataQueue):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread<span style="color:#f92672">.</span>__init__(self)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>threadName <span style="color:#f92672">=</span> threadName <span style="color:#75715e">#线程名</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pageQueue <span style="color:#f92672">=</span> pageQueue <span style="color:#75715e">#页码队列</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>dataQueue <span style="color:#f92672">=</span> dataQueue <span style="color:#75715e">#数据队列</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span> : <span style="color:#e6db74">&#34;Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;启动线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> flag1:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                page<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>pageQueue<span style="color:#f92672">.</span>get()
+</span></span><span style="display:flex;"><span>                url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.qiushibaike.com/8hr/page/&#34;</span><span style="color:#f92672">+</span>str(page)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>                content<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url,headers<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>                time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0.5</span>)
+</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>dataQueue<span style="color:#f92672">.</span>put(content) <span style="color:#75715e">#将数据放入数据队列中</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;结束线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#解析网页线程--从对、队列中拿到列表网页，进行解析，并存储到本地</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread2</span>(threading<span style="color:#f92672">.</span>Thread):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, threadName,dataQueue,filename):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread<span style="color:#f92672">.</span>__init__(self)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>threadName <span style="color:#f92672">=</span> threadName
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>dataQueue <span style="color:#f92672">=</span> dataQueue
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>filename <span style="color:#f92672">=</span> filename
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;启动线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> flag2:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                data1<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dataQueue<span style="color:#f92672">.</span>get()
+</span></span><span style="display:flex;"><span>                html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(data1)
+</span></span><span style="display:flex;"><span>                node_list<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div/a[@class=&#34;recmd-content&#34;]&#39;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> node <span style="color:#f92672">in</span> node_list:
+</span></span><span style="display:flex;"><span>                    data<span style="color:#f92672">=</span>node<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>                    self<span style="color:#f92672">.</span>filename<span style="color:#f92672">.</span>write(data<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;结束线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>flag1<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span> <span style="color:#75715e">#判断页码队列中是否为空</span>
+</span></span><span style="display:flex;"><span>flag2<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span> <span style="color:#75715e">#判断数据队列中是否为空</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#页码队列</span>
+</span></span><span style="display:flex;"><span>    pageQueue<span style="color:#f92672">=</span>queue<span style="color:#f92672">.</span>Queue(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">11</span>):
+</span></span><span style="display:flex;"><span>        pageQueue<span style="color:#f92672">.</span>put(i)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#存放采集结果的数据队列</span>
+</span></span><span style="display:flex;"><span>    dataQueue<span style="color:#f92672">=</span>queue<span style="color:#f92672">.</span>Queue()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#保存到本地的文件</span>
+</span></span><span style="display:flex;"><span>    filename<span style="color:#f92672">=</span>open(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;C:\file\dianzi.txt&#34;</span>,<span style="color:#e6db74">&#34;a&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#启动线程</span>
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">=</span>Thread1(<span style="color:#e6db74">&#34;采集线程&#34;</span>,pageQueue,dataQueue)
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">=</span>Thread2(<span style="color:#e6db74">&#34;解析线程&#34;</span>,dataQueue,filename)
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#当pageQueue为空时，结束采集线程</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> pageQueue<span style="color:#f92672">.</span>empty():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> flag1
+</span></span><span style="display:flex;"><span>    flag1<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#当dataQueue为空时，结束解析线程</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> dataQueue<span style="color:#f92672">.</span>empty():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> flag2
+</span></span><span style="display:flex;"><span>    flag2<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    filename<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;结束！&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    main()</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="七验证码识别" class="pagebody-header">
+    七、验证码识别
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#识别车牌号</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> aip <span style="color:#f92672">import</span> AipOcr
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>APP_ID <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;15469265&#39;</span>
+</span></span><span style="display:flex;"><span>API_KEY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;rAGFtOChXtO7mnRPiwXg1Frf&#39;</span>
+</span></span><span style="display:flex;"><span>SECRET_KEY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Ailvoijh4X7lQIAoZ58UsGPlaDCmLIt7&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client <span style="color:#f92672">=</span> AipOcr(APP_ID, API_KEY, SECRET_KEY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34; 读取图片 &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_file_content</span>(filePath):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(filePath, <span style="color:#e6db74">&#39;rb&#39;</span>) <span style="color:#66d9ef">as</span> fp:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> fp<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>image <span style="color:#f92672">=</span> get_file_content(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;C:\Users\Administrator\Desktop\img\ee.jpg&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34; 调用通用文字识别, 图片参数为本地图片 &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>str(client<span style="color:#f92672">.</span>basicGeneral(image))<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39; &#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;{&#39;words&#39;:&#39;(.*?)&#39;}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#人工智能接口申请</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> aip <span style="color:#f92672">import</span> AipOcr
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>APP_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;15725370&#34;</span>
+</span></span><span style="display:flex;"><span>API_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;t85bppstXXudNNSU0klALWgj&#34;</span>
+</span></span><span style="display:flex;"><span>SECRET_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zt7z61AXutINgWS1lqWe3xsWp9uePSFF&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">=</span>AipOcr(APP_ID,API_KEY,SECRET_KEY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;C:\Users\Administrator\Desktop\img\ee.jpg&#34;</span>,<span style="color:#e6db74">&#34;rb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>    image<span style="color:#f92672">=</span>f<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>str(client<span style="color:#f92672">.</span>basicGeneral(image))<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34; &#34;</span>,<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;{&#39;words&#39;:&#39;(.*?)&#39;}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#文字识别</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> aip <span style="color:#f92672">import</span> AipOcr
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>APP_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;15725370&#34;</span>
+</span></span><span style="display:flex;"><span>API_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;t85bppstXXudNNSU0klALWgj&#34;</span>
+</span></span><span style="display:flex;"><span>SECRET_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zt7z61AXutINgWS1lqWe3xsWp9uePSFF&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">=</span>AipOcr(APP_ID,API_KEY,SECRET_KEY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;http://127.0.0.1:8020/登陆验证码/login.html&#34;</span>)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;img src=&#34;(.*?)&#34; style&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://127.0.0.1:8020/登陆验证码/&#34;</span><span style="color:#f92672">+</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>image<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>str(client<span style="color:#f92672">.</span>basicGeneral(image))<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34; &#34;</span>,<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;{&#39;words&#39;:&#39;(.*?)&#39;}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#模拟验证码识别</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> aip <span style="color:#f92672">import</span> AipOcr
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>APP_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;15725370&#34;</span>
+</span></span><span style="display:flex;"><span>API_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;t85bppstXXudNNSU0klALWgj&#34;</span>
+</span></span><span style="display:flex;"><span>SECRET_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Zt7z61AXutINgWS1lqWe3xsWp9uePSFF&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>client<span style="color:#f92672">=</span>AipOcr(APP_ID,API_KEY,SECRET_KEY)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;http://127.0.0.1:8020/登陆验证码/login.html&#34;</span>)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;img src=&#34;(.*?)&#34; style&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://127.0.0.1:8020/登陆验证码/&#34;</span><span style="color:#f92672">+</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>image<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url)<span style="color:#f92672">.</span>content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>str(client<span style="color:#f92672">.</span>basicGeneral(image))<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34; &#34;</span>,<span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;{&#39;words&#39;:&#39;(.*?)&#39;}&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>pat<span style="color:#f92672">.</span>findall(data)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="八scrapy框架" class="pagebody-header">
+    八、scrapy框架
+  </h2>
+</div><div class="component-content component"><ol>
+<li>创建项目</li>
+</ol></div>
+<blockquote>
+<p class="component-content component">scrapy startproject 项目名</p>
+</blockquote>
+<ol start="2">
+<li>创建爬虫</li>
+</ol></div>
+<blockquote>
+<p class="component-content component">scrapy  genspider  爬虫识别名称   &lsquo;要爬取的主机地址&rsquo;</p>
+</blockquote>
+<ol start="3">
+<li>运行爬虫</li>
+</ol></div>
+<blockquote>
+<p class="component-content component">scrapy crawl 爬虫识别名称</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="1scrapy框架的安装" class="pagebody-header">
+    1.Scrapy框架的安装
+  </h3>
+</div><blockquote>
+<p class="component-content component">pip3 install scrapy</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="2scrapy框架的简单使用" class="pagebody-header">
+    2.Scrapy框架的简单使用
+  </h3>
+</div><div class="component-content component"><ul>
+<li>常用命令</li>
+</ul></div>
+<blockquote>
+<p class="component-content component">创建项目：scrapy startproject xxx
+进入项目：cd xxx #进入某个文件夹下
+创建爬虫：scrapy genspider xxx（爬虫名） xxx.com （爬取域）
+生成文件：scrapy crawl xxx -o xxx.json (生成某种类型的文件)
+运行爬虫：scrapy crawl XXX
+列出所有爬虫：scrapy list
+获得配置信息：scrapy settings [options]</p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>Scrapy项目下包含</li>
+</ul></div>
+<blockquote>
+<p class="component-content component">scrapy.cfg: 项目的配置文件
+tutorial/: 该项目的python模块。在此放入代码（核心）
+tutorial/items.py: 项目中的item文件.（这是创建容器的地方，爬取的信息分别放到不同容器里）
+tutorial/pipelines.py: 项目中的pipelines文件.
+tutorial/settings.py: 项目的设置文件.（我用到的设置一下基础参数，比如加个文件头，设置一个编码）
+tutorial/spiders/: 放置spider代码的目录. （放爬虫的地方）</p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">容器（items）的定义，容器不一定是一开始全部都定义好的，可以跟随项目的更新一点点向里面添加</p>
+<p class="component-content component">也就是定义我们要爬取的内容</p>
+</li>
+</ul></div>
+<blockquote>
+<p class="component-content component">import scrapy
+class DmozItem(scrapy.Item): #创建一个类，继承scrapy.item类，就是继承人家写好的容器
+title = scrapy.Field() # 需要取哪些内容，就创建哪些容器
+link = scrapy.Field()
+desc = scrapy.Field()</p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>一个简单爬虫小例子</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> scrapy
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DmozSpider</span>(scrapy<span style="color:#f92672">.</span>Spider): <span style="color:#75715e"># 继承Spider类</span>
+</span></span><span style="display:flex;"><span>    name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;dmoz&#34;</span> <span style="color:#75715e"># 爬虫的唯一标识，不能重复，启动爬虫的时候要用</span>
+</span></span><span style="display:flex;"><span>    allowed_domains <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;dmoz.org&#34;</span>] <span style="color:#75715e"># 限定域名，只爬取该域名下的网页</span>
+</span></span><span style="display:flex;"><span>    start_urls <span style="color:#f92672">=</span> [ <span style="color:#75715e"># 开始爬取的链接</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;https://www.baidu.com/&#34;</span>
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse</span>(self, response):
+</span></span><span style="display:flex;"><span>        filename <span style="color:#f92672">=</span> response<span style="color:#f92672">.</span>url<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#34;/&#34;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>] <span style="color:#75715e"># 获取url，用”/”分段，获去倒数第二个字段</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">with</span> open(filename, <span style="color:#e6db74">&#39;a&#39;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>            f<span style="color:#f92672">.</span>write(response<span style="color:#f92672">.</span>body) <span style="color:#75715e"># 把访问的得到的网页源码写入文件</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">里面的parse方法，这个方法有两个作用
+1.负责解析start_url下载的Response 对象，根据item提取数据（解析item数据的前提是parse里全部requests请求都被加入了爬取队列）
+2.如果有新的url则加入爬取队列，负责进一步处理，URL的Request 对象
+这两点简单来说就是编写爬虫的主要部分</p>
+<p class="component-content component">那么爬虫编写完，我们需要启动爬虫</p>
+<blockquote>
+<p class="component-content component">cd XXX</p>
+</blockquote>
+<p class="component-content component">进入到你的文件夹下
+输入命令,启动爬虫</p>
+<blockquote>
+<p class="component-content component">scrapy crawl dmoz</p>
+</blockquote>
+<p class="component-content component">那么启动爬虫时发生了什么？
+Scrapy为Spider的 start_urls 属性中的每个url创建了Request 对象，并将 parse 方法作为回调函数(callback)赋值给了requests,而requests对象经过调度器的调度，执行生成response对象并送回给parse() 方法进行解析,所以请求链接的改变是靠回调函数实现的。</p>
+<blockquote>
+<p class="component-content component">yield scrapy.Request(self.url, callback=self.parse)</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="3scrapy框架的整体架构和组成" class="pagebody-header">
+    3.Scrapy框架的整体架构和组成
+  </h3>
+</div><div class="component-content component"><ul>
+<li>官方的Scrapy的架构图</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8e4a2a3eb1eae98845d8e5a2e32081ef" id="lht8e4a2a3eb1eae98845d8e5a2e32081ef">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component">图中绿色的是数据的流向
+我们看到图里有这么几个东西，分别是
+Spiders：爬虫，定义了爬取的逻辑和网页内容的解析规则，主要负责解析响应并生成结果和新的请求
+Engine：引擎，处理整个系统的数据流处理，出发事物，框架的核心。
+Scheduler：调度器，接受引擎发过来的请求，并将其加入队列中，在引擎再次请求时将请求提供给引擎
+Downloader：下载器，下载网页内容，并将下载内容返回给spider
+ItemPipeline：项目管道，负责处理spider从网页中抽取的数据，主要是负责清洗，验证和向数据库中存储数据
+Downloader Middlewares：下载中间件，是处于Scrapy的Request和Requesponse之间的处理模块
+Spider Middlewares：spider中间件，位于引擎和spider之间的框架，主要处理spider输入的响应和输出的结果及新的请求middlewares.py里实现</p>
+</blockquote>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-72634626a3804b8db499b979ca104d8e" id="lht72634626a3804b8db499b979ca104d8e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>最后我们来顺一下scrapy框架的整体执行流程：</li>
+</ul></div>
+<blockquote>
+<p class="component-content component">1.spider的yeild将request发送给engine
+2.engine对request不做任何处理发送给scheduler
+3.scheduler，生成request交给engine
+4.engine拿到request，通过middleware发送给downloader
+5.downloader在\获取到response之后，又经过middleware发送给engine
+6.engine获取到response之后，返回给spider，spider的parse()方法对获取到的response进行处理，解析出items或者requests
+7.将解析出来的items或者requests发送给engine
+8.engine获取到items或者requests，将items发送给ItemPipeline，将requests发送给scheduler（ps，只有调度器中不存在request时，程序才停止，及时请求失败scrapy也会重新进行请求）</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="4中间件介绍" class="pagebody-header">
+    4.中间件介绍
+  </h3>
+</div><p class="component-content component">请查看xmind思维导图：Scrapy.xmind</p>
+
+<div class="component-content pagebody component">
+  <h3 id="5附件" class="pagebody-header">
+    5.附件
+  </h3>
+</div><p class="component-content component">阳光问政平台爬虫（Scrapy实现：2020.7.21） sunSpider文件夹</p>
+
+<div class="component-content pagebody component">
+  <h2 id="九fiddler手机抓包" class="pagebody-header">
+    九、fiddler手机抓包
+  </h2>
+</div><div class="component-content component"><ul>
+<li>fiddler官网：https://www.telerik.com/fiddler</li>
+</ul></div>
+<p class="component-content component">通过Fiddler抓包工具，可以抓取手机的网络通信，但前提是手机和电脑处于同一局域网内（WI-FI或热点），然后进行以下设置：</p>
+<div class="component-content component"><ul>
+<li>
+
+<div class="component-content pagebody component">
+  <h3 id="用fiddler对android应用进行抓包" class="pagebody-header">
+    用Fiddler对Android应用进行抓包
+  </h3>
+</div></li>
+</ul></div>
+<div class="component-content component"><ol>
+<li>打开Fiddler设置</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ca02c23e2dbc95d384b9989378c9ec88" id="lhtca02c23e2dbc95d384b9989378c9ec88">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/fiddler1.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">在<code>Connections</code>里设置允许连接远程计算机，确认后重新启动Fiddler</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a02f5d178790dce38c1138e8ed8eef9b" id="lhta02f5d178790dce38c1138e8ed8eef9b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/fiddler2.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="2">
+<li>在命令提示符下输入<code>ipconfig</code>查看本机IP</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2d77f345e8d360e41db3b0724be8f6c9" id="lht2d77f345e8d360e41db3b0724be8f6c9">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/fiddler3.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="3">
+<li>打开Android设备的“设置”-&gt;“WLAN”，找到你要连接的网络，在上面长按，然后选择“修改网络”，弹出网络设置对话框，然后勾选“显示高级选项”。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ddbdc1c02179f32d3d361071b7ead722" id="lhtddbdc1c02179f32d3d361071b7ead722">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/fiddler4.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="4">
+<li>在“代理”后面的输入框选择“手动”，在“代理服务器主机名”后面的输入框输入电脑的ip地址，在“代理服务器端口”后面的输入框输入8888，然后点击“保存”按钮。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a0f8eeb3f691125748a67073e9542708" id="lhta0f8eeb3f691125748a67073e9542708">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/fiddler5.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<ol start="5">
+<li>启动Android设备中的浏览器，访问网页即可在Fiddler中可以看到完成的请求和响应数据。</li>
+</ol></div>
+<div class="component-content component"><ul>
+<li>
+
+<div class="component-content pagebody component">
+  <h3 id="用fiddler对iphone手机应用进行抓包" class="pagebody-header">
+    用Fiddler对iPhone手机应用进行抓包
+  </h3>
+</div></li>
+</ul></div>
+<p class="component-content component">基本流程差不多，只是手机设置不太一样：</p>
+<p class="component-content component">iPhone手机：点击设置 &gt; 无线局域网 &gt; 无线网络 &gt; HTTP代理 &gt; 手动：</p>
+<p class="component-content component">代理地址(电脑IP)：192.168.xx.xxx</p>
+<p class="component-content component">端口号：8888</p>
+
+<div class="component-content pagebody component">
+  <h2 id="十数据写入" class="pagebody-header">
+    十、数据写入
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#写入到Excel</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> xlsxwriter
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建文件，并添加一个工作表</span>
+</span></span><span style="display:flex;"><span>workbook<span style="color:#f92672">=</span>xlsxwriter<span style="color:#f92672">.</span>Workbook(<span style="color:#e6db74">&#39;demo.xlsx&#39;</span>)
+</span></span><span style="display:flex;"><span>worksheet<span style="color:#f92672">=</span>workbook<span style="color:#f92672">.</span>add_worksheet()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#在指定位置写入数据</span>
+</span></span><span style="display:flex;"><span>worksheet<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;A1&#34;</span>,<span style="color:#e6db74">&#34;这是A1的数据&#34;</span>)
+</span></span><span style="display:flex;"><span>worksheet<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;A2&#34;</span>,<span style="color:#e6db74">&#34;这是A2的数据&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#关闭表格文件</span>
+</span></span><span style="display:flex;"><span>workbook<span style="color:#f92672">.</span>close()</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#爬取便民查询网常用号码，并写入到Excel</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> xlsxwriter
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">pleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Sa</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">fari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://changyongdianhuahaoma.51240.com/&#34;</span>,headers<span style="color:#f92672">=</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pattern1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat1)
+</span></span><span style="display:flex;"><span>pattern2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data1<span style="color:#f92672">=</span>pattern1<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>pattern2<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resultlist<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建表格</span>
+</span></span><span style="display:flex;"><span>workbook<span style="color:#f92672">=</span>xlsxwriter<span style="color:#f92672">.</span>Workbook(<span style="color:#e6db74">&#34;demo2.xlsx&#34;</span>)
+</span></span><span style="display:flex;"><span>worksheet<span style="color:#f92672">=</span>workbook<span style="color:#f92672">.</span>add_worksheet()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(data1)):
+</span></span><span style="display:flex;"><span>	resultlist<span style="color:#f92672">.</span>append(data1[i]<span style="color:#f92672">+</span>data2[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#写入数据</span>
+</span></span><span style="display:flex;"><span>	worksheet<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">+</span>str(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>),data1[i])
+</span></span><span style="display:flex;"><span>	worksheet<span style="color:#f92672">.</span>write(<span style="color:#e6db74">&#34;B&#34;</span><span style="color:#f92672">+</span>str(i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>),data2[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(resultlist)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 关闭表格资源，这样才会完成创建</span>
+</span></span><span style="display:flex;"><span>workbook<span style="color:#f92672">.</span>close()</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#爬取便民查询网常用号码，并写入到Mysql </span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#注意：需要提前创建对应字段的数据库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pymysql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#建立数据库连接</span>
+</span></span><span style="display:flex;"><span>db<span style="color:#f92672">=</span>pymysql<span style="color:#f92672">.</span>Connect(host<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;localhost&#34;</span>,port<span style="color:#f92672">=</span><span style="color:#ae81ff">3306</span>,user<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;root&#34;</span>,passwd<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;AA123456&#34;</span>,db<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;spider_test&#34;</span>,charset<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;utf8&#34;</span>)
+</span></span><span style="display:flex;"><span>cursor<span style="color:#f92672">=</span>db<span style="color:#f92672">.</span>cursor()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#爬取数据</span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">pleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Sa</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">fari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://changyongdianhuahaoma.51240.com/&#34;</span>,headers<span style="color:#f92672">=</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#处理数据</span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&lt;tr bgcolor=&#34;#EFF7F0&#34;&gt;[\s\S]*?&lt;td&gt;[\s\S]*?&lt;/td&gt;[\s\S]*?&lt;td&gt;(.*?)&lt;/td&gt;[\s\S]*?&lt;/tr&gt;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pattern1<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat1)
+</span></span><span style="display:flex;"><span>pattern2<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>compile(pat2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data1<span style="color:#f92672">=</span>pattern1<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>pattern2<span style="color:#f92672">.</span>findall(response)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#清空数据库原来的内容</span>
+</span></span><span style="display:flex;"><span>sqll<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;delete from tel&#34;</span>
+</span></span><span style="display:flex;"><span>cursor<span style="color:#f92672">.</span>execute(sqll)
+</span></span><span style="display:flex;"><span>db<span style="color:#f92672">.</span>commit()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>resultlist<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(data1)):
+</span></span><span style="display:flex;"><span>	resultlist<span style="color:#f92672">.</span>append(data1[i]<span style="color:#f92672">+</span>data2[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	sql<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;insert into tel(name,phone) values(&#39;&#34;</span><span style="color:#f92672">+</span>data1[i]<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#39;,&#39;&#34;</span><span style="color:#f92672">+</span>data2[i]<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&#39;)&#34;</span>
+</span></span><span style="display:flex;"><span>	cursor<span style="color:#f92672">.</span>execute(sql)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(resultlist)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>db<span style="color:#f92672">.</span>commit()
+</span></span><span style="display:flex;"><span>db<span style="color:#f92672">.</span>close()</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">完结撒花~</p>
+<p class="component-content component">2020.7.22 下午5：11</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 26, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

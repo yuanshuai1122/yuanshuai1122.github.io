@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Docker之容器数据卷" />
+<meta property="og:description" content="Docker容器数据卷 1、是什么 先来看看Docker的理念： 将运用与运行的环境打包形成容器运行 ，运行可以伴随着容器，但是我们对数据的要求希望" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7-docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-23T23:04:14+00:00" />
+<meta property="article:modified_time" content="2021-11-23T23:04:14+00:00" />
+<title>Docker之容器数据卷</title>
+
+    <link rel="canonical" href="/posts/docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7-docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        docker
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月23日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Docker之容器数据卷</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/docker" class="tag">
+                    docker
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="docker容器数据卷" class="pagebody-header">
+    <strong>Docker</strong>容器数据卷
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1是什么" class="pagebody-header">
+    1、<strong>是什么</strong>
+  </h2>
+</div><p class="component-content component">先来看看Docker的理念：</p>
+<div class="component-content component"><ul>
+<li>将运用与运行的环境打包形成容器运行 ，运行可以伴随着容器，但是我们对数据的要求希望是持久化的</li>
+<li>容器之间希望有可能共享数据</li>
+</ul></div>
+<p class="component-content component">Docker容器产生的数据，如果不通过docker commit生成新的镜像，使得数据做为镜像的一部分保存下来， 那么当容器删除后，数据自然也就没有了。</p>
+<p class="component-content component">为了能保存数据在docker中我们使用卷。</p>
+<div class="component-content component"><ul>
+<li>一句话：有点类似我们Redis里面的rdb和aof文件</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="2能干嘛" class="pagebody-header">
+    2、<strong>能干嘛</strong>
+  </h2>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">容器的持久化</p>
+</li>
+<li>
+<p class="component-content component">容器间继承+共享数据</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="3数据卷" class="pagebody-header">
+    3、<strong>数据卷</strong>
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="容器内添加" class="pagebody-header">
+    容器内添加：
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="31直接命令添加" class="pagebody-header">
+    3.1、直接命令添加
+  </h3>
+</div><div class="component-content component"><ul>
+<li>命令</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it -v /宿主机绝对路径目录:/容器内目录  镜像名</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">例：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it -v /宿主机目录:/容器内目录 centos /bin/bash </span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ed8095492232cdcbb9dbb816e22089fb" id="lhted8095492232cdcbb9dbb816e22089fb">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/32.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>查看数据卷是否挂载成功</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker inspect 容器ID </span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b376ac99371d8772512a526c1e438b0b" id="lhtb376ac99371d8772512a526c1e438b0b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/33.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>容器和宿主机之间数据共享</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-66d71effb95fb69dff53537da5d8c380" id="lht66d71effb95fb69dff53537da5d8c380">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/34.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>容器停止退出后，主机修改后数据是否同步</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7352c0f40b846071548020cc37d9c0cc" id="lht7352c0f40b846071548020cc37d9c0cc">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/35.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>命令(带权限)</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> docker run -it -v /宿主机绝对路径目录:/容器内目录:ro 镜像名</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e3b805af096d13320dd943586b6f95e2" id="lhte3b805af096d13320dd943586b6f95e2">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/36.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32dockerfile添加" class="pagebody-header">
+    3.2、DockerFile添加
+  </h3>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">根目录下新建mydocker文件夹并进入</p>
+</li>
+<li>
+<p class="component-content component">可在Dockerfile中使用VOLUME指令来给镜像添加一个或多个数据卷</p>
+</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>VOLUME<span style="color:#f92672">[</span><span style="color:#e6db74">&#34;/dataVolumeContainer&#34;</span>,<span style="color:#e6db74">&#34;/dataVolumeContainer2&#34;</span>,<span style="color:#e6db74">&#34;/dataVolumeContainer3&#34;</span><span style="color:#f92672">]</span> </span></span></code></pre></div></div>
+  
+</div><p class="component-content component">说明：</p>
+<p class="component-content component">出于可移植和分享的考虑， 用-v 主机目录:容器目录这种方法不能够直接在Dockerfile中实现。</p>
+<p class="component-content component">由于宿主机目录是依赖于特定宿主机的，并不能够保证在所有的宿主机上都存在这样的特定目录。</p>
+<div class="component-content component"><ul>
+<li>File构建</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-130a2736f85bfef6c29cf7ba8af98c27" id="lht130a2736f85bfef6c29cf7ba8af98c27">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/37.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>build后生成镜像</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-426fd29eef6a5aab8ef046d6efe47288" id="lht426fd29eef6a5aab8ef046d6efe47288">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/38.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">获得一个新镜像zzyy/centos</p>
+<div class="component-content component"><ul>
+<li>run容器</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-fd328b6cf93ce1c79384b13a3c94558c" id="lhtfd328b6cf93ce1c79384b13a3c94558c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/39.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">通过上述步骤，容器内的卷目录地址已经知道,</p>
+<p class="component-content component">但是对应的主机目录地址哪？？</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7077d8a1487f1d5e496b83145fd0955d" id="lht7077d8a1487f1d5e496b83145fd0955d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/40.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li><strong>主机对应默认地址</strong></li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d9a50d93507c3fe1b9950a5e37b85a8d" id="lhtd9a50d93507c3fe1b9950a5e37b85a8d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/41.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="33备注" class="pagebody-header">
+    3.3、备注
+  </h3>
+</div><p class="component-content component">Docker挂载主机目录Docker访问出现cannot open directory .: Permission denied</p>
+<p class="component-content component">解决办法：在挂载目录后多加一个&ndash;privileged=true参数即可</p>
+
+<div class="component-content pagebody component">
+  <h2 id="4数据卷容器" class="pagebody-header">
+    4、<strong>数据卷容器</strong>
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41是什么" class="pagebody-header">
+    4.1、是什么
+  </h3>
+</div><p class="component-content component">命名的容器挂载数据卷，其它容器通过挂载这个(父容器)实现数据共享，挂载数据卷的容器，称之为数据卷容器</p>
+
+<div class="component-content pagebody component">
+  <h3 id="42总体介绍" class="pagebody-header">
+    4.2、总体介绍
+  </h3>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">以上一步新建的镜像zzyy/centos为模板并运行容器dc01/dc02/dc03</p>
+</li>
+<li>
+<p class="component-content component">它们已经具有容器卷</p>
+<div class="component-content component"><ul>
+<li>/dataVolumeContainer1</li>
+<li>/dataVolumeContainer2</li>
+</ul></div>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="43容器间传递共享--volumes-from" class="pagebody-header">
+    4.3、容器间传递共享(&ndash;volumes-from)
+  </h3>
+</div><div class="component-content component"><ul>
+<li>先启动一个父容器dc01</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-6ca64ffcc7a636a51e4033ec657e0400" id="lht6ca64ffcc7a636a51e4033ec657e0400">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/42.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">在dataVolumeContainer2新增内容</p>
+<div class="component-content component"><ul>
+<li>dc02/dc03继承自dc01
+<div class="component-content component"><ul>
+<li>&ndash;volumes-from</li>
+<li>命令：dc02/dc03分别在dataVolumeContainer2各自新增内容</li>
+</ul></div>
+</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it --name dc02 --volumes-from dc01 zzyy/centos </span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e80c9a528441697495363dcaa8217be3" id="lhte80c9a528441697495363dcaa8217be3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/43.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>回到dc01可以看到02/03各自添加的都能共享了</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-fe60751ca9e2418001433a53551da486" id="lhtfe60751ca9e2418001433a53551da486">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/44.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>删除dc01，dc02修改后dc03可否访问</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-1b1000afd75409a2ac8033a96a2e5192" id="lht1b1000afd75409a2ac8033a96a2e5192">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/45.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>删除dc02后dc03可否访问</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e517fba1a1c9666cb67cb1a5580fa240" id="lhte517fba1a1c9666cb67cb1a5580fa240">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/46.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>再进一步</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e0f5ce6d472950934b7ae28b06367161" id="lhte0f5ce6d472950934b7ae28b06367161">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/47.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>新建dc04继承dc03后再删除dc03</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-dd8a99673f286ed0228480b022c9c35f" id="lhtdd8a99673f286ed0228480b022c9c35f">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/48.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">结论：容器之间配置信息的传递，数据卷的生命周期一直持续到没有容器使用它为止</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月23日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

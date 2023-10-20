@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="JVM内存与垃圾回收篇第16章垃圾回收相关概念" />
+<meta property="og:description" content="第 16 章 垃圾回收相关概念 1、System.gc() 的理解 1.1、System.gc() 方法 System.gc() 方法 在默认情况下，通过System.gc()者Ru" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC16%E7%AB%A0%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:59:14+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:59:14+00:00" />
+<title>JVM内存与垃圾回收篇第16章垃圾回收相关概念</title>
+
+    <link rel="canonical" href="/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC16%E7%AB%A0%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 30, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">JVM内存与垃圾回收篇第16章垃圾回收相关概念</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/jvm" class="tag">
+                    JVM
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="第-16-章-垃圾回收相关概念" class="pagebody-header">
+    第 16 章 垃圾回收相关概念
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1systemgc-的理解" class="pagebody-header">
+    1、System.gc() 的理解
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11systemgc-方法" class="pagebody-header">
+    1.1、System.gc() 方法
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>System.gc() 方法</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>在默认情况下，通过System.gc()者Runtime.getRuntime().gc() 的调用，会显式触发Full GC，同时对老年代和新生代进行回收，尝试释放被丢弃对象占用的内存。</li>
+<li>然而System.gc()调用附带一个免责声明，无法保证对垃圾收集器的调用(不能确保立即生效)</li>
+<li>JVM实现者可以通过System.gc() 调用来决定JVM的GC行为。而一般情况下，垃圾回收应该是自动进行的，无须手动触发，否则就太过于麻烦了。</li>
+<li>在一些特殊情况下，如我们正在编写一个性能基准，我们可以在运行之间调用System.gc()</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>代码示例：手动执行 GC 操作</strong></p>
+</blockquote>
+<p class="component-content component"><strong>代码示例 1</strong></p>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author shkstart  shkstart@126.com
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020  14:49
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SystemGCTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> SystemGCTest<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            提醒jvm的垃圾回收器执行gc,但是不确定是否马上执行gc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">            与Runtime.getRuntime().gc();的作用一样。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//System.gc();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 强制调用使用引用的对象的finalize()方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">runFinalization</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">finalize</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">finalize</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;SystemGCTest 重写了finalize()&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>有时候会调用 finalize() 方法，有时候并不会调用</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">&#34;C:\Program Files\Java\jdk1.8.0_144\bin\java&#34; 
+SystemGCTest 重写了finalize()
+
+Process finished with exit code 0
+1234
+&#34;C:\Program Files\Java\jdk1.8.0_144\bin\java&#34; 
+
+Process finished with exit code 0</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="12不可达对象回收行为" class="pagebody-header">
+    1.2、不可达对象回收行为
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>手动 GC 理解不可达对象的回收行为</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @author shkstart  shkstart@126.com
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @create 2020  14:57
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LocalVarGC</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">localvarGC1</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">];</span><span style="color:#75715e">//10MB
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">localvarGC2</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">localvarGC3</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">localvarGC4</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> value <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">localvarGC5</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        localvarGC1<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        LocalVarGC local <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LocalVarGC<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// TODO
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        local<span style="color:#f92672">.</span><span style="color:#a6e22e">localvarGC1</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>JVM 参数</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">-XX:&#43;PrintGCDetails</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>调用 localvarGC1() 方法</strong></p>
+<div class="component-content component"><ul>
+<li>执行 System.gc() 仅仅是将年轻代的 buffer 数组对象放到了老年代（Why？buffer 数组年龄应该还没达到阈值吧~~~）</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[GC (System.gc()) [PSYoungGen: 15482K-&gt;10744K(76288K)] 15482K-&gt;10976K(251392K), 0.0060965 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+[Full GC (System.gc()) [PSYoungGen: 10744K-&gt;0K(76288K)] [ParOldGen: 232K-&gt;10908K(175104K)] 10976K-&gt;10908K(251392K), [Metaspace: 3466K-&gt;3466K(1056768K)], 0.0048454 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+Heap
+ PSYoungGen      total 76288K, used 655K [0x000000076b380000, 0x0000000770880000, 0x00000007c0000000)
+  eden space 65536K, 1% used [0x000000076b380000,0x000000076b423ee8,0x000000076f380000)
+  from space 10752K, 0% used [0x000000076f380000,0x000000076f380000,0x000000076fe00000)
+  to   space 10752K, 0% used [0x000000076fe00000,0x000000076fe00000,0x0000000770880000)
+ ParOldGen       total 175104K, used 10908K [0x00000006c1a00000, 0x00000006cc500000, 0x000000076b380000)
+  object space 175104K, 6% used [0x00000006c1a00000,0x00000006c24a7088,0x00000006cc500000)
+ Metaspace       used 3473K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K
+1234567891011</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>调用 localvarGC2() 方法</strong></p>
+<div class="component-content component"><ul>
+<li>由于 buffer 数组对象没有引用指向它，执行 System.gc() 将被回收</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[GC (System.gc()) [PSYoungGen: 15482K-&gt;872K(76288K)] 15482K-&gt;880K(251392K), 0.0008529 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[Full GC (System.gc()) [PSYoungGen: 872K-&gt;0K(76288K)] [ParOldGen: 8K-&gt;668K(175104K)] 880K-&gt;668K(251392K), [Metaspace: 3466K-&gt;3466K(1056768K)], 0.0035955 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+Heap
+ PSYoungGen      total 76288K, used 655K [0x000000076b380000, 0x0000000770880000, 0x00000007c0000000)
+  eden space 65536K, 1% used [0x000000076b380000,0x000000076b423ee8,0x000000076f380000)
+  from space 10752K, 0% used [0x000000076f380000,0x000000076f380000,0x000000076fe00000)
+  to   space 10752K, 0% used [0x000000076fe00000,0x000000076fe00000,0x0000000770880000)
+ ParOldGen       total 175104K, used 668K [0x00000006c1a00000, 0x00000006cc500000, 0x000000076b380000)
+  object space 175104K, 0% used [0x00000006c1a00000,0x00000006c1aa7078,0x00000006cc500000)
+ Metaspace       used 3473K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>调用 localvarGC3() 方法</strong></p>
+<div class="component-content component"><ul>
+<li>虽然出了代码块的作用域，但是 buffer 数组对象并没有被回收</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[GC (System.gc()) [PSYoungGen: 15482K-&gt;10736K(76288K)] 15482K-&gt;10992K(251392K), 0.0054629 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[Full GC (System.gc()) [PSYoungGen: 10736K-&gt;0K(76288K)] [ParOldGen: 256K-&gt;10908K(175104K)] 10992K-&gt;10908K(251392K), [Metaspace: 3466K-&gt;3466K(1056768K)], 0.0057568 secs] [Times: user=0.05 sys=0.06, real=0.02 secs] 
+Heap
+ PSYoungGen      total 76288K, used 655K [0x000000076b380000, 0x0000000770880000, 0x00000007c0000000)
+  eden space 65536K, 1% used [0x000000076b380000,0x000000076b423ee8,0x000000076f380000)
+  from space 10752K, 0% used [0x000000076f380000,0x000000076f380000,0x000000076fe00000)
+  to   space 10752K, 0% used [0x000000076fe00000,0x000000076fe00000,0x0000000770880000)
+ ParOldGen       total 175104K, used 10908K [0x00000006c1a00000, 0x00000006cc500000, 0x000000076b380000)
+  object space 175104K, 6% used [0x00000006c1a00000,0x00000006c24a7088,0x00000006cc500000)
+ Metaspace       used 3472K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>来看看字节码：实例方法局部变量表第一个变量肯定是 this</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-199410527124417c173e82b0427fd39a" id="lht199410527124417c173e82b0427fd39a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/268.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>你有没有看到，局部变量表的大小是 2 ，也就是说执行 System.gc() 时，栈中还有 buffer 变量指向堆中的字节数组</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-49d30a8a45f39ff48e3e5102e70e331f" id="lht49d30a8a45f39ff48e3e5102e70e331f">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/269.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>调用 localvarGC4() 方法</strong></p>
+<div class="component-content component"><ul>
+<li>就多定义了一个局部变量 value ，怎么就能把字节数组回收了呢？</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[GC (System.gc()) [PSYoungGen: 15482K-&gt;808K(76288K)] 15482K-&gt;816K(251392K), 0.0010067 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[Full GC (System.gc()) [PSYoungGen: 808K-&gt;0K(76288K)] [ParOldGen: 8K-&gt;668K(175104K)] 816K-&gt;668K(251392K), [Metaspace: 3466K-&gt;3466K(1056768K)], 0.0039890 secs] [Times: user=0.00 sys=0.02, real=0.01 secs] 
+Heap
+ PSYoungGen      total 76288K, used 655K [0x000000076b380000, 0x0000000770880000, 0x00000007c0000000)
+  eden space 65536K, 1% used [0x000000076b380000,0x000000076b423ee8,0x000000076f380000)
+  from space 10752K, 0% used [0x000000076f380000,0x000000076f380000,0x000000076fe00000)
+  to   space 10752K, 0% used [0x000000076fe00000,0x000000076fe00000,0x0000000770880000)
+ ParOldGen       total 175104K, used 668K [0x00000006c1a00000, 0x00000006cc500000, 0x000000076b380000)
+  object space 175104K, 0% used [0x00000006c1a00000,0x00000006c1aa7078,0x00000006cc500000)
+ Metaspace       used 3472K, capacity 4496K, committed 4864K, reserved 1056768K
+  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>看，value 位于局部变量表中索引为 1 的位置</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7d83d166185b01420f6a514b92a7f78c" id="lht7d83d166185b01420f6a514b92a7f78c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/270.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>局部变量表长度为 2 ，这说明了出了代码块时，buffer 就出了其作用域范围，此时没有为 value 开启新的槽，所以 value 变量占据了 buffer 变量的槽（Slot），导致堆中的字节数组没有引用再指向它，执行 System.gc() 时被回收</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a03d2063e106fb67fc7cf87fac6f1f2e" id="lhta03d2063e106fb67fc7cf87fac6f1f2e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/271.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>调用 localvarGC5() 方法</strong></p>
+<div class="component-content component"><ul>
+<li>这有啥好说的。。。局部变量除了方法范围就是失效了，堆中的字节数组铁定被回收呗~</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[GC (System.gc()) [PSYoungGen: 15482K-&gt;10744K(76288K)] 15482K-&gt;10968K(251392K), 0.0054897 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] [Full GC (System.gc()) [PSYoungGen: 10744K-&gt;0K(76288K)] [ParOldGen: 224K-&gt;10908K(175104K)] 10968K-&gt;10908K(251392K), [Metaspace: 3465K-&gt;3465K(1056768K)], 0.0048527 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] [GC (System.gc()) [PSYoungGen: 0K-&gt;0K(76288K)] 10908K-&gt;10908K(251392K), 0.0002221 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] [Full GC (System.gc()) [PSYoungGen: 0K-&gt;0K(76288K)] [ParOldGen: 10908K-&gt;668K(175104K)] 10908K-&gt;668K(251392K), [Metaspace: 3465K-&gt;3465K(1056768K)], 0.0055602 secs] [Times: user=0.01 sys=0.00, real=0.02 secs] Heap PSYoungGen      total 76288K, used 655K [0x000000076b380000, 0x0000000770880000, 0x00000007c0000000)  eden space 65536K, 1% used [0x000000076b380000,0x000000076b423ee8,0x000000076f380000)  from space 10752K, 0% used [0x000000076fe00000,0x000000076fe00000,0x0000000770880000)  to   space 10752K, 0% used [0x000000076f380000,0x000000076f380000,0x000000076fe00000) ParOldGen       total 175104K, used 668K [0x00000006c1a00000, 0x00000006cc500000, 0x000000076b380000)  object space 175104K, 0% used [0x00000006c1a00000,0x00000006c1aa7078,0x00000006cc500000) Metaspace       used 3472K, capacity 4500K, committed 4864K, reserved 1056768K  class space    used 381K, capacity 388K, committed 512K, reserved 1048576K</code></pre>
+  
+</div><hr>
+<p class="component-content component"><strong>图解分析</strong></p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-049f7e477d544a347231f16eee312a4a" id="lht049f7e477d544a347231f16eee312a4a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/272.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2内存溢出与内存泄漏" class="pagebody-header">
+    2、内存溢出与内存泄漏
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21内存溢出" class="pagebody-header">
+    2.1、内存溢出
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>内存溢出（OOM）</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>内存溢出相对于内存泄漏来说，尽管更容易被理解，但是同样的，内存溢出也是引发程序崩溃的罪魁祸首之一。</li>
+<li>由于GC一直在发展，所有一般情况下，除非应用程序占用的内存增长速度非常快，造成垃圾回收已经跟不上内存消耗的速度，否则不太容易出现OOM的情况。</li>
+<li>大多数情况下，GC会进行各种年龄段的垃圾回收，实在不行了就放大招，来一次独占式的Full GC操作，这时候会回收大量的内存，供应用程序继续使用。</li>
+<li>Javadoc中对OutofMemoryError的解释是，没有空闲内存，并且垃圾收集器也无法提供更多内存。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>内存溢出（OOM）原因分析</strong></p>
+</blockquote>
+<p class="component-content component">首先说没有空闲内存的情况：说明Java虚拟机的堆内存不够。原因有二：</p>
+<div class="component-content component"><ol>
+<li>Java虚拟机的堆内存设置不够。
+<div class="component-content component"><ul>
+<li>比如：可能存在内存泄漏问题；也很有可能就是堆的大小不合理，比如我们要处理比较可观的数据量，但是没有显式指定JVM堆大小或者指定数值偏小。</li>
+<li>我们可以通过参数-Xms 、-Xmx来调整。</li>
+</ul></div>
+</li>
+<li>代码中创建了大量大对象，并且长时间不能被垃圾收集器收集（存在被引用）
+<div class="component-content component"><ul>
+<li>对于老版本的Oracle JDK，因为永久代的大小是有限的，并且JVM对永久代垃圾回收（如，常量池回收、卸载不再需要的类型）非常不积极，所以当我们不断添加新类型的时候，永久代出现OutOfMemoryError也非常多见</li>
+<li>尤其是在运行时存在大量动态类型生成的场合；类似intern字符串缓存占用太多空间，也会导致OOM问题。</li>
+<li>对应的异常信息，会标记出来和永久代相关：“java.lang.OutOfMemoryError:PermGen space&quot;。</li>
+<li>随着元数据区的引入，方法区内存已经不再那么窘迫，所以相应的OOM有所改观，出现OOM，异常信息则变成了：“java.lang.OutofMemoryError:Metaspace&quot;。直接内存不足，也会导致OOM。</li>
+</ul></div>
+</li>
+</ol></div>
+<hr>
+<p class="component-content component"><strong>说明</strong></p>
+<div class="component-content component"><ol>
+<li>这里面隐含着一层意思是，在抛出OutofMemoryError之前，通常垃圾收集器会被触发，尽其所能去清理出空间。
+<div class="component-content component"><ul>
+<li>例如：在引用机制分析中，涉及到JVM会去尝试回收软引用指向的对象等。</li>
+<li>在java.nio.Bits.reserveMemory()方法中，我们能清楚的看到，System.gc()会被调用，以清理空间。</li>
+</ul></div>
+</li>
+<li>当然，也不是在任何情况下垃圾收集器都会被触发的
+<div class="component-content component"><ul>
+<li>比如，我们去分配一个超大对象，类似一个超大数组超过堆的最大值，JVM可以判断出垃圾收集并不能解决这个问题，所以直接抛出OutofMemoryError。</li>
+</ul></div>
+</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h3 id="22内存泄漏" class="pagebody-header">
+    2.2、内存泄漏
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>内存泄漏（Memory Leak）</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>也称作“存储渗漏”。严格来说，只有对象不会再被程序用到了，但是GC又不能回收他们的情况，才叫内存泄漏。</li>
+<li>但实际情况很多时候一些不太好的实践（或疏忽）会导致对象的生命周期变得很长甚至导致OOM，也可以叫做宽泛意义上的“内存泄漏”。</li>
+<li>尽管内存泄漏并不会立刻引起程序崩溃，但是一旦发生内存泄漏，程序中的可用内存就会被逐步蚕食，直至耗尽所有内存，最终出现OutofMemory异常，导致程序崩溃。</li>
+<li>注意，这里的存储空间并不是指物理内存，而是指虚拟内存大小，这个虚拟内存大小取决于磁盘交换区设定的大小。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>内存泄露的举例</strong></p>
+</blockquote>
+<p class="component-content component"><strong>官方例子</strong></p>
+<p class="component-content component">左边的图：Java使用可达性分析算法，最上面的数据不可达，就是需要被回收的对象。</p>
+<p class="component-content component">右边的图：后期有一些对象不用了，按道理应该断开引用，但是存在一些链没有断开，从而导致没有办法被回收。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-68b7c557097b352e5c8d97acbb90a44c" id="lht68b7c557097b352e5c8d97acbb90a44c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/273.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>我们的例子</strong></p>
+<div class="component-content component"><ol>
+<li>单例模式
+<div class="component-content component"><ul>
+<li>单例的生命周期和应用程序是一样长的，所以在单例程序中，如果持有对外部对象的引用的话，那么这个外部对象是不能被回收的，则会导致内存泄漏的产生。</li>
+</ul></div>
+</li>
+<li>一些提供close()的资源未关闭导致内存泄漏
+<div class="component-content component"><ul>
+<li>数据库连接 dataSourse.getConnection()，网络连接socket和io连接必须手动close，否则是不能被回收的。</li>
+</ul></div>
+</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="3stop-the-world" class="pagebody-header">
+    3、Stop the World
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>关于 Stop the World 的理解</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>Stop-the-World，简称STW，指的是GC事件发生过程中，会产生应用程序的停顿。停顿产生时整个应用程序线程都会被暂停，没有任何响应，有点像卡死的感觉，这个停顿称为STW。</li>
+<li>可达性分析算法中枚举根节点（GC Roots）会导致所有Java执行线程停顿，为什么需要停顿所有 Java 执行线程呢？
+<div class="component-content component"><ul>
+<li>分析工作必须在一个能确保一致性的快照中进行</li>
+<li>一致性指整个分析期间整个执行系统看起来像被冻结在某个时间点上</li>
+<li>如果出现分析过程中对象引用关系还在不断变化，则分析结果的准确性无法保证</li>
+</ul></div>
+</li>
+<li>被STW中断的应用程序线程会在完成GC之后恢复，频繁中断会让用户感觉像是网速不快造成电影卡带一样，所以我们需要减少STW的发生。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>Stop the World 的注意事项</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>STW事件和采用哪款GC无关，所有的GC都有这个事件。</li>
+<li>哪怕是G1也不能完全避免Stop-the-world情况发生，只能说垃圾回收器越来越优秀，回收效率越来越高，尽可能地缩短了暂停时间。</li>
+<li>STW是JVM在后台自动发起和自动完成的。在用户不可见的情况下，把用户正常的工作线程全部停掉。</li>
+<li>开发中不要用System.gc() ，这会导致Stop-the-World的发生。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>代码感受 Stop the World</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * @author shkstart  shkstart@126.com * @create 2020  15:50 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StopTheWorldDemo</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WorkThread</span> <span style="color:#66d9ef">extends</span> Thread <span style="color:#f92672">{</span>        List<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">[]&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">byte</span><span style="color:#f92672">[]&gt;();</span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>                <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>                    <span style="color:#66d9ef">for</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1000</span><span style="color:#f92672">;</span>i<span style="color:#f92672">++){</span>                        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> buffer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span><span style="color:#ae81ff">1024</span><span style="color:#f92672">];</span>                        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>buffer<span style="color:#f92672">);</span>                    <span style="color:#f92672">}</span>                    <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>list<span style="color:#f92672">.</span><span style="color:#a6e22e">size</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10000</span><span style="color:#f92672">){</span>                        list<span style="color:#f92672">.</span><span style="color:#a6e22e">clear</span><span style="color:#f92672">();</span>                        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span><span style="color:#75715e">//会触发full gc，进而会出现STW事件                    }                }            } catch (Exception ex) {                ex.printStackTrace();            }        }    }    public static class PrintThread extends Thread {        public final long startTime = System.currentTimeMillis();        public void run() {            try {                while (true) {                    // 每秒打印时间信息                    long t = System.currentTimeMillis() - startTime;                    System.out.println(t / 1000 + &#34;.&#34; + t % 1000);                    Thread.sleep(1000);                }            } catch (Exception ex) {                ex.printStackTrace();            }        }    }    public static void main(String[] args) {        WorkThread w = new WorkThread();        PrintThread p = new PrintThread();        //w.start();        p.start();    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>关闭工作线程 w ，观察打印输出：当前时间间隔与上次时间间隔最多相差 0.1s</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">0.01.02.13.14.25.26.37.48.4</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>开启工作线程 w ，观察打印输出：当前时间间隔与上次时间间隔最多相差 0.4s ，可以明显感受到 Stop the World 的存在</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">0.11.22.43.54.65.66.107.118.149.1510.15</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="4垃圾回收的并行与并发" class="pagebody-header">
+    4、垃圾回收的并行与并发
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41并发的概念" class="pagebody-header">
+    4.1、并发的概念
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>并发</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>在操作系统中，是指一个时间段中有几个程序都处于已启动运行到运行完毕之间，且这几个程序都是在同一个处理器上运行</li>
+<li>并发不是真正意义上的“同时进行”，只是CPU把一个时间段划分成几个时间片段（时间区间），然后在这几个时间区间之间来回切换</li>
+<li>由于CPU处理的速度非常快，只要时间间隔处理得当，即可让用户感觉是多个应用程序同时在进行</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-8bc1cee6200c04c8feb853468568d166" id="lht8bc1cee6200c04c8feb853468568d166">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/274.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="42并行的概念" class="pagebody-header">
+    4.2、并行的概念
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>并行</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>当系统有一个以上CPU时，当一个CPU执行一个进程时，另一个CPU可以执行另一个进程，两个进程互不抢占CPU资源，可以同时进行，我们称之为并行（Parallel）</li>
+<li>其实决定并行的因素不是CPU的数量，而是CPU的核心数量，比如一个CPU多个核也可以并行</li>
+<li>适合科学计算，后台处理等弱交互场景</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-879cf8dbdd425f8732c8ab15f1172c58" id="lht879cf8dbdd425f8732c8ab15f1172c58">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/275.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>并发与并行的对比</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>并发，指的是多个事情，在同一时间段内同时发生了。</li>
+<li>并行，指的是多个事情，在同一时间点上同时发生了。</li>
+<li>并发的多个任务之间是互相抢占资源的。并行的多个任务之间是不互相抢占资源的。</li>
+<li>只有在多CPU或者一个CPU多核的情况中，才会发生并行。否则，看似同时发生的事情，其实都是并发执行的。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h3 id="43垃圾回收的并行与串行" class="pagebody-header">
+    4.3、垃圾回收的并行与串行
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>垃圾回收的并行与串行</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程仍处于等待状态。
+<div class="component-content component"><ul>
+<li>如ParNew、Parallel Scavenge、Parallel Old</li>
+</ul></div>
+</li>
+<li>串行（Serial）
+<div class="component-content component"><ul>
+<li>相较于并行的概念，单线程执行。</li>
+<li>如果内存不够，则程序暂停，启动JVM垃圾回收器进行垃圾回收（单线程）</li>
+</ul></div>
+</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-03ce0c015d4c60e7951a641dea1ccbde" id="lht03ce0c015d4c60e7951a641dea1ccbde">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/276.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="44垃圾回收的并发" class="pagebody-header">
+    4.4、垃圾回收的并发
+  </h3>
+</div><blockquote>
+<p class="component-content component"><strong>垃圾回收的并发</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>并发（Concurrent）：指用户线程与垃圾收集线程同时执行（但不一定是并行的，可能会交替执行），垃圾回收线程在执行时不会停顿用户程序的运行。</li>
+<li>比如用户程序在继续运行，而垃圾收集程序线程运行于另一个CPU上；</li>
+<li>典型垃圾回收器：CMS、G1</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ca00780b3b7df43f47d9650532ab8d65" id="lhtca00780b3b7df43f47d9650532ab8d65">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/277.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="5安全点与安全区域" class="pagebody-header">
+    5、安全点与安全区域
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>安全点（Safepoint）</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>程序执行时并非在所有地方都能停顿下来开始GC，只有在特定的位置才能停顿下来开始GC，这些位置称为“安全点（Safepoint）”。</li>
+<li>Safe Point的选择很重要，如果太少可能导致GC等待的时间太长，如果太频繁可能导致运行时的性能问题。</li>
+<li>大部分指令的执行时间都非常短暂，通常会根据“是否具有让程序长时间执行的特征”为标准。</li>
+<li>比如：选择一些执行时间较长的指令作为Safe Point，如方法调用、循环跳转和异常跳转等。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>安全点的中断实现方式</strong></p>
+</blockquote>
+<p class="component-content component">如何在GC发生时，检查所有线程都跑到最近的安全点停顿下来呢？</p>
+<div class="component-content component"><ol>
+<li>抢先式中断：（目前没有虚拟机采用了）首先中断所有线程。如果还有线程不在安全点，就恢复线程，让线程跑到安全点。</li>
+<li>主动式中断：设置一个中断标志，各个线程运行到Safe Point的时候主动轮询这个标志，如果中断标志为真，则将自己进行中断挂起。（有轮询的机制）</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>安全区域（Safe Region）</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>Safepoint 机制保证了程序执行时，在不太长的时间内就会遇到可进入GC的Safepoint。但是，程序“不执行”的时候呢？</li>
+<li>例如线程处于Sleep状态或Blocked 状态，这时候线程无法响应JVM的中断请求，“走”到安全点去中断挂起，JVM也不太可能等待线程被唤醒。</li>
+<li>对于这种情况，就需要安全区域（Safe Region）来解决。</li>
+<li>安全区域是指在一段代码片段中，对象的引用关系不会发生变化，在这个区域中的任何位置开始GC都是安全的。我们也可以把Safe Region看做是被扩展了的Safepoint。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>安全区域的执行流程</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>当线程运行到Safe Region的代码时，首先标识已经进入了Safe Region，如果这段时间内发生GC，JVM会忽略标识为Safe Region状态的线程</li>
+<li>当线程即将离开Safe Region时，会检查JVM是否已经完成GC，如果完成了，则继续运行，否则线程必须等待直到收到可以安全离开Safe Region的信号为止；</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="6再谈引用强引用" class="pagebody-header">
+    6、再谈引用：强引用
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>再谈引用</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>我们希望能描述这样一类对象：当内存空间还足够时，则能保留在内存中；如果内存空间在进行垃圾收集后还是很紧张，则可以抛弃这些对象。</li>
+<li>既偏门又非常高频的面试题：强引用、软引用、弱引用、虚引用有什么区别？具体使用场景是什么？</li>
+<li>在JDK1.2版之后，Java对引用的概念进行了扩充，将引用分为：
+<div class="component-content component"><ul>
+<li>强引用（Strong Reference）</li>
+<li>软引用（Soft Reference）</li>
+<li>弱引用（Weak Reference）</li>
+<li>虚引用（Phantom Reference）</li>
+</ul></div>
+</li>
+<li>这4种引用强度依次逐渐减弱。除强引用外，其他3种引用均可以在java.lang.ref包中找到它们的身影。如下图，显示了这3种引用类型对应的类，开发人员可以在应用程序中直接使用它们。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-4aa5d7dadea3fad28c7db63a1a77b276" id="lht4aa5d7dadea3fad28c7db63a1a77b276">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/278.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>四中引用类型的举例</strong></p>
+</blockquote>
+<p class="component-content component">Reference子类中只有终结器引用是包内可见的，其他3种引用类型均为public，可以在应用程序中直接使用</p>
+<div class="component-content component"><ol>
+<li>强引用（StrongReference）：最传统的“引用”的定义，是指在程序代码之中普遍存在的引用赋值，即类似“object obj=new Object()”这种引用关系。无论任何情况下，只要强引用关系还存在，垃圾收集器就永远不会回收掉被引用的对象。</li>
+<li>软引用（SoftReference）：在系统将要发生内存溢出之前，将会把这些对象列入回收范围之中进行第二次回收。如果这次回收后还没有足够的内存，才会抛出内存溢出异常。</li>
+<li>弱引用（WeakReference）：被弱引用关联的对象只能生存到下一次垃圾收集之前。当垃圾收集器工作时，无论内存空间是否足够，都会回收掉被弱引用关联的对象。</li>
+<li>虚引用（PhantomReference）：一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来获得一个对象的实例。为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>强引用</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>在Java程序中，最常见的引用类型是强引用（普通系统99%以上都是强引用），也就是我们最常见的普通对象引用，也是默认的引用类型。</li>
+<li>当在Java语言中使用new操作符创建一个新的对象，并将其赋值给一个变量的时候，这个变量就成为指向该对象的一个强引用。</li>
+<li>只要强引用的对象是可触及的，垃圾收集器就永远不会回收掉被引用的对象。</li>
+<li>对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，就是可以当做垃圾被收集了，当然具体回收时机还是要看垃圾收集策略。</li>
+<li>相对的，软引用、弱引用和虚引用的对象是软可触及、弱可触及和虚可触及的，在一定条件下，都是可以被回收的。所以，强引用是造成Java内存泄漏的主要原因之一。</li>
+</ol></div>
+<blockquote>
+<p class="component-content component"><strong>强引用代码举例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** *  强引用的测试 * * @author shkstart  shkstart@126.com * @create 2020  16:05 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StrongReferenceTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        StringBuffer str <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuffer <span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello,尚硅谷&#34;</span><span style="color:#f92672">);</span>        StringBuffer str1 <span style="color:#f92672">=</span> str<span style="color:#f92672">;</span>        str <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">3000</span><span style="color:#f92672">);</span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>        <span style="color:#f92672">}</span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>str1<span style="color:#f92672">);</span>    <span style="color:#f92672">}}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>程序输出</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">Hello,尚硅谷</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>局部变量str指向stringBuffer实例所在堆空间，通过str可以操作该实例，那么str就是stringBuffer实例的强引用对应内存结构：</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>StringBuffer str <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuffer<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello mogublog&#34;</span><span style="color:#f92672">);</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2f04c2ffe16bbe82279f8054b01075a4" id="lht2f04c2ffe16bbe82279f8054b01075a4">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/279.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>如果此时，再运行一个赋值语句</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>StringBuffer str <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StringBuffer<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello mogublog&#34;</span><span style="color:#f92672">);</span>StringBuffer str1 <span style="color:#f92672">=</span> str<span style="color:#f92672">;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d751a190c6c522401ed65541662edfe1" id="lhtd751a190c6c522401ed65541662edfe1">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/280.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<div class="component-content component"><ul>
+<li>在程序中我们将 str = null; 则 原来堆中的对象也不会被回收，因为还有其它对象指向该区域</li>
+</ul></div>
+<hr>
+<p class="component-content component"><strong>总结</strong></p>
+<p class="component-content component">本例中的两个引用，都是强引用，强引用具备以下特点：</p>
+<div class="component-content component"><ol>
+<li>强引用可以直接访问目标对象。</li>
+<li>强引用所指向的对象在任何时候都不会被系统回收，虚拟机宁愿抛出OOM异常，也不会回收强引用所指向对象。</li>
+<li>强引用可能导致内存泄漏。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="7再谈引用软引用" class="pagebody-header">
+    7、再谈引用：软引用
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>软引用（Soft Reference）：内存不足即回收</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>软引用是用来描述一些还有用，但非必需的对象。只被软引用关联着的对象，在系统将要发生内存溢出异常前，会把这些对象列进回收范围之中进行第二次回收，如果这次回收还没有足够的内存，才会抛出内存溢出异常。注意，这里的第一次回收是不可达的对象</li>
+<li>软引用通常用来实现内存敏感的缓存。比如：高速缓存就有用到软引用。如果还有空闲内存，就可以暂时保留缓存，当内存不足时清理掉，这样就保证了使用缓存的同时，不会耗尽内存。</li>
+<li>垃圾回收器在某个时刻决定回收软可达的对象的时候，会清理软引用，并可选地把引用存放到一个引用队列（Reference Queue）。</li>
+<li>类似弱引用，只不过Java虚拟机会尽量让软引用的存活时间长一些，迫不得已才清理。</li>
+<li>一句话概括：当内存足够时，不会回收软引用可达的对象。内存不够时，会回收软引用的可达对象</li>
+</ol></div>
+<hr>
+<p class="component-content component">在JDK1.2版之后提供了SoftReference类来实现软引用</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 声明强引用Object obj = new Object();// 创建一个软引用SoftReference&lt;Object&gt; sf = new SoftReference&lt;&gt;(obj);obj = null; //销毁强引用，这是必须的，不然会存在强引用和软引用
+</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component"><strong>软引用代码举例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 软引用的测试：内存不足即回收 *  -Xms10m -Xmx10m * * @author shkstart  shkstart@126.com * @create 2020  16:06 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SoftReferenceTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span> <span style="color:#f92672">{</span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">;</span>        <span style="color:#66d9ef">public</span> String name<span style="color:#f92672">;</span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">User</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> id<span style="color:#f92672">,</span> String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>        <span style="color:#f92672">}</span>        <span style="color:#a6e22e">@Override</span>        <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;[id=&#34;</span> <span style="color:#f92672">+</span> id <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, name=&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;] &#34;</span><span style="color:#f92672">;</span>        <span style="color:#f92672">}</span>    <span style="color:#f92672">}</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        <span style="color:#75715e">//创建对象，建立软引用        SoftReference&lt;User&gt; userSoftRef = new SoftReference&lt;User&gt;(new User(1, &#34;songhk&#34;));        /*        上面的一行代码，等价于如下的三行代码            User u1 = new User(1, &#34;songhk&#34;);            SoftReference&lt;User&gt; userSoftRef = new SoftReference&lt;User&gt;(u1);            u1 = null;//取消强引用         */        //从软引用中重新获得强引用对象        System.out.println(userSoftRef.get());        /*            垃圾回收之后获得软引用中的对象            由于堆空间内存足够，所有不会回收软引用的可达对象。         */        System.gc();        System.out.println(&#34;After GC:&#34;);        System.out.println(userSoftRef.get());        try {            //让系统认为内存资源紧张、不够            byte[] b = new byte[1024 * 1024 * 7];        } catch (Throwable e) {            e.printStackTrace();        } finally {            /*                再次从软引用中获取数据                在内存不够，报OOM之前，垃圾回收器会回收软引用的可达对象。             */            System.out.println(userSoftRef.get());//        }    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>在 JVM 内存不足时，会清理软引用对象</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[id=1, name=songhk] After GC:[id=1, name=songhk] java.lang.OutOfMemoryError: Java heap space	at com.atguigu.java1.SoftReferenceTest.main(SoftReferenceTest.java:51)null</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="8再谈引用弱引用" class="pagebody-header">
+    8、再谈引用：弱引用
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>弱引用（Weak Reference）发现即回收</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>弱引用也是用来描述那些非必需对象，只被弱引用关联的对象只能生存到下一次垃圾收集发生为止。在系统GC时，只要发现弱引用，不管系统堆空间使用是否充足，都会回收掉只被弱引用关联的对象。</li>
+<li>但是，由于垃圾回收器的线程通常优先级很低，因此，并不一定能很快地发现持有弱引用的对象。在这种情况下，弱引用对象可以存在较长的时间。</li>
+<li>弱引用和软引用一样，在构造弱引用时，也可以指定一个引用队列，当弱引用对象被回收时，就会加入指定的引用队列，通过这个队列可以跟踪对象的回收情况。</li>
+<li>软引用、弱引用都非常适合来保存那些可有可无的缓存数据。如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。</li>
+<li>弱引用对象与软引用对象的最大不同就在于，当GC在进行回收时，需要通过算法检查是否回收软引用对象，而对于弱引用对象，GC总是进行回收。弱引用对象更容易、更快被GC回收。</li>
+</ol></div>
+<hr>
+<p class="component-content component">在JDK1.2版之后提供了WeakReference类来实现弱引用</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 声明强引用Object obj = new Object();// 创建一个弱引用WeakReference&lt;Object&gt; sf = new WeakReference&lt;&gt;(obj);obj = null; //销毁强引用，这是必须的，不然会存在强引用和弱引用
+</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component"><strong>面试题：你开发中使用过WeakHashMap吗？</strong></p>
+</blockquote>
+<p class="component-content component"><strong>WeakHashMap用来存储图片信息，可以在内存不足的时候，及时回收，避免了OOM</strong></p>
+<div class="component-content component"><ul>
+<li>来，看源码，WeakHashMap 类中同样也维护了一个 Entry[] 数组</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Entry<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> table<span style="color:#f92672">;</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>Entry 类继承了 WeakReference 类</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> WeakReference<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>    V value<span style="color:#f92672">;</span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> hash<span style="color:#f92672">;</span>    Entry<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component"><strong>软引用代码举例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 弱引用的测试 * * @author shkstart  shkstart@126.com * @create 2020  16:06 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WeakReferenceTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span> <span style="color:#f92672">{</span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">User</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> id<span style="color:#f92672">,</span> String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">id</span> <span style="color:#f92672">=</span> id<span style="color:#f92672">;</span>            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> name<span style="color:#f92672">;</span>        <span style="color:#f92672">}</span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">;</span>        <span style="color:#66d9ef">public</span> String name<span style="color:#f92672">;</span>        <span style="color:#a6e22e">@Override</span>        <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">toString</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;[id=&#34;</span> <span style="color:#f92672">+</span> id <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, name=&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;] &#34;</span><span style="color:#f92672">;</span>        <span style="color:#f92672">}</span>    <span style="color:#f92672">}</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>        <span style="color:#75715e">//构造了弱引用        WeakReference&lt;User&gt; userWeakRef = new WeakReference&lt;User&gt;(new User(1, &#34;songhk&#34;));        //从弱引用中重新获取对象        System.out.println(userWeakRef.get());        System.gc();        // 不管当前内存空间足够与否，都会回收它的内存        System.out.println(&#34;After GC:&#34;);        // 重新尝试从弱引用中获取对象        System.out.println(userWeakRef.get());    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>执行垃圾回收后，软引用对象必定被清除</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[id=1, name=songhk] After GC:null</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="9再谈引用虚引用" class="pagebody-header">
+    9、再谈引用：虚引用
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>虚引用（Phantom Reference）：对象回收跟踪</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>也称为“幽灵引用”或者“幻影引用”，是所有引用类型中最弱的一个</li>
+<li>一个对象是否有虚引用的存在，完全不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它和没有引用几乎是一样的，随时都可能被垃圾回收器回收。</li>
+<li>它不能单独使用，也无法通过虚引用来获取被引用的对象。当试图通过虚引用的get()方法取得对象时，总是null ，即通过虚引用无法获取到我们的数据</li>
+<li>为一个对象设置虚引用关联的唯一目的在于跟踪垃圾回收过程。比如：能在这个对象被收集器回收时收到一个系统通知。</li>
+<li>虚引用必须和引用队列一起使用。虚引用在创建时必须提供一个引用队列作为参数。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象后，将这个虚引用加入引用队列，以通知应用程序对象的回收情况。</li>
+<li>由于虚引用可以跟踪对象的回收时间，因此，也可以将一些资源释放操作放置在虚引用中执行和记录。</li>
+</ol></div>
+<hr>
+<p class="component-content component">在JDK1.2版之后提供了PhantomReference类来实现虚引用。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 声明强引用Object obj = new Object();// 声明引用队列ReferenceQueue phantomQueue = new ReferenceQueue();// 声明虚引用（还需要传入引用队列）PhantomReference&lt;Object&gt; sf = new PhantomReference&lt;&gt;(obj, phantomQueue);obj = null; 
+</span></span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component"><strong>虚引用代码示例</strong></p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/** * 虚引用的测试 * * @author shkstart  shkstart@126.com * @create 2020  16:07 */</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReferenceTest</span> <span style="color:#f92672">{</span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> PhantomReferenceTest obj<span style="color:#f92672">;</span><span style="color:#75715e">//当前类对象的声明    static ReferenceQueue&lt;PhantomReferenceTest&gt; phantomQueue = null;//引用队列    public static class CheckRefQueue extends Thread {        @Override        public void run() {            while (true) {                if (phantomQueue != null) {                    PhantomReference&lt;PhantomReferenceTest&gt; objt = null;                    try {                        objt = (PhantomReference&lt;PhantomReferenceTest&gt;) phantomQueue.remove();                    } catch (InterruptedException e) {                        e.printStackTrace();                    }                    if (objt != null) {                        System.out.println(&#34;追踪垃圾回收过程：PhantomReferenceTest实例被GC了&#34;);                    }                }            }        }    }    @Override    protected void finalize() throws Throwable { //finalize()方法只能被调用一次！        super.finalize();        System.out.println(&#34;调用当前类的finalize()方法&#34;);        obj = this;    }    public static void main(String[] args) {        Thread t = new CheckRefQueue();        t.setDaemon(true);//设置为守护线程：当程序中没有非守护线程时，守护线程也就执行结束。        t.start();        phantomQueue = new ReferenceQueue&lt;PhantomReferenceTest&gt;();        obj = new PhantomReferenceTest();        //构造了 PhantomReferenceTest 对象的虚引用，并指定了引用队列        PhantomReference&lt;PhantomReferenceTest&gt; phantomRef = new PhantomReference&lt;PhantomReferenceTest&gt;(obj, phantomQueue);        try {            //不可获取虚引用中的对象            System.out.println(phantomRef.get());            //将强引用去除            obj = null;            //第一次进行GC,由于对象可复活，GC无法回收该对象            System.gc();            Thread.sleep(1000);            if (obj == null) {                System.out.println(&#34;obj 是 null&#34;);            } else {                System.out.println(&#34;obj 可用&#34;);            }            System.out.println(&#34;第 2 次 gc&#34;);            obj = null;            System.gc(); //一旦将obj对象回收，就会将此虚引用存放到引用队列中。            Thread.sleep(1000);            if (obj == null) {                System.out.println(&#34;obj 是 null&#34;);            } else {                System.out.println(&#34;obj 可用&#34;);            }        } catch (InterruptedException e) {            e.printStackTrace();        }    }}
+</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>第一次尝试获取虚引用的值，发现无法获取的，这是因为虚引用是无法直接获取对象的值，然后进行第一次GC，因为会调用finalize方法，将对象复活了，所以对象没有被回收</li>
+<li>但是调用第二次GC操作的时候，因为finalize方法只能执行一次，所以就触发了GC操作，将对象回收了，同时将会触发第二个操作就是将待回收的对象存入到引用队列中。</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">null调用当前类的finalize()方法obj 可用第 2 次 gc追踪垃圾回收过程：PhantomReferenceTest实例被GC了obj 是 null</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="10再谈引用终结器引用" class="pagebody-header">
+    10、再谈引用：终结器引用
+  </h2>
+</div><div class="component-content component"><ol>
+<li>它用于实现对象的finalize() 方法，也可以称为终结器引用</li>
+<li>无需手动编码，其内部配合引用队列使用</li>
+<li>在GC时，终结器引用入队。由Finalizer线程通过终结器引用找到被引用对象调用它的finalize()方法，第二次GC时才回收被引用的对象</li>
+</ol></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 30, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="SpringMVC之入门" />
+<meta property="og:description" content="SpringMVC 的基本概念 1、关于三层架构和 MVC 1.1、三层架构 我们的开发架构一般都是基于两种形式，一种是 C/S 架构，也就是客户端/服务器，另一种是 B/S 架构，也就" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/springmvc%E4%B9%8B%E5%85%A5%E9%97%A8-springmvc%E4%B9%8B%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:32:18+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:32:18+00:00" />
+<title>SpringMVC之入门</title>
+
+    <link rel="canonical" href="/posts/springmvc%E4%B9%8B%E5%85%A5%E9%97%A8-springmvc%E4%B9%8B%E5%85%A5%E9%97%A8/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">SpringMVC之入门</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/springmvc" class="tag">
+                    SpringMVC
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="springmvc-的基本概念" class="pagebody-header">
+    SpringMVC 的基本概念
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1关于三层架构和-mvc" class="pagebody-header">
+    1、关于三层架构和 MVC
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11三层架构" class="pagebody-header">
+    1.1、三层架构
+  </h3>
+</div><p class="component-content component">我们的开发架构一般都是基于两种形式，一种是 C/S 架构，也就是客户端/服务器，另一种是 B/S 架构，也就是浏览器服务器。</p>
+<p class="component-content component">在 JavaEE 开发中，几乎全都是基于 B/S 架构的开发。那么在 B/S 架构中，系统标准的三层架构包括:</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">表现层</p>
+</li>
+<li>
+<p class="component-content component">业务层</p>
+</li>
+<li>
+<p class="component-content component">持久层</p>
+</li>
+</ul></div>
+<p class="component-content component">三层架构在我们 的实际开发中使用的非常多，所以我们的案例也都是 基于三层架构设计的。</p>
+<p class="component-content component">三层架构中，每一层各司其职，接下来我们就说说每层都负责哪些方面:</p>
+
+<div class="component-content pagebody component">
+  <h4 id="表现层" class="pagebody-header">
+    表现层:
+  </h4>
+</div><blockquote>
+<p class="component-content component">也就是我们常说的 web 层。它负责接收客户端请求，向客户端响应结果，通常客户端使用 http 协议请求 web 层，web 需要接收 http 请求，完成 http 响应。</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">表现层包括展示层和控制层:控制层负责接收请求，展示层负责结果的展示。</p>
+</li>
+<li>
+<p class="component-content component">表现层依赖业务层，接收到客户端请求一般会调用业务层进行业务处理，并将处理结果响应给客户端。</p>
+</li>
+<li>
+<p class="component-content component">表现层的设计一般都使用 MVC 模型。(MVC 是表现层的设计模型，和其他层没有关系)</p>
+</li>
+</ul></div>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h4 id="业务层" class="pagebody-header">
+    业务层:
+  </h4>
+</div><blockquote>
+<p class="component-content component">也就是我们常说的 service 层。它负责业务逻辑处理，和我们开发项目的需求息息相关。web 层依赖业 务层，但是业务层不依赖 web 层。</p>
+<p class="component-content component">业务层在业务处理时可能会依赖持久层，如果要对数据持久化需要保证事务一致性。(也就是我们说的， 事务应该放到业务层来控制)</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h4 id="持久层" class="pagebody-header">
+    持久层:
+  </h4>
+</div><blockquote>
+<p class="component-content component">也就是我们是常说的 dao 层。负责数据持久化，包括数据层即数据库和数据访问层，数据库是对数据进 行持久化的载体，数据访问层是业务层和持久层交互的接口，业务层需要通过数据访问层将数据持久化到数据库中。通俗的讲，持久层就是和数据库交互，对数据库表进行曾删改查的。</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="12mvc模型" class="pagebody-header">
+    1.2、MVC模型
+  </h3>
+</div><p class="component-content component">MVC 全名是 Model View Controller，是模型(model)-视图(view)-控制器(controller)的缩写， 是一种用于设计创建 Web 应用程序表现层的模式。MVC 中每个部分各司其职:</p>
+<p class="component-content component">Model(模型):</p>
+<blockquote>
+<p class="component-content component">通常指的就是我们的数据模型。作用一般情况下用于封装数据。</p>
+</blockquote>
+<p class="component-content component">View(视图):</p>
+<blockquote>
+<p class="component-content component">通常指的就是我们的 jsp 或者 html。作用一般就是展示数据的。</p>
+<p class="component-content component">通常视图是依据模型数据创建的。</p>
+</blockquote>
+<p class="component-content component">Controller(控制器):</p>
+<blockquote>
+<p class="component-content component">是应用程序中处理用户交互的部分。作用一般就是处理程序逻辑的。</p>
+<p class="component-content component">它相对于前两个不是很好理解，这里举个例子:</p>
+<p class="component-content component">例如:</p>
+<p class="component-content component">我们要保存一个用户的信息，该用户信息中包含了姓名，性别，年龄等等。</p>
+<p class="component-content component">这时候表单输入要求年龄必须是 1~100 之间的整数。姓名和性别不能为空。并且把数据填充到模型之中。</p>
+<p class="component-content component">此时除了 js 的校验之外，服务器端也应该有数据准确性的校验，那么校验就是控制器的该做的。</p>
+<p class="component-content component">当校验失败后，由控制器负责把错误页面展示给使用者。</p>
+<p class="component-content component">如果校验成功，也是控制器负责把数据填充到模型，并且调用业务层实现完整的业务需求。</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h2 id="2springmvc-概述" class="pagebody-header">
+    2、SpringMVC 概述
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21springmvc是什么" class="pagebody-header">
+    2.1、SpringMVC是什么
+  </h3>
+</div><blockquote>
+<p class="component-content component">​	SpringMVC 是一种基于 Java 的实现 MVC 设计模型的请求驱动类型的轻量级 Web 框架，属于 SpringFrameWork 的后续产品，已经融合在 Spring Web Flow 里面。Spring 框架提供了构建 Web 应用程序的全功能 MVC 模块。使用 Spring 可插入的 MVC 架构，从而在使用Spring进行WEB开发时，可以选择使用 Spring的 Spring MVC 框架或集成其他 MVC 开发框架，如 Struts1(现在一般不用)，Struts2 等。</p>
+<p class="component-content component">​	SpringMVC 已经成为目前最主流的 MVC 框架之一，并且随着 Spring3.0 的发布，全面超越 Struts2，成 为最优秀的 MVC 框架。</p>
+<p class="component-content component">​	它通过一套注解，让一个简单的 Java 类成为处理请求的控制器，而无须实现任何接口。同时它还支持 RESTful 编程风格的请求。</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="22springmvc在三层架构的位置" class="pagebody-header">
+    2.2、SpringMVC在三层架构的位置
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-2a02b3aafaacd4a220d44ac8a1efaee4" id="lht2a02b3aafaacd4a220d44ac8a1efaee4">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/1.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="23springmvc的优势" class="pagebody-header">
+    2.3、SpringMVC的优势
+  </h3>
+</div><p class="component-content component">1、清晰的角色划分:</p>
+<div class="component-content component"><ul>
+<li>前端控制器(DispatcherServlet)</li>
+<li>请求到处理器映射(HandlerMapping)</li>
+<li>处理器适配器(HandlerAdapter)</li>
+<li>视图解析器(ViewResolver)</li>
+<li>处理器或页面控制器(Controller)</li>
+<li>验证器( Validator)</li>
+<li>命令对象(Command 请求参数绑定到的对象就叫命令对象)</li>
+<li>表单对象(Form Object 提供给表单展示和提交到的对象就叫表单对象)。</li>
+</ul></div>
+<p class="component-content component">2、分工明确，而且扩展点相当灵活，可以很容易扩展，虽然几乎不需要。</p>
+<p class="component-content component">3、由于命令对象就是一个 POJO，无需继承框架特定 API，可以使用命令对象直接作为业务对象。</p>
+<p class="component-content component">4、和 Spring 其他框架无缝集成，是其它 Web 框架所不具备的。</p>
+<p class="component-content component">5、可适配，通过 HandlerAdapter 可以支持任意的类作为处理器。</p>
+<p class="component-content component">6、可定制性，HandlerMapping、ViewResolver 等能够非常简单的定制。</p>
+<p class="component-content component">7、功能强大的数据验证、格式化、绑定机制。</p>
+<p class="component-content component">8、利用 Spring 提供的 Mock 对象能够非常简单的进行 Web 层单元测试。</p>
+<p class="component-content component">9、本地化、主题的解析的支持，使我们更容易进行国际化和主题的切换。</p>
+<p class="component-content component">10、强大的 JSP 标签库，使 JSP 编写更容易。</p>
+<p class="component-content component">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;还有比如 RESTful 风格的支持、简单的文件上传、约定大于配置的契约式编程支持、基于注解的零配置支持等等。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="24springmvc-和-struts2-的优略分析" class="pagebody-header">
+    2.4、SpringMVC 和 Struts2 的优略分析
+  </h3>
+</div><p class="component-content component">共同点:</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">它们都是表现层框架，都是基于 MVC 模型编写的。</p>
+</li>
+<li>
+<p class="component-content component">它们的底层都离不开原始 ServletAPI。</p>
+</li>
+<li>
+<p class="component-content component">它们处理请求的机制都是一个核心控制器。</p>
+</li>
+</ul></div>
+<p class="component-content component">区别:</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">Spring MVC 的入口是 Servlet, 而 Struts2 是 Filter</p>
+</li>
+<li>
+<p class="component-content component">Spring MVC 是基于方法设计的，而 Struts2 是基于类，Struts2 每次执行都会创建一个动作类。所以 Spring MVC 会稍微比 Struts2 快些。</p>
+</li>
+<li>
+<p class="component-content component">Spring MVC 使用更加简洁,同时还支持 JSR303, 处理 ajax 的请求更方便</p>
+<p class="component-content component">(JSR303 是一套 JavaBean 参数校验的标准，它定义了很多常用的校验注解，我们可以直接将这些注
+解加在我们 JavaBean 的属性上面，就可以在需要校验的时候进行校验了。)</p>
+</li>
+<li>
+<p class="component-content component">Struts2 的 OGNL 表达式使页面的开发效率相比 Spring MVC 更高些，但执行效率并没有比 JSTL 提升，尤其是 struts2 的表单标签，远没有 html 执行效率高。</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h1 id="springmvc-的入门" class="pagebody-header">
+    SpringMVC 的入门
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1springmvc-的入门案例" class="pagebody-header">
+    1、SpringMVC 的入门案例
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11前期准备" class="pagebody-header">
+    1.1、前期准备
+  </h3>
+</div><p class="component-content component">下载开发包: <a href="https://spring.io/projects">https://spring.io/projects</a></p>
+<p class="component-content component">其实spring mvc的jar包就在之前我们的spring框架开发包中。</p>
+<p class="component-content component"><strong>创建一个 javaweb 工程</strong></p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b66cb9d0d870bebde2c59627dc48198c" id="lhtb66cb9d0d870bebde2c59627dc48198c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/2.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong>创建一个 jsp 用于发送请求</strong></p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-eaaec9de2b7314fff6ef3c419b37dc2f" id="lhteaaec9de2b7314fff6ef3c419b37dc2f">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/3.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">jsp 中的内容:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">&lt;a href=&#34;${pageContext.request.contextPath}/hello&#34;&gt;SpringMVC入门案例&lt;/a&gt; &lt;br/&gt;
+&lt;a href=&#34;hello&#34;&gt;SpringMVC入门案例&lt;/a&gt;</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="12拷贝jar包" class="pagebody-header">
+    1.2、拷贝jar包
+  </h3>
+</div><p class="component-content component">spring mvc的jar包就在</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-842b5fca2eb1a78669384a9360da76b8" id="lht842b5fca2eb1a78669384a9360da76b8">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/4.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">除了上面两个 jar 包之外，还需要拷贝 spring 的注解 ioc 所需 jar 包(包括一个 aop 的 jar 包)。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-1e412a500c960f32d5fedd80d690d2d6" id="lht1e412a500c960f32d5fedd80d690d2d6">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/5.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="13配置核心控制器-一个-servlet" class="pagebody-header">
+    1.3、配置核心控制器-一个 Servlet
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;web-app</span> <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://java.sun.com/xml/ns/javaee&#34;</span> <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://java.sun.com/xml/ns/javaee
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">																																http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&#34;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;WebApp_ID&#34;</span> <span style="color:#a6e22e">version=</span><span style="color:#e6db74">&#34;2.5&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- 配置 spring mvc 的核心控制器 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;servlet-name&gt;</span>SpringMVCDispatcherServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span>            org.springframework.web.servlet.DispatcherServlet
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/servlet-class&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!-- 配置初始化参数，用于读取 SpringMVC 的配置文件 --&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;init-param&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;param-name&gt;</span>contextConfigLocation<span style="color:#f92672">&lt;/param-name&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;param-value&gt;</span>classpath:SpringMVC.xml<span style="color:#f92672">&lt;/param-value&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/init-param&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!-- 配置 servlet 的对象的创建时间点:应用加载时创建。 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">                    取值只能是非 0 正整数，表示启动顺序 --&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;load-on-startup&gt;</span>1<span style="color:#f92672">&lt;/load-on-startup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/servlet&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;servlet-mapping&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;servlet-name&gt;</span>SpringMVCDispatcherServlet<span style="color:#f92672">&lt;/servlet-name&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;url-pattern&gt;</span>/<span style="color:#f92672">&lt;/url-pattern&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/servlet-mapping&gt;</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="14创建-spring-mvc-的配置文件" class="pagebody-header">
+    1.4、创建 spring mvc 的配置文件
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;beans</span> <span style="color:#a6e22e">xmlns=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:mvc=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/mvc&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:context=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/context&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xmlns:xsi=</span><span style="color:#e6db74">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#a6e22e">xsi:schemaLocation=</span><span style="color:#e6db74">&#34;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/context
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">http://www.springframework.org/schema/context/spring-context.xsd&#34;</span><span style="color:#f92672">&gt;</span> <span style="color:#75715e">&lt;!-- 配置创建 spring 容器要扫描的包 --&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;context:component-scan</span> <span style="color:#a6e22e">base-package=</span><span style="color:#e6db74">&#34;com.itheima&#34;</span><span style="color:#f92672">&gt;&lt;/context:component-scan&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">&lt;!-- 配置视图解析器 --&gt;</span> bean
+</span></span><span style="display:flex;"><span>    class=&#34;org.springframework.web.servlet.view.InternalResourceViewResolver&#34;&gt;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;prefix&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;/WEB-INF/pages/&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;property</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#34;suffix&#34;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#34;.jsp&#34;</span><span style="color:#f92672">&gt;&lt;/property&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/beans&gt;</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="15编写控制器并使用注解配置" class="pagebody-header">
+    1.5、编写控制器并使用注解配置
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;helloController&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/hello&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">sayHello</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HelloController 的 sayHello 方法执行了。。。。&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="16测试" class="pagebody-header">
+    1.6、测试
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ca08318e84007ae9def7975dcd1a6c9a" id="lhtca08318e84007ae9def7975dcd1a6c9a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/6.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2入门案例的执行过程及原理分析" class="pagebody-header">
+    2、入门案例的执行过程及原理分析
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21案例的执行过程" class="pagebody-header">
+    2.1、案例的执行过程
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-fd21cf64923e9c6dd849934e6d14685c" id="lhtfd21cf64923e9c6dd849934e6d14685c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/7.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">1、服务器启动，应用被加载。读取到 web.xml 中的配置创建 spring 容器并且初始化容器中的对象。</p>
+<p class="component-content component">从入门案例中可以看到的是:HelloController 和 InternalResourceViewResolver，但是远不止这些。</p>
+<p class="component-content component">2、浏览器发送请求，被 DispatherServlet 捕获，该 Servlet 并不处理请求，而是把请求转发出去。转发 的路径是根据请求 URL，匹配</p>
+<p class="component-content component">@RequestMapping 中的内容。</p>
+<p class="component-content component">3、匹配到了后，执行对应方法。该方法有一个返回值。</p>
+<p class="component-content component">4、根据方法的返回值，借助 InternalResourceViewResolver 找到对应的结果视图。</p>
+<p class="component-content component">5、渲染结果视图，响应浏览器。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="22springmvc的请求响应流程" class="pagebody-header">
+    2.2、SpringMVC的请求响应流程
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-4e42f72edb666fceb1220df87463124d" id="lht4e42f72edb666fceb1220df87463124d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/8.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="3入门案例中涉及的组件" class="pagebody-header">
+    3、入门案例中涉及的组件
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="31dispatcherservlet前端控制器" class="pagebody-header">
+    3.1、DispatcherServlet:前端控制器
+  </h3>
+</div><p class="component-content component">​	用户请求到达前端控制器，它就相当于 mvc 模式中的 c，dispatcherServlet 是整个流程控制的中心，由它调用其它组件处理用户的请求，dispatcherServlet 的存在降低了组件之间的耦合性。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32handlermapping处理器映射器" class="pagebody-header">
+    3.2、HandlerMapping:处理器映射器
+  </h3>
+</div><p class="component-content component">​	HandlerMapping 负责根据用户请求找到 Handler 即处理器，SpringMVC 提供了不同的映射器实现不同的映射方式，例如:配置文件方式，实现接口方式，注解方式等。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="33handler处理器" class="pagebody-header">
+    3.3、Handler:处理器
+  </h3>
+</div><p class="component-content component">​	它就是我们开发中要编写的具体业务控制器。由 DispatcherServlet 把用户请求转发到 Handler。由 Handler 对具体的用户请求进行处理。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="34handladapter处理器适配器" class="pagebody-header">
+    3.4、HandlAdapter:处理器适配器
+  </h3>
+</div><p class="component-content component">通过 HandlerAdapter 对处理器进行执行，这是适配器模式的应用，通过扩展适配器可以对更多类型的处理器进行执行。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-4387bacacc341fce24baf015caa417f9" id="lht4387bacacc341fce24baf015caa417f9">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/9.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="35view-resolver视图解析器" class="pagebody-header">
+    3.5、View Resolver:视图解析器
+  </h3>
+</div><p class="component-content component">​	View Resolver 负责将处理结果生成 View 视图，View Resolver 首先根据逻辑视图名解析成物理视图名，即具体的页面地址，再生成 View 视图对象，最后对 View 进行渲染将处理结果通过页面展示给用户。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="36view视图" class="pagebody-header">
+    3.6、View:视图
+  </h3>
+</div><p class="component-content component">SpringMVC 框架提供了很多的 View 视图类型的支持，包括:jstlView、freemarkerView、pdfView 等。我们最常用的视图就是 jsp。</p>
+<p class="component-content component">一般情况下需要通过页面标签或页面模版技术将模型数据通过页面展示给用户，需要由程序员根据业务需求开 发具体的页面。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="37-mvcannotation-driven-说明" class="pagebody-header">
+    3.7、&lt; mvc:annotation-driven &gt;说明
+  </h3>
+</div><p class="component-content component">在 SpringMVC 的各个组件中，处理器映射器、处理器适配器、视图解析器称为 SpringMVC 的三大组件。</p>
+<p class="component-content component">使用&lt; mvc:annotation-driven &gt;自动加载 RequestMappingHandlerMapping(处理映射器)和 RequestMappingHandlerAdapter ( 处 理</p>
+<p class="component-content component">适 配 器 ) ， 可 用 在 SpringMVC.xml 配 置 文 件 中 使 用 &lt; mvc:annotation-driven &gt;替代注解处理器和适配器的配置。</p>
+<p class="component-content component">它就相当于在 xml 中配置了:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- 上面的标签相当于 如下配置--&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- Begin --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">&lt;!-- HandlerMapping --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;beanclass</span><span style="color:#960050;background-color:#1e0010">=&#34;org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerM</span> <span style="color:#960050;background-color:#1e0010">apping&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!-- HandlerAdapter --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerA dapter&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!-- HadnlerExceptionResolvers --&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExcept ionResolver&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolv er&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;bean</span> <span style="color:#a6e22e">class=</span><span style="color:#e6db74">&#34;org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver&#34;</span><span style="color:#f92672">&gt;&lt;/bean&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">&lt;!-- End --&gt;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">注意:
+一般开发中，我们都需要写上此标签(虽然从入门案例中看，我们不写也行，随着课程的深入，该标签还有具体的使用场景 )。</p>
+<p class="component-content component">明确:</p>
+<p class="component-content component"><strong>我们只需要编写处理具体业务的控制器以及视图。</strong></p>
+
+<div class="component-content pagebody component">
+  <h2 id="4requestmapping-注解" class="pagebody-header">
+    4、RequestMapping 注解
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41使用说明" class="pagebody-header">
+    4.1、使用说明
+  </h3>
+</div><p class="component-content component">源码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Target</span><span style="color:#f92672">({</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">METHOD</span><span style="color:#f92672">,</span> ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span> <span style="color:#a6e22e">@Documented</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Mapping</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> RequestMapping <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">作用:</p>
+<div class="component-content component"><ul>
+<li>用于建立请求 URL 和处理请求方法之间的对应关系。</li>
+</ul></div>
+<p class="component-content component">出现位置:</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">类上:</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">请求 URL 的第一级访问目录。此处不写的话，就相当于应用的根目录。写的话需要以/开头。</p>
+</li>
+<li>
+<p class="component-content component">它出现的目的是为了使我们的 URL 可以按照模块化管理:</p>
+<p class="component-content component">例如:</p>
+</li>
+<li>
+<p class="component-content component">账户模块:</p>
+<div class="component-content component"><ul>
+<li>/account/add</li>
+<li>/account/update</li>
+<li>/account/delete &hellip;</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">订单模块:</p>
+<div class="component-content component"><ul>
+<li>/order/add</li>
+<li>/order/update</li>
+<li>/order/delete</li>
+</ul></div>
+<p class="component-content component">/order/的部分就是把 RequsetMappding 写在类上，使我们的 URL 更加精细。</p>
+<p class="component-content component">方法上:</p>
+<p class="component-content component">请求 URL 的第二级访问目录。</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+<p class="component-content component">属性：</p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">value:用于指定请求的 URL。它和 path 属性的作用是一样的。</p>
+</li>
+<li>
+<p class="component-content component">method:用于指定请求的方式。</p>
+</li>
+<li>
+<p class="component-content component">params:用于指定限制请求参数的条件。它支持简单的表达式。要求请求参数的 key 和 value 必须和 配置的一模一样。</p>
+<p class="component-content component">例如:</p>
+<div class="component-content component"><ul>
+<li>params = {&ldquo;accountName&rdquo;}，表示请求参数必须有 accountName</li>
+<li>params = {&ldquo;moeny!100&rdquo;}，表示请求参数中money不能是100。 headers:用于指定限制请求消息头的条件。</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">注意:</p>
+<div class="component-content component"><ul>
+<li>以上四个属性只要出现 2 个或以上时，他们的关系是与的关系。</li>
+</ul></div>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="42使用示例" class="pagebody-header">
+    4.2、使用示例
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="421出现位置的示例" class="pagebody-header">
+    4.2.1、出现位置的示例
+  </h4>
+</div><p class="component-content component">控制器代码 :</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * RequestMapping 注解出现的位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Controller</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;accountController&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/account&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AccountController</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/findAccount&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">findAccount</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;查询了账户。。。。&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;success&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">jsp 中的代码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">&lt;%@ page language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34;
+         pageEncoding=&#34;UTF-8&#34; %&gt;
+&lt;!DOCTYPE html PUBLIC &#34;-//W3C//DTD HTML 4.01 Transitional//EN&#34;
+&lt;html&gt;
+&#34;http://www.w3.org/TR/html4/loose.dtd&#34;&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=&#34;Content-Type&#34; content=&#34;text/html; charset=UTF-8&#34;&gt;
+    &lt;title&gt;requestmapping 的使用&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;!-- 第一种访问方式 --&gt;
+&lt;a href=&#34;${pageContext.request.contextPath}/account/findAccount&#34;&gt;
+    查询账户
+&lt;/a&gt;
+&lt;br/&gt;
+&lt;!-- 第二种访问方式 --&gt;
+&lt;a href=&#34;account/findAccount&#34;&gt;查询账户&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html</code></pre>
+  
+</div><p class="component-content component">注意:</p>
+<div class="component-content component"><ul>
+<li>当我们使用此种方式配置时，在 jsp 中第二种写法时，不要在访问 URL 前面加/，否则无法找到资源。</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h4 id="422method-属性的示例" class="pagebody-header">
+    4.2.2、method 属性的示例:
+  </h4>
+</div><p class="component-content component">控制器代码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 保存账户
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/saveAccount&#34;</span><span style="color:#f92672">,</span> method <span style="color:#f92672">=</span> RequestMethod<span style="color:#f92672">.</span><span style="color:#a6e22e">POST</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">saveAccount</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;保存了账户&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span><span style="color:#e6db74">&#34;success&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">jsp 代码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">&lt;!-- 请求方式的示例 --&gt;
+&lt;a href=&#34;account/saveAccount&#34;&gt;保存账户，get请求&lt;/a&gt; 
+&lt;br/&gt;
+&lt;form action=&#34;account/saveAccount&#34; method=&#34;post&#34;&gt;
+    &lt;input type=&#34;submit&#34; value=&#34;保存账户，post请求&#34;&gt;
+&lt;/form&gt;</code></pre>
+  
+</div><p class="component-content component">注意:</p>
+<p class="component-content component">当使用 get 请求时，提示错误信息是 405，信息是方法不支持 get 方式请求</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-d8e1644b26d55c26eb2814f2d5f52cee" id="lhtd8e1644b26d55c26eb2814f2d5f52cee">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/10.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h4 id="423params-属性的示例" class="pagebody-header">
+    4.2.3、params 属性的示例:
+  </h4>
+</div><p class="component-content component">控制器的代码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 删除账户 * @return
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> org.springframework.web.bind.annotation.RequestMapping<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@RequestMapping</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/removeAccount&#34;</span><span style="color:#f92672">,</span> params <span style="color:#f92672">=</span> <span style="color:#f92672">{</span><span style="color:#e6db74">&#34;accountName&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;money&gt;100&#34;</span><span style="color:#f92672">})</span> 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">removeAccount</span><span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;删除了账户&#34;</span><span style="color:#f92672">);</span><span style="color:#66d9ef">return</span><span style="color:#e6db74">&#34;success&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">jsp 中的代码:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">&lt;!-- 请求参数的示例 --&gt;
+&lt;a href=&#34;account/removeAccount?accountName=aaa&amp;money&gt;100&#34;&gt;删除账户，金额 100&lt;/a&gt;
+&lt;br/&gt;
+&lt;a href=&#34;account/removeAccount?accountName=aaa&amp;money&gt;150&#34;&gt;删除账户，金额 150&lt;/a&gt;</code></pre>
+  
+</div><p class="component-content component">注意:</p>
+<p class="component-content component">当我们点击第一个超链接时,可以访问成功。</p>
+<p class="component-content component">当我们点击第二个超链接时，无法访问。如下图:</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-eb3d453e51cdceef54ea991cca390064" id="lhteb3d453e51cdceef54ea991cca390064">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/11.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

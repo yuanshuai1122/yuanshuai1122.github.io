@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="MySQL基础之常见约束和标识列" />
+<meta property="og:description" content="&mdash;&ndash;: | :&mdash;&mdash;&mdash;-: | :&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;: | :&mdash;&mdash;&mdash;-: | | 主键 | √ | × | 至多有1个 | √，但不推荐 | | 唯一 | √ | √ | 可以有多个 | √，但不推荐 | 外键： 1、要求在从表设置外键关系 2、从表" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%B8%B8%E8%A7%81%E7%BA%A6%E6%9D%9F%E5%92%8C%E6%A0%87%E8%AF%86%E5%88%97/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T08:53:56+00:00" />
+<meta property="article:modified_time" content="2021-11-24T08:53:56+00:00" />
+<title>MySQL基础之常见约束和标识列</title>
+
+    <link rel="canonical" href="/archives/mysql%E5%9F%BA%E7%A1%80%E4%B9%8B%E5%B8%B8%E8%A7%81%E7%BA%A6%E6%9D%9F%E5%92%8C%E6%A0%87%E8%AF%86%E5%88%97/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        mysql
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 24, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">MySQL基础之常见约束和标识列</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/mysql" class="tag">
+                    mysql
+                  </a>
+                
+                  
+                  <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93" class="tag">
+                    数据库
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">&mdash;&ndash;: | :&mdash;&mdash;&mdash;-: | :&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;: | :&mdash;&mdash;&mdash;-: |
+| 主键 |     √      |      ×       |      至多有1个       | √，但不推荐  |
+| 唯一 |     √      |      √       |      可以有多个      | √，但不推荐  |</p>
+<p class="component-content component">外键：
+1、要求在从表设置外键关系
+2、从表的外键列的类型和主表的关联列的类型要求一致或兼容，名称无要求
+3、主表的关联列必须是一个key（一般是主键或唯一）
+4、插入数据时，先插入主表，再插入从表
+删除数据时，先删除从表，再删除主表</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#960050;background-color:#1e0010">表名</span>(
+</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">字段名</span> <span style="color:#960050;background-color:#1e0010">字段类型</span> <span style="color:#960050;background-color:#1e0010">列级约束</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">字段名</span> <span style="color:#960050;background-color:#1e0010">字段类型</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">表级约束</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">DATABASE</span> students;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一创建表时添加约束" class="pagebody-header">
+    一、创建表时添加约束
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1添加列级约束" class="pagebody-header">
+    1.添加列级约束
+  </h3>
+</div><p class="component-content component">语法：</p>
+<p class="component-content component">直接在字段名和类型后面追加 约束类型即可。</p>
+<p class="component-content component">只支持：默认、非空、主键、唯一</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">USE</span> students;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> stuinfo;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">stuinfo</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,<span style="color:#75715e">#主键
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	stuName <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">UNIQUE</span>,<span style="color:#75715e">#非空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	gender <span style="color:#66d9ef">CHAR</span>(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">CHECK</span>(gender<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;男&#39;</span> <span style="color:#66d9ef">OR</span> gender <span style="color:#f92672">=</span><span style="color:#e6db74">&#39;女&#39;</span>),<span style="color:#75715e">#检查
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	seat <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">UNIQUE</span>,<span style="color:#75715e">#唯一
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	age <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">DEFAULT</span>  <span style="color:#ae81ff">18</span>,<span style="color:#75715e">#默认约束
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	majorId <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">REFERENCES</span> <span style="color:#a6e22e">major</span>(id)<span style="color:#75715e">#外键
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">major</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>	majorName <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#查看stuinfo中的所有索引，包括主键、外键、唯一
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#66d9ef">FROM</span> stuinfo;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="2添加表级约束" class="pagebody-header">
+    2.添加表级约束
+  </h3>
+</div><p class="component-content component">语法：在各个字段的最下面
+【constraint 约束名】 约束类型(字段名)</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> stuinfo;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">stuinfo</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	stuname <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>),
+</span></span><span style="display:flex;"><span>	gender <span style="color:#66d9ef">CHAR</span>(<span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>	seat <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	age <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	majorid <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">CONSTRAINT</span> pk <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>(id),<span style="color:#75715e">#主键
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">CONSTRAINT</span> uq <span style="color:#66d9ef">UNIQUE</span>(seat),<span style="color:#75715e">#唯一键
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">CONSTRAINT</span> ck <span style="color:#66d9ef">CHECK</span>(gender <span style="color:#f92672">=</span><span style="color:#e6db74">&#39;男&#39;</span> <span style="color:#66d9ef">OR</span> gender  <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;女&#39;</span>),<span style="color:#75715e">#检查
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">CONSTRAINT</span> fk_stuinfo_major <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span>(majorid) <span style="color:#66d9ef">REFERENCES</span> <span style="color:#a6e22e">major</span>(id)<span style="color:#75715e">#外键
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#66d9ef">FROM</span> stuinfo;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">通用的写法：★</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#a6e22e">stuinfo</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>,
+</span></span><span style="display:flex;"><span>	stuname <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>),
+</span></span><span style="display:flex;"><span>	sex <span style="color:#66d9ef">CHAR</span>(<span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>	age <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">18</span>,
+</span></span><span style="display:flex;"><span>	seat <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">UNIQUE</span>,
+</span></span><span style="display:flex;"><span>	majorid <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">CONSTRAINT</span> fk_stuinfo_major <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span>(majorid) <span style="color:#66d9ef">REFERENCES</span> <span style="color:#a6e22e">major</span>(id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>);</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="二修改表时添加约束" class="pagebody-header">
+    二、修改表时添加约束
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="1添加列级约束-1" class="pagebody-header">
+    1、添加列级约束
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> <span style="color:#960050;background-color:#1e0010">表名</span> modify <span style="color:#66d9ef">column</span> <span style="color:#960050;background-color:#1e0010">字段名</span> <span style="color:#960050;background-color:#1e0010">字段类型</span> <span style="color:#960050;background-color:#1e0010">新约束</span>;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="2添加表级约束-1" class="pagebody-header">
+    2、添加表级约束
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> <span style="color:#960050;background-color:#1e0010">表名</span> <span style="color:#66d9ef">add</span> <span style="color:#960050;background-color:#1e0010">【</span><span style="color:#66d9ef">constraint</span> <span style="color:#960050;background-color:#1e0010">约束名】</span> <span style="color:#960050;background-color:#1e0010">约束类型</span>(<span style="color:#960050;background-color:#1e0010">字段名</span>) <span style="color:#960050;background-color:#1e0010">【外键的引用】</span>;</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> stuinfo;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">stuinfo</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	stuname <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>),
+</span></span><span style="display:flex;"><span>	gender <span style="color:#66d9ef">CHAR</span>(<span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>	seat <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	age <span style="color:#66d9ef">INT</span>,
+</span></span><span style="display:flex;"><span>	majorid <span style="color:#66d9ef">INT</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DESC</span> stuinfo;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="1添加非空约束" class="pagebody-header">
+    1.添加非空约束
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> stuname <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>)  <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="2添加默认约束" class="pagebody-header">
+    2.添加默认约束
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> age <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#ae81ff">18</span>;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="3添加主键" class="pagebody-header">
+    3.添加主键
+  </h4>
+</div><p class="component-content component">①列级约束</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">②表级约束</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>(id);</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="4添加唯一" class="pagebody-header">
+    4.添加唯一
+  </h4>
+</div><p class="component-content component">①列级约束</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> seat <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">UNIQUE</span>;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">②表级约束</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">UNIQUE</span>(seat);</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">5.添加外键</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">CONSTRAINT</span> fk_stuinfo_major <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span>(majorid) <span style="color:#66d9ef">REFERENCES</span> <span style="color:#a6e22e">major</span>(id); </span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="三修改表时删除约束" class="pagebody-header">
+    三、修改表时删除约束
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="1删除非空约束" class="pagebody-header">
+    1.删除非空约束
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> stuname <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">20</span>) <span style="color:#66d9ef">NULL</span>;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="2删除默认约束" class="pagebody-header">
+    2.删除默认约束
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo MODIFY <span style="color:#66d9ef">COLUMN</span> age <span style="color:#66d9ef">INT</span> ;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="3删除主键" class="pagebody-header">
+    3.删除主键
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="4删除唯一" class="pagebody-header">
+    4.删除唯一
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">INDEX</span> seat;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="5删除外键" class="pagebody-header">
+    5.删除外键
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> stuinfo <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">FOREIGN</span> <span style="color:#66d9ef">KEY</span> fk_stuinfo_major;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#66d9ef">FROM</span> stuinfo;</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="标识列" class="pagebody-header">
+    标识列
+  </h1>
+</div><p class="component-content component">又称为自增长列
+含义：可以不用手动的插入值，系统提供默认的序列值</p>
+<p class="component-content component">特点：
+1、标识列必须和主键搭配吗？不一定，但要求是一个key
+2、一个表可以有几个标识列？至多一个！
+3、标识列的类型只能是数值型
+4、标识列可以通过 SET auto_increment_increment=3;设置步长
+可以通过 手动插入值，设置起始值</p>
+
+<div class="component-content pagebody component">
+  <h2 id="创建表时设置标识列" class="pagebody-header">
+    创建表时设置标识列
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> tab_identity;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">tab_identity</span>(
+</span></span><span style="display:flex;"><span>	id <span style="color:#66d9ef">INT</span>  ,
+</span></span><span style="display:flex;"><span>	NAME <span style="color:#66d9ef">FLOAT</span> <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">AUTO_INCREMENT</span>,
+</span></span><span style="display:flex;"><span>	seat <span style="color:#66d9ef">INT</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>TRUNCATE <span style="color:#66d9ef">TABLE</span> tab_identity;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#a6e22e">tab_identity</span>(id,NAME) <span style="color:#66d9ef">VALUES</span>(<span style="color:#66d9ef">NULL</span>,<span style="color:#e6db74">&#39;john&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#a6e22e">tab_identity</span>(NAME) <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;lucy&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> tab_identity;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%auto_increment%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SET</span> auto_increment_increment<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>;</span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 24, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

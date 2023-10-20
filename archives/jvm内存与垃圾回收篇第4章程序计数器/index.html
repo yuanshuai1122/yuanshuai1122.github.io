@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="JVM内存与垃圾回收篇第4章程序计数器" />
+<meta property="og:description" content="第 4 章 程序计数器 1、PC 寄存器概述 文档网址 https://docs.oracle.com/javase/specs/jvms/se8/html/index.html PC 寄存器介绍 JVM中的程序计数寄存器（Program Counter Register）中，Register的命" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC4%E7%AB%A0%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-30T10:58:33+00:00" />
+<meta property="article:modified_time" content="2021-11-30T10:58:33+00:00" />
+<title>JVM内存与垃圾回收篇第4章程序计数器</title>
+
+    <link rel="canonical" href="/archives/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC4%E7%AB%A0%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 30, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">JVM内存与垃圾回收篇第4章程序计数器</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/jvm" class="tag">
+                    JVM
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="第-4-章-程序计数器" class="pagebody-header">
+    第 4 章 程序计数器
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1pc-寄存器概述" class="pagebody-header">
+    1、PC 寄存器概述
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>文档网址</strong></p>
+</blockquote>
+<p class="component-content component"><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/index.html">https://docs.oracle.com/javase/specs/jvms/se8/html/index.html</a></p>
+<blockquote>
+<p class="component-content component"><strong>PC 寄存器介绍</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>JVM中的程序计数寄存器（Program Counter Register）中，Register的命名源于CPU的寄存器，<strong>寄存器存储指令相关的现场信息</strong>。CPU只有把数据装载到寄存器才能够运行。</li>
+<li>这里，并非是广义上所指的物理寄存器，或许将其翻译为PC计数器（或指令计数器）会更加贴切（也称为程序钩子），并且也不容易引起一些不必要的误会。<strong>JVM中的PC寄存器是对物理PC寄存器的一种抽象模拟</strong>。</li>
+<li>它是一块很小的内存空间，几乎可以忽略不记。也是<strong>运行速度最快的存储区域</strong>。</li>
+<li><strong>在JVM规范中，每个线程都有它自己的程序计数器，是线程私有的</strong>，生命周期与线程的生命周期保持一致。</li>
+<li>任何时间一个线程都只有一个方法在执行，也就是所谓的当前方法。<strong>程序计数器会存储当前线程正在执行的Java方法的JVM指令地址</strong>；或者，如果是在执行native方法，则是未指定值（undefned）。</li>
+<li>它是<strong>程序控制流</strong>的指示器，分支、循环、跳转、异常处理、线程恢复等基础功能都需要依赖这个计数器来完成。字节码解释器工作时就是通过改变这个计数器的值来选取下一条需要执行的字节码指令。</li>
+<li>它是<strong>唯一一个</strong>在Java虚拟机规范中没有规定任何OutofMemoryError情况的区域。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-dff0c464a23d4aa3cd15031a5e13a210" id="lhtdff0c464a23d4aa3cd15031a5e13a210">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/54.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>PC 寄存器的作用</strong></p>
+</blockquote>
+<p class="component-content component">PC寄存器用来存储指向<strong>下一条指令的地址</strong>，也即将要执行的指令代码。由执行引擎将指令解释为机器码交由cpu进行处理</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e57da6bba944b9ffa17da1d1f6863bae" id="lhte57da6bba944b9ffa17da1d1f6863bae">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/55.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2代码示例" class="pagebody-header">
+    2、代码示例
+  </h2>
+</div><div class="component-content component"><ul>
+<li>代码</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PCRegisterTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">20</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> i <span style="color:#f92672">+</span> j<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        String s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>k<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">12345678910111213</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>反编译：javap -v xxx.class</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">Constant pool:
+   #1 = Methodref          #6.#26         // java/lang/Object.&#34;&lt;init&gt;&#34;:()V
+   #2 = String             #27            // abc
+   #3 = Fieldref           #28.#29        // java/lang/System.out:Ljava/io/PrintStream;
+   #4 = Methodref          #30.#31        // java/io/PrintStream.println:(I)V
+   #5 = Class              #32            // com/atguigu/java/PCRegisterTest
+   #6 = Class              #33            // java/lang/Object
+   #7 = Utf8               &lt;init&gt;
+   #8 = Utf8               ()V
+   #9 = Utf8               Code
+  #10 = Utf8               LineNumberTable
+  #11 = Utf8               LocalVariableTable
+  #12 = Utf8               this
+  #13 = Utf8               Lcom/atguigu/java/PCRegisterTest;
+  #14 = Utf8               main
+  #15 = Utf8               ([Ljava/lang/String;)V
+  #16 = Utf8               args
+  #17 = Utf8               [Ljava/lang/String;
+  #18 = Utf8               i
+  #19 = Utf8               I
+  #20 = Utf8               j
+  #21 = Utf8               k
+  #22 = Utf8               s
+  #23 = Utf8               Ljava/lang/String;
+  #24 = Utf8               SourceFile
+  #25 = Utf8               PCRegisterTest.java
+  #26 = NameAndType        #7:#8          // &#34;&lt;init&gt;&#34;:()V
+  #27 = Utf8               abc
+  #28 = Class              #34            // java/lang/System
+  #29 = NameAndType        #35:#36        // out:Ljava/io/PrintStream;
+  #30 = Class              #37            // java/io/PrintStream
+  #31 = NameAndType        #38:#39        // println:(I)V
+  #32 = Utf8               com/atguigu/java/PCRegisterTest
+  #33 = Utf8               java/lang/Object
+  #34 = Utf8               java/lang/System
+  #35 = Utf8               out
+  #36 = Utf8               Ljava/io/PrintStream;
+  #37 = Utf8               java/io/PrintStream
+  #38 = Utf8               println
+  #39 = Utf8               (I)V
+{
+  public com.atguigu.java.PCRegisterTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object.&#34;&lt;init&gt;&#34;:()V
+         4: return
+      LineNumberTable:
+        line 7: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lcom/atguigu/java/PCRegisterTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=5, args_size=1
+         0: bipush        10
+         2: istore_1
+         3: bipush        20
+         5: istore_2
+         6: iload_1
+         7: iload_2
+         8: iadd
+         9: istore_3
+        10: ldc           #2                  // String abc
+        12: astore        4
+        14: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        17: iload_1
+        18: invokevirtual #4                  // Method java/io/PrintStream.println:(I)V
+        21: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        24: iload_3
+        25: invokevirtual #4                  // Method java/io/PrintStream.println:(I)V
+        28: return
+      LineNumberTable:
+        line 10: 0
+        line 11: 3
+        line 12: 6
+        line 14: 10
+        line 15: 14
+        line 16: 21
+        line 18: 28
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      29     0  args   [Ljava/lang/String;
+            3      26     1     i   I
+            6      23     2     j   I
+           10      19     3     k   I
+           14      15     4     s   Ljava/lang/String;</code></pre>
+  
+</div><div class="component-content component"><ul>
+<li>左边的数字代表<strong>指令地址（指令偏移）</strong>，即 PC 寄存器中可能存储的值，然后执行引擎读取 PC 寄存器中的值，并执行该指令</li>
+</ul></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-1d5285191aef7159688f4e1b20aebfc0" id="lht1d5285191aef7159688f4e1b20aebfc0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/56.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="3两个面试题" class="pagebody-header">
+    3、两个面试题
+  </h2>
+</div><blockquote>
+<p class="component-content component"><strong>使用PC寄存器存储字节码指令地址有什么用呢？</strong></p>
+<p class="component-content component">或者问</p>
+<p class="component-content component"><strong>为什么使用 PC 寄存器来记录当前线程的执行地址呢？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>因为线程是一个个的顺序执行流，CPU需要不停的切换各个线程，这时候切换回来以后，就得知道接着从哪开始继续执行</li>
+<li>JVM的字节码解释器就需要通过改变PC寄存器的值来明确下一条应该执行什么样的字节码指令</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-5347ea0060219ce42b07d0500612b477" id="lht5347ea0060219ce42b07d0500612b477">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/57.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<blockquote>
+<p class="component-content component"><strong>PC寄存器为什么被设定为私有的？</strong></p>
+</blockquote>
+<div class="component-content component"><ol>
+<li>我们都知道所谓的多线程在一个特定的时间段内只会执行其中某一个线程的方法，CPU会不停地做任务切换，这样必然导致经常中断或恢复，如何保证分毫无差呢？</li>
+<li><strong>为了能够准确地记录各个线程正在执行的当前字节码指令地址，最好的办法自然是为每一个线程都分配一个PC寄存器</strong>，这样一来各个线程之间便可以进行独立计算，从而不会出现相互干扰的情况。</li>
+<li>由于CPU时间片轮限制，众多线程在并发执行过程中，任何一个确定的时刻，一个处理器或者多核处理器中的一个内核，只会执行某个线程中的一条指令。</li>
+<li>这样必然导致经常中断或恢复，如何保证分毫无差呢？每个线程在创建后，都会产生自己的程序计数器和栈帧，程序计数器在各个线程之间互不影响。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h2 id="4cpu-时间片" class="pagebody-header">
+    4、CPU 时间片
+  </h2>
+</div><div class="component-content component"><ol>
+<li>CPU时间片即CPU分配给各个程序的时间，每个线程被分配一个时间段，称作它的时间片。</li>
+<li>在宏观上：我们可以同时打开多个应用程序，每个程序并行不悖，同时运行。</li>
+<li>但在微观上：由于只有一个CPU，一次只能处理程序要求的一部分，如何处理公平，一种方法就是引入时间片，<strong>每个程序轮流执行</strong>。</li>
+</ol></div>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-7316f3198889f3d6945d79b3637a91b2" id="lht7316f3198889f3d6945d79b3637a91b2">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/58.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 30, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

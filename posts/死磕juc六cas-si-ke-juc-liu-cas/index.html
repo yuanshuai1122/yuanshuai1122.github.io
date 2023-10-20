@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="死磕juc（六）CAS" />
+<meta property="og:description" content="CAS 一、没有CAS之前 1.1 多线程环境不使用原子类保证线程安全（基本数据类型） public class T3 { volatile int number = 0; //读取 public int getNumber() { return number; } //写入加锁保证原子性 public synchronized void" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/%E6%AD%BB%E7%A3%95juc%E5%85%ADcas-si-ke-juc-liu-cas/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-29T12:36:05+00:00" />
+<meta property="article:modified_time" content="2022-08-29T12:36:05+00:00" />
+<title>死磕juc（六）CAS</title>
+
+    <link rel="canonical" href="/posts/%E6%AD%BB%E7%A3%95juc%E5%85%ADcas-si-ke-juc-liu-cas/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        juc
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2022年8月29日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">死磕juc（六）CAS</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/juc" class="tag">
+                    juc
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="cas" class="pagebody-header">
+    CAS
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="一没有cas之前" class="pagebody-header">
+    一、没有CAS之前
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11-多线程环境不使用原子类保证线程安全基本数据类型" class="pagebody-header">
+    1.1 多线程环境不使用原子类保证线程安全（基本数据类型）
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//读取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getNumber</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> number<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//写入加锁保证原子性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setNumber</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        number<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="12-多线程环境----使用原子类保证线程安全基本数据类型" class="pagebody-header">
+    1.2 多线程环境    使用原子类保证线程安全（基本数据类型）
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">T3</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> number <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//读取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getNumber</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> number<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//写入加锁保证原子性
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setNumber</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        number<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//=================================
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    AtomicInteger atomicInteger <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getAtomicInteger</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setAtomicInteger</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndIncrement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="二是什么" class="pagebody-header">
+    二、是什么
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21-说明" class="pagebody-header">
+    2.1 说明
+  </h3>
+</div><p class="component-content component">CAS
+compare and swap的缩写，中文翻译成比较并交换,实现并发算法时常用到的一种技术。它包含三个操作数——内存位置、预期原值及更新值。</p>
+<p class="component-content component">执行CAS操作的时候，将内存位置的值与预期原值比较：</p>
+<p class="component-content component">如果相匹配，那么处理器会自动将该位置值更新为新值，</p>
+<p class="component-content component">如果不匹配，处理器不做任何操作，多个线程同时执行CAS操作只有一个会成功。</p>
+<p class="component-content component">原理</p>
+<p class="component-content component">CAS （CompareAndSwap）</p>
+<p class="component-content component">CAS有3个操作数，位置内存值V，旧的预期值A，要修改的更新值B。</p>
+<p class="component-content component">当且仅当旧的预期值A和内存值V相同时，将内存值V修改为B，否则什么都不做或重来</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-b1d9dd90b88637a01356217909c8170d" id="lhtb1d9dd90b88637a01356217909c8170d">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232133.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="22-硬件级别保证" class="pagebody-header">
+    2.2 硬件级别保证
+  </h3>
+</div><p class="component-content component">CAS是JDK提供的非阻塞原子性操作，它通过硬件保证了比较-更新的原子性。</p>
+<p class="component-content component">它是非阻塞的且自身原子性，也就是说这玩意效率更高且通过硬件保证，说明这玩意更可靠。</p>
+<p class="component-content component">CAS是一条CPU的原子指令（cmpxchg指令），不会造成所谓的数据不一致问题，Unsafe提供的CAS方法（如compareAndSwapXXX）底层实现即为CPU指令cmpxchg。</p>
+<p class="component-content component">执行cmpxchg指令的时候，会判断当前系统是否为多核系统，如果是就给总线加锁，只有一个线程会对总线加锁成功，加锁成功之后会执行cas操作，也就是说CAS的原子性实际上是CPU实现的， 其实在这一点上还是有排他锁的，只是比起用synchronized， 这里的排他时间要短的多， 所以在多线程情况下性能会比较好</p>
+
+<div class="component-content pagebody component">
+  <h3 id="23-casdemo代码" class="pagebody-header">
+    2.3 CASDemo代码
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CASDemo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        AtomicInteger atomicInteger <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">(</span><span style="color:#ae81ff">5</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">5</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">2020</span><span style="color:#f92672">)+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">5</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">)+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="24-源码分析compareandsetint-expectint-update" class="pagebody-header">
+    2.4 源码分析compareAndSet(int expect,int update)
+  </h3>
+</div><p class="component-content component">compareAndSet()方法的源代码：</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-13e9b5ef5e487daaa58377ed7790aad3" id="lht13e9b5ef5e487daaa58377ed7790aad3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232813.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">上面三个方法都是类似的，主要对4个参数做一下说明。</p>
+<p class="component-content component">var1：表示要操作的对象</p>
+<p class="component-content component">var2：表示要操作对象中属性地址的偏移量</p>
+<p class="component-content component">var4：表示需要修改数据的期望的值</p>
+<p class="component-content component">var5/var6：表示需要修改为的新值</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-6c61cae07b40bf393416afae5c2426ef" id="lht6c61cae07b40bf393416afae5c2426ef">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232539.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><code>引出来一个问题：UnSafe类是什么？</code></p>
+
+<div class="component-content pagebody component">
+  <h2 id="三cas底层原理如果知道谈谈你对unsafe的理解" class="pagebody-header">
+    三、CAS底层原理？如果知道，谈谈你对UnSafe的理解
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="31-unsafe" class="pagebody-header">
+    3.1 UnSafe
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-fb5f56c7f911a5ac949fca70be80ac25" id="lhtfb5f56c7f911a5ac949fca70be80ac25">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232020.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">1 Unsafe</p>
+<p class="component-content component">是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地（native）方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。Unsafe类存在于sun.misc包中，其内部方法操作可以像C的指针一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</p>
+<p class="component-content component">注意Unsafe类中的所有方法都是native修饰的，也就是说Unsafe类中的方法都直接调用操作系统底层资源执行相应任务</p>
+<p class="component-content component">2 变量valueOffset，表示该变量值在内存中的偏移地址，因为Unsafe就是根据内存偏移地址获取数据的。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-db4ac1b27ca87d99113d0c8ed79535fb" id="lhtdb4ac1b27ca87d99113d0c8ed79535fb">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232785.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">3 变量value用volatile修饰，保证了多线程之间的内存可见性。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32-我们知道i线程不安全的那atomicintegergetandincrement" class="pagebody-header">
+    3.2 我们知道i++线程不安全的，那atomicInteger.getAndIncrement()
+  </h3>
+</div><p class="component-content component">CAS的全称为Compare-And-Swap，它是一条CPU并发原语。</p>
+<p class="component-content component">它的功能是判断内存某个位置的值是否为预期值，如果是则更改为新的值，这个过程是原子的。</p>
+<p class="component-content component">AtomicInteger 类主要利用 CAS (compare and swap) + volatile 和 native 方法来保证原子操作，从而避免 synchronized 的高开销，执行效率大为提升。</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-ce8444064632e9ca0f931b495ecbf45c" id="lhtce8444064632e9ca0f931b495ecbf45c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232628.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">CAS并发原语体现在JAVA语言中就是sun.misc.Unsafe类中的各个方法。调用UnSafe类中的CAS方法，JVM会帮我们实现出CAS汇编指令。这是一种完全依赖于硬件的功能，通过它实现了原子操作。再次强调，由于CAS是一种系统原语，原语属于操作系统用语范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行过程中不允许被中断，也就是说CAS是一条CPU的原子指令，不会造成所谓的数据不一致问题。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="33-源码分析" class="pagebody-header">
+    3.3 源码分析
+  </h3>
+</div><p class="component-content component">new AtomicInteger().getAndIncrement();</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-73bea39b095af465a001bbb48e91cff0" id="lht73bea39b095af465a001bbb48e91cff0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291232125.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">OpenJDK源码里面查看下Unsafe.java</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-cad52309b90a7066aa22d45a772026b6" id="lhtcad52309b90a7066aa22d45a772026b6">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291233332.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">假设线程A和线程B两个线程同时执行getAndAddInt操作（分别跑在不同CPU上）：</p>
+<p class="component-content component">1  AtomicInteger里面的value原始值为3，即主内存中AtomicInteger的value为3，根据JMM模型，线程A和线程B各自持有一份值为3的value的副本分别到各自的工作内存。</p>
+<p class="component-content component">2  线程A通过getIntVolatile(var1, var2)拿到value值3，这时线程A被挂起。</p>
+<p class="component-content component">3  线程B也通过getIntVolatile(var1, var2)方法获取到value值3，此时刚好线程B没有被挂起并执行compareAndSwapInt方法比较内存值也为3，成功修改内存值为4，线程B打完收工，一切OK。</p>
+<p class="component-content component">4  这时线程A恢复，执行compareAndSwapInt方法比较，发现自己手里的值数字3和主内存的值数字4不一致，说明该值已经被其它线程抢先一步修改过了，那A线程本次修改失败，只能重新读取重新来一遍了。</p>
+<p class="component-content component">5  线程A重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwapInt进行比较替换，直到成功。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="34-底层汇编" class="pagebody-header">
+    3.4 底层汇编
+  </h3>
+</div><p class="component-content component">native修饰的方法代表是底层方法</p>
+<p class="component-content component">Unsafe类中的compareAndSwapInt，是一个本地方法，该方法的实现位于unsafe.cpp中</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>UNSAFE_ENTRY(jboolean, Unsafe_CompareAndSwapInt(JNIEnv <span style="color:#f92672">*</span>env, jobject unsafe, jobject obj, jlong offset, jint e, jint x))
+</span></span><span style="display:flex;"><span>  UnsafeWrapper(<span style="color:#e6db74">&#34;Unsafe_CompareAndSwapInt&#34;</span>);
+</span></span><span style="display:flex;"><span>  oop p <span style="color:#f92672">=</span> JNIHandles<span style="color:#f92672">::</span>resolve(obj);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 先想办法拿到变量value在内存中的地址，根据偏移量valueOffset，计算 value 的地址
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  jint<span style="color:#f92672">*</span> addr <span style="color:#f92672">=</span> (jint <span style="color:#f92672">*</span>) index_oop_from_field_offset_long(p, offset);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 调用 Atomic 中的函数 cmpxchg来进行比较交换，其中参数x是即将更新的值，参数e是原内存的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (jint)(Atomic<span style="color:#f92672">::</span>cmpxchg(x, addr, e)) <span style="color:#f92672">==</span> e;
+</span></span><span style="display:flex;"><span>UNSAFE_END
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(Atomic<span style="color:#f92672">::</span>cmpxchg(x, addr, e)) <span style="color:#f92672">==</span> e;</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">cmpxchg</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">// 调用 Atomic 中的函数 cmpxchg来进行比较交换，其中参数x是即将更新的值，参数e是原内存的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> (jint)(Atomic<span style="color:#f92672">::</span>cmpxchg(x, addr, e)) <span style="color:#f92672">==</span> e;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">unsigned</span> Atomic<span style="color:#f92672">::</span>cmpxchg(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> exchange_value,<span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">*</span> dest, <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> compare_value) {
+</span></span><span style="display:flex;"><span>    assert(<span style="color:#66d9ef">sizeof</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span>) <span style="color:#f92672">==</span> <span style="color:#66d9ef">sizeof</span>(jint), <span style="color:#e6db74">&#34;more work to do&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">   * 根据操作系统类型调用不同平台下的重载函数，这个在预编译期间编译器会决定调用哪个平台下的重载函数*/</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span>)Atomic<span style="color:#f92672">::</span>cmpxchg((jint)exchange_value, (<span style="color:#66d9ef">volatile</span> jint<span style="color:#f92672">*</span>)dest, (jint)compare_value);
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">在不同的操作系统下会调用不同的cmpxchg重载函数</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> jint Atomic<span style="color:#f92672">::</span>cmpxchg (jint exchange_value, <span style="color:#66d9ef">volatile</span> jint<span style="color:#f92672">*</span> dest, jint compare_value) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//判断是否是多核CPU
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> mp <span style="color:#f92672">=</span> os<span style="color:#f92672">::</span>is_MP();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">__asm</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//三个move指令表示的是将后面的值移动到前面的寄存器上
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    mov edx, dest
+</span></span><span style="display:flex;"><span>    mov ecx, exchange_value
+</span></span><span style="display:flex;"><span>    mov eax, compare_value
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//CPU原语级别，CPU触发
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    LOCK_IF_MP(mp)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">//比较并交换指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//cmpxchg: 即“比较并交换”指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//dword: 全称是 double word 表示两个字，一共四个字节
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//ptr: 全称是 pointer，与前面的 dword 连起来使用，表明访问的内存单元是一个双字单元 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//将 eax 寄存器中的值（compare_value）与 [edx] 双字内存单元中的值进行对比，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">//如果相同，则将 ecx 寄存器中的值（exchange_value）存入 [edx] 内存单元中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    cmpxchg dword ptr [edx], ecx
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">总结</p>
+<p class="component-content component">你只需要记住：CAS是靠硬件实现的从而在硬件层面提升效率，最底层还是交给硬件来保证原子性和可见性</p>
+<p class="component-content component">实现方式是基于硬件平台的汇编指令，在intel的CPU中(X86机器上)，使用的是汇编指令cmpxchg指令。</p>
+<p class="component-content component">核心思想就是：比较要更新变量的值V和预期值E（compare），相等才会将V的值设为新值N（swap）如果不相等自旋再来。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="四原子引用" class="pagebody-header">
+    四、原子引用
+  </h2>
+</div><p class="component-content component">AtomicInteger原子整型，可否有其它原子类型？</p>
+<div class="component-content component"><ul>
+<li>AtomicBook</li>
+<li>AtomicOrder</li>
+</ul></div>
+<p class="component-content component">AtomicReferenceDemo</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AtomicReferenceDemo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        User z3 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> User<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;z3&#34;</span><span style="color:#f92672">,</span><span style="color:#ae81ff">24</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        User li4 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> User<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;li4&#34;</span><span style="color:#f92672">,</span><span style="color:#ae81ff">26</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        AtomicReference<span style="color:#f92672">&lt;</span>User<span style="color:#f92672">&gt;</span> atomicReferenceUser <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicReference<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        atomicReferenceUser<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>z3<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>atomicReferenceUser<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span>z3<span style="color:#f92672">,</span>li4<span style="color:#f92672">)+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicReferenceUser<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">().</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>atomicReferenceUser<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span>z3<span style="color:#f92672">,</span>li4<span style="color:#f92672">)+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicReferenceUser<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">().</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="五自旋锁借鉴cas思想" class="pagebody-header">
+    五、自旋锁，借鉴CAS思想
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="51-是什么" class="pagebody-header">
+    5.1 是什么
+  </h3>
+</div><p class="component-content component">自旋锁（spinlock）</p>
+<p class="component-content component">是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去尝试获取锁，当线程发现锁被占用时，会不断循环判断锁的状态，直到获取。这样的好处是减少线程上下文切换的消耗，缺点是循环会消耗CPU</p>
+<p class="component-content component">OpenJDK源码里面查看下Unsafe.java</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9cf4ee22ad7b59be3ffb19ca4ffaa68b" id="lht9cf4ee22ad7b59be3ffb19ca4ffaa68b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291233339.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="52-自己实现一个自旋锁spinlockdemo" class="pagebody-header">
+    5.2 自己实现一个自旋锁SpinLockDemo
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 题目：实现一个自旋锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 自旋锁好处：循环比较获取没有类似wait的阻塞。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 通过CAS操作完成自旋锁，A线程先进来调用myLock方法自己持有锁5秒钟，B随后进来后发现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 当前有线程持有锁，不是null，所以只能通过自旋等待，直到A释放锁后B随后抢到。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpinLockDemo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    AtomicReference<span style="color:#f92672">&lt;</span>Thread<span style="color:#f92672">&gt;</span> atomicReference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicReference<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">myLock</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Thread thread <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t come in&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span><span style="color:#f92672">(!</span>atomicReference<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span>thread<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">myUnLock</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Thread thread <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        atomicReference<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">,</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t myUnLock over&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        SpinLockDemo spinLockDemo <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SpinLockDemo<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            spinLockDemo<span style="color:#f92672">.</span><span style="color:#a6e22e">myLock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">5</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            spinLockDemo<span style="color:#f92672">.</span><span style="color:#a6e22e">myUnLock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;A&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//暂停一会儿线程，保证A线程先于B线程启动并完成
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            spinLockDemo<span style="color:#f92672">.</span><span style="color:#a6e22e">myLock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            spinLockDemo<span style="color:#f92672">.</span><span style="color:#a6e22e">myUnLock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;B&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="六cas缺点" class="pagebody-header">
+    六、CAS缺点
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="61-循环时间长开销很大" class="pagebody-header">
+    6.1 循环时间长开销很大。
+  </h3>
+</div><p class="component-content component">我们可以看到getAndAddInt方法执行时，有个do while</p>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a0f155fe8d70c06f39bab118bdb4cff1" id="lhta0f155fe8d70c06f39bab118bdb4cff1">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://yyss-blog.oss-cn-beijing.aliyuncs.com/202208291233896.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component">如果CAS失败，会一直进行尝试。如果CAS长时间一直不成功，可能会给CPU带来很大的开销。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="62-引出来aba问题" class="pagebody-header">
+    6.2 引出来ABA问题？
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="621-aba问题怎么产生的" class="pagebody-header">
+    6.2.1 ABA问题怎么产生的
+  </h4>
+</div><p class="component-content component">CAS会导致“ABA问题”。</p>
+<p class="component-content component">CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
+<p class="component-content component">比如说一个线程one从内存位置V中取出A，这时候另一个线程two也从内存中取出A，并且线程two进行了一些操作将值变成了B，然后线程two又将V位置的数据变成A，这时候线程one进行CAS操作发现内存中仍然是A，然后线程one操作成功。</p>
+<p class="component-content component">尽管线程one的CAS操作成功，但是不代表这个过程就是没有问题的。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="622-版本号时间戳原子引用" class="pagebody-header">
+    6.2.2 版本号时间戳原子引用
+  </h4>
+</div><p class="component-content component">AtomicStampedReference</p>
+<p class="component-content component">ABADemo</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ABADemo</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> AtomicInteger atomicInteger <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> AtomicStampedReference atomicStampedReference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicStampedReference<span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span><span style="color:#ae81ff">101</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">101</span><span style="color:#f92672">,</span><span style="color:#ae81ff">100</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;t1&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">//暂停一会儿线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">500</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">};</span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">2019</span><span style="color:#f92672">)+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicInteger<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;t2&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//暂停一会儿线程,main彻底等待上面的ABA出现演示完成。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">2000</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;============以下是ABA问题的解决=============================&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> stamp <span style="color:#f92672">=</span> atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t 首次版本号:&#34;</span><span style="color:#f92672">+</span>stamp<span style="color:#f92672">);</span><span style="color:#75715e">//1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//暂停一会儿线程,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">1000</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span><span style="color:#ae81ff">101</span><span style="color:#f92672">,</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">(),</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">()+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t 2次版本号:&#34;</span><span style="color:#f92672">+</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>            atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">101</span><span style="color:#f92672">,</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">(),</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">()+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t 3次版本号:&#34;</span><span style="color:#f92672">+</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;t3&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> stamp <span style="color:#f92672">=</span> atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getStamp</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t 首次版本号:&#34;</span><span style="color:#f92672">+</span>stamp<span style="color:#f92672">);</span><span style="color:#75715e">//1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">//暂停一会儿线程，获得初始值100和初始版本号1，故意暂停3秒钟让t3线程完成一次ABA操作产生问题
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span> <span style="color:#ae81ff">3000</span> <span style="color:#f92672">);</span> <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">boolean</span> result <span style="color:#f92672">=</span> atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSet</span><span style="color:#f92672">(</span><span style="color:#ae81ff">100</span><span style="color:#f92672">,</span><span style="color:#ae81ff">2019</span><span style="color:#f92672">,</span>stamp<span style="color:#f92672">,</span>stamp<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>result<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;\t&#34;</span><span style="color:#f92672">+</span>atomicStampedReference<span style="color:#f92672">.</span><span style="color:#a6e22e">getReference</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">},</span><span style="color:#e6db74">&#34;t4&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">AtomicMarkableReference之后再说</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2022年8月29日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

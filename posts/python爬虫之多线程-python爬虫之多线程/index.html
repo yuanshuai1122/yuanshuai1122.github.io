@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Python爬虫之多线程" />
+<meta property="og:description" content="1&quot;) time.sleep(1) print(&ldquo;线程执行中&mdash;2&rdquo;) time.sleep(1) print(&ldquo;线程执行中&mdash;3&rdquo;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B-python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:51:38+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:51:38+00:00" />
+<title>Python爬虫之多线程</title>
+
+    <link rel="canonical" href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B-python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Python
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Python爬虫之多线程</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/python" class="tag">
+                    Python
+                  </a>
+                
+                  
+                  <a href="/tags/%E7%88%AC%E8%99%AB" class="tag">
+                    爬虫
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <p class="component-content component">1&quot;)
+time.sleep(1)
+print(&ldquo;线程执行中&mdash;2&rdquo;)
+time.sleep(1)
+print(&ldquo;线程执行中&mdash;3&rdquo;)
+time.sleep(1)
+print(&ldquo;线程执行中&mdash;4&rdquo;)
+time.sleep(1)
+print(&ldquo;线程执行中&mdash;5&rdquo;)
+time.sleep(1)
+print(&ldquo;结束线程&rdquo;,self.name)</p>
+<p class="component-content component">#创建线程
+t1=myThread(&ldquo;t1&rdquo;)
+t2=myThread(&ldquo;t2&rdquo;)
+t3=myThread(&ldquo;t3&rdquo;)</p>
+<p class="component-content component">#开启线程
+t1.start()
+t2.start()
+t3.start()</p>
+<p class="component-content component">t1.join()
+t2.join()
+t3.join()</p>
+<p class="component-content component">print(&ldquo;执行完毕&rdquo;)</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">
+```python
+#队列Queue
+import queue
+
+#Queue是python标准库中的线程安全的实现,
+#提供了一个适用于多线程编程的先进先出的数据结构，
+#即队列，用来在生产者和消费者线程之间的信息传递。
+
+#对于资源，加锁是个重要的环节。
+#因为python原生的list,dict等，都是非线程安全的。
+#而Queue，是线程安全的，因此在满足使用条件下，建议使用队列。
+
+
+#创建队列
+q=queue.Queue(maxsize=10)
+
+
+for i in range(1,11):
+    q.put(i) #往队列里面放值
+
+
+# print(q.get())
+# print(q.get())
+# print(q.get())
+# print(q.get())
+# print(q.get())
+# print(q.get())
+
+#判断队列是否为空，循环取出所有值
+while not q.empty():
+    print(q.get())</code></pre>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#多线程爬取糗事百科</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用了线程库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> threading
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> queue
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> lxml <span style="color:#f92672">import</span> etree
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/1/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/2/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://www.qiushibaike.com/8hr/page/3/</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#&#39;//div/a[@class=&#34;recmd-content&#34;]&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#采集网页线程--爬取段子列表所在的网页，放进队列</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread1</span>(threading<span style="color:#f92672">.</span>Thread):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, threadName,pageQueue,dataQueue):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread<span style="color:#f92672">.</span>__init__(self)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>threadName <span style="color:#f92672">=</span> threadName <span style="color:#75715e">#线程名</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pageQueue <span style="color:#f92672">=</span> pageQueue <span style="color:#75715e">#页码队列</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>dataQueue <span style="color:#f92672">=</span> dataQueue <span style="color:#75715e">#数据队列</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span> : <span style="color:#e6db74">&#34;Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;启动线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> flag1:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                page<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>pageQueue<span style="color:#f92672">.</span>get()
+</span></span><span style="display:flex;"><span>                url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.qiushibaike.com/8hr/page/&#34;</span><span style="color:#f92672">+</span>str(page)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/&#34;</span>
+</span></span><span style="display:flex;"><span>                content<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url,headers<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>headers)<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>                time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0.5</span>)
+</span></span><span style="display:flex;"><span>                self<span style="color:#f92672">.</span>dataQueue<span style="color:#f92672">.</span>put(content) <span style="color:#75715e">#将数据放入数据队列中</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;结束线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#解析网页线程--从对、队列中拿到列表网页，进行解析，并存储到本地</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread2</span>(threading<span style="color:#f92672">.</span>Thread):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, threadName,dataQueue,filename):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread<span style="color:#f92672">.</span>__init__(self)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>threadName <span style="color:#f92672">=</span> threadName
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>dataQueue <span style="color:#f92672">=</span> dataQueue
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>filename <span style="color:#f92672">=</span> filename
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run</span>(self):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;启动线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> flag2:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>                data1<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>dataQueue<span style="color:#f92672">.</span>get()
+</span></span><span style="display:flex;"><span>                html<span style="color:#f92672">=</span>etree<span style="color:#f92672">.</span>HTML(data1)
+</span></span><span style="display:flex;"><span>                node_list<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>xpath(<span style="color:#e6db74">&#39;//div/a[@class=&#34;recmd-content&#34;]&#39;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> node <span style="color:#f92672">in</span> node_list:
+</span></span><span style="display:flex;"><span>                    data<span style="color:#f92672">=</span>node<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>                    self<span style="color:#f92672">.</span>filename<span style="color:#f92672">.</span>write(data<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;结束线程&#34;</span><span style="color:#f92672">+</span>self<span style="color:#f92672">.</span>threadName)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>flag1<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span> <span style="color:#75715e">#判断页码队列中是否为空</span>
+</span></span><span style="display:flex;"><span>flag2<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span> <span style="color:#75715e">#判断数据队列中是否为空</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#页码队列</span>
+</span></span><span style="display:flex;"><span>    pageQueue<span style="color:#f92672">=</span>queue<span style="color:#f92672">.</span>Queue(<span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">11</span>):
+</span></span><span style="display:flex;"><span>        pageQueue<span style="color:#f92672">.</span>put(i)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#存放采集结果的数据队列</span>
+</span></span><span style="display:flex;"><span>    dataQueue<span style="color:#f92672">=</span>queue<span style="color:#f92672">.</span>Queue()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#保存到本地的文件</span>
+</span></span><span style="display:flex;"><span>    filename<span style="color:#f92672">=</span>open(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;C:\file\dianzi.txt&#34;</span>,<span style="color:#e6db74">&#34;a&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#启动线程</span>
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">=</span>Thread1(<span style="color:#e6db74">&#34;采集线程&#34;</span>,pageQueue,dataQueue)
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">=</span>Thread2(<span style="color:#e6db74">&#34;解析线程&#34;</span>,dataQueue,filename)
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#当pageQueue为空时，结束采集线程</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> pageQueue<span style="color:#f92672">.</span>empty():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> flag1
+</span></span><span style="display:flex;"><span>    flag1<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#当dataQueue为空时，结束解析线程</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">not</span> dataQueue<span style="color:#f92672">.</span>empty():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">pass</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">global</span> flag2
+</span></span><span style="display:flex;"><span>    flag2<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    t1<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>    t2<span style="color:#f92672">.</span>join()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    filename<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;结束！&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    main()</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="heading" class="pagebody-header">
+    
+  </h2>
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

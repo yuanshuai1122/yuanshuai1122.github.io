@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Python爬虫之requests" />
+<meta property="og:description" content="Python爬虫之requests 什么是requests？ Requests is an elegant and simple HTTP library for Python, built for human beings. You are currently looking at the documentation of the development release. 通过pip install requests 可以帮你安装它。r" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Brequests-python%E7%88%AC%E8%99%AB%E4%B9%8Brequests/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:51:21+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:51:21+00:00" />
+<title>Python爬虫之requests</title>
+
+    <link rel="canonical" href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Brequests-python%E7%88%AC%E8%99%AB%E4%B9%8Brequests/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Python
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月26日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Python爬虫之requests</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/python" class="tag">
+                    Python
+                  </a>
+                
+                  
+                  <a href="/tags/%E7%88%AC%E8%99%AB" class="tag">
+                    爬虫
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="python爬虫之requests" class="pagebody-header">
+    Python爬虫之requests
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="什么是requests" class="pagebody-header">
+    什么是requests？
+  </h3>
+</div><p class="component-content component"><strong>Requests</strong> is an elegant and simple HTTP library for Python, built for human beings. You are currently looking at the documentation of the development release.</p>
+<p class="component-content component">通过pip install requests 可以帮你安装它。request可以帮助我们发送网络请求，传递URL参数，响应内容，定制请求头以及发送post请求等等。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">pleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Sa</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">fari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>wd<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;wd&#34;</span>:<span style="color:#e6db74">&#34;中国&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com/s?&#34;</span>,params<span style="color:#f92672">=</span>wd,headers<span style="color:#f92672">=</span>headers)  <span style="color:#75715e">#get请求的参数为params</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>text <span style="color:#75715e">#返回一个字符串形式的数据</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>data2<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>content <span style="color:#75715e">#返回一个二进制形式的数据</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(data2<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>header<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>:<span style="color:#e6db74">&#34;Mozilla/5.0 (Linux; U; An</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">droid 8.1.0; zh-cn; BLA-AL00 Build/HUAW</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">EIBLA-AL00) AppleWebKit/537.36 (KHTML, l</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">ike Gecko) Version/4.0 Chrome/57.0.2987.13</span><span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">2 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#key=&#34;自学&#34;</span>
+</span></span><span style="display:flex;"><span>key <span style="color:#f92672">=</span> input(<span style="color:#e6db74">&#34;请输入要翻译的文字：&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#post请求需要提交的参数</span>
+</span></span><span style="display:flex;"><span>formdata<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;i&#34;</span>:key,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;from&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;to&#34;</span>:<span style="color:#e6db74">&#34;AUTO&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;smartresult&#34;</span>:<span style="color:#e6db74">&#34;dict&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;client&#34;</span>:<span style="color:#e6db74">&#34;fanyideskweb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;salt&#34;</span>:<span style="color:#e6db74">&#34;15503049709404&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sign&#34;</span>:<span style="color:#e6db74">&#34;3da914b136a37f75501f7f31b11e75fb&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;ts&#34;</span>:<span style="color:#e6db74">&#34;1550304970940&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;bv&#34;</span>:<span style="color:#e6db74">&#34;ab57a166e6a56368c9f95952de6192b5&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;doctype&#34;</span>:<span style="color:#e6db74">&#34;json&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;version&#34;</span>:<span style="color:#e6db74">&#34;2.1&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;keyfrom&#34;</span>:<span style="color:#e6db74">&#34;fanyi.web&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;action&#34;</span>:<span style="color:#e6db74">&#34;FY_BY_REALTIME&#34;</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;typoResult&#34;</span>:<span style="color:#e6db74">&#34;false&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>post(url,headers<span style="color:#f92672">=</span>header,data<span style="color:#f92672">=</span>formdata)   <span style="color:#75715e">#post请求的参数为data</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#正则表达式 提取&#34;tgt&#34;:&#34;和&#34;}]]中间的任意内容</span>
+</span></span><span style="display:flex;"><span>pat<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;&#34;tgt&#34;:&#34;(.*?)&#34;}]]&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>result<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat,response<span style="color:#f92672">.</span>text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(result)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#设置ip地址</span>
+</span></span><span style="display:flex;"><span>proxy<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http&#34;</span>:<span style="color:#e6db74">&#34;http://101.248.64.72:80&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;http&#34;</span>:<span style="color:#e6db74">&#34;http://101.248.64.68:80&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;https&#34;</span>:<span style="color:#e6db74">&#34;https://101.248.64.72:80&#34;</span>,
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>,proxies<span style="color:#f92672">=</span>proxy)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(response<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://www.baidu.com&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#1.获取返回的cookiejar对象</span>
+</span></span><span style="display:flex;"><span>cookiejar<span style="color:#f92672">=</span>response<span style="color:#f92672">.</span>cookies
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#2.将cookiejar转换成字典</span>
+</span></span><span style="display:flex;"><span>cookiedict<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>utils<span style="color:#f92672">.</span>dict_from_cookiejar(cookiejar)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#print(cookiejar)</span>
+</span></span><span style="display:flex;"><span>print(cookiedict)</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#使用session实现登陆</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># import requests</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># headers = {&#34;User-Agent&#34;: &#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #创建session对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ses=requests.session()</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #构造登陆需要的参数</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># data={&#34;email&#34;:&#34;3254272716@qq.com&#34;,&#34;password&#34;:&#34;123321a&#34;}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #通过传递用户名密码得到cookie信息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># ses.post(&#34;http://www.renren.com/PLogin.do&#34;,data=data)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># #请求需要的页面</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># response=ses.get(&#34;http://www.renren.com/880151247/profile&#34;)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># print(response.text)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#创建session对象</span>
+</span></span><span style="display:flex;"><span>ses<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>session()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造登陆需要的参数</span>
+</span></span><span style="display:flex;"><span>data<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;email&#34;</span>:<span style="color:#e6db74">&#34;18232336174@163.com&#34;</span>,<span style="color:#e6db74">&#34;password&#34;</span>:<span style="color:#e6db74">&#34;18232336174...&#34;</span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#通过传递用户名密码得到cookie信息</span>
+</span></span><span style="display:flex;"><span>ses<span style="color:#f92672">.</span>post(<span style="color:#e6db74">&#34;http://mail.163.com&#34;</span>,data<span style="color:#f92672">=</span>data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#请求需要的页面</span>
+</span></span><span style="display:flex;"><span>response<span style="color:#f92672">=</span>ses<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;http://mail.163.com/js6/main.jsp?sid=KAOGBblSlxmIGlAAmDSSXTjrBseNxEhE&amp;df=mail163_letter#module=contact.ContactModule%7C%7B%7D&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(response<span style="color:#f92672">.</span>content<span style="color:#f92672">.</span>decode())</span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re   <span style="color:#75715e"># python 的正则库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> requests     <span style="color:#75715e"># python 的requests库</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># page=int(input(&#34;请输入您要爬取的页数：&#34;))</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>songID<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>songName<span style="color:#f92672">=</span>[]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>page_size <span style="color:#f92672">=</span> int(input(<span style="color:#e6db74">&#34;请问要爬取第几页呢：&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,page_size):
+</span></span><span style="display:flex;"><span>	url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://www.htqyy.com/top/musicList/hot?pageIndex=&#34;</span><span style="color:#f92672">+</span>str(i)<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;&amp;pageSize=20&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#$url = &#34;http://www.htqyy.com/top/hot&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#构造请求头信息</span>
+</span></span><span style="display:flex;"><span>header <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept&#34;</span>: <span style="color:#e6db74">&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept-Encoding&#34;</span>: <span style="color:#e6db74">&#34;gzip, deflate&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Accept-Language&#34;</span>: <span style="color:#e6db74">&#34;zh-CN,zh;q=0.9&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Cache-Control&#34;</span>: <span style="color:#e6db74">&#34;max-age=0&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Connection&#34;</span>: <span style="color:#e6db74">&#34;keep-alive&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#&#34;Cookie&#34;:&#34; __cfduid=d54ff2470d42e999d942b3b64cc266a9f1594821751; BAIDU_SSP_lcr=https://www.baidu.com/link?url=zPqjAbMqG9O52ECGWPxIoo5nIDVDpw6DO0i0JHZqbgy&amp;wd=&amp;eqid=e3b52e830007c46a000000035f0f0c70; blk=0; Hm_lvt_74e11efe27096f6ef1745cd53f168168=1594821752; isPlay=0; jploop=false; Hm_lpvt_74e11efe27096f6ef1745cd53f168168=1594828497&#34;,</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Host&#34;</span>: <span style="color:#e6db74">&#34;www.htqyy.com&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Referer&#34;</span>: <span style="color:#e6db74">&#34;http://www.htqyy.com/top/hot&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;Upgrade-Insecure-Requests&#34;</span>: <span style="color:#e6db74">&#34;1&#34;</span>,
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;User-Agent&#34;</span>: <span style="color:#e6db74">&#34;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#获取音乐榜单的网页信息</span>
+</span></span><span style="display:flex;"><span>html<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(url,headers <span style="color:#f92672">=</span> header)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>strr<span style="color:#f92672">=</span>html<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pat1<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;title=&#34;(.*?)&#34; sid&#39;</span>
+</span></span><span style="display:flex;"><span>pat2<span style="color:#f92672">=</span><span style="color:#e6db74">r</span><span style="color:#e6db74">&#39;sid=&#34;(.*?)&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>idlist<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat2,strr)
+</span></span><span style="display:flex;"><span>titlelist<span style="color:#f92672">=</span>re<span style="color:#f92672">.</span>findall(pat1,strr)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>songID<span style="color:#f92672">.</span>extend(idlist)
+</span></span><span style="display:flex;"><span>songName<span style="color:#f92672">.</span>extend(titlelist)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>,len(songID)):
+</span></span><span style="display:flex;"><span>	songurl<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;http://f2.htqyy.com/play8/&#34;</span><span style="color:#f92672">+</span>str(songID[i])<span style="color:#f92672">+</span><span style="color:#e6db74">&#34;/mp3/7&#34;</span>
+</span></span><span style="display:flex;"><span>	songname<span style="color:#f92672">=</span>songName[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	data<span style="color:#f92672">=</span>requests<span style="color:#f92672">.</span>get(songurl)<span style="color:#f92672">.</span>content
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	print(<span style="color:#e6db74">&#34;正在下载第&#34;</span>,i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;首,&#34;&#34;歌曲名为：&#34;</span>,songName[i])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;/Users/yuanshuai/Downloads/music/</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">.mp3&#34;</span><span style="color:#f92672">.</span>format(songname),<span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span>		f<span style="color:#f92672">.</span>write(data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">0.5</span>)</span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月26日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

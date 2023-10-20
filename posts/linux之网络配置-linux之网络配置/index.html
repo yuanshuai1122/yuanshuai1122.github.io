@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Linux之网络配置" />
+<meta property="og:description" content="网络配置 1 Linux网络配置原理 虚拟机NAT网络配置原理 2 查看网络IP和网关 2.1 虚拟机网络编辑器 2.2 修改IP地址 2.3 查看网关 2.4 查看windows中" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/posts/linux%E4%B9%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE-linux%E4%B9%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T08:52:34+00:00" />
+<meta property="article:modified_time" content="2021-11-24T08:52:34+00:00" />
+<title>Linux之网络配置</title>
+
+    <link rel="canonical" href="/posts/linux%E4%B9%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE-linux%E4%B9%8B%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        linux
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2021年11月24日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Linux之网络配置</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/linux" class="tag">
+                    linux
+                  </a>
+                
+                  
+                  <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F" class="tag">
+                    操作系统
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="网络配置" class="pagebody-header">
+    网络配置
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1-linux网络配置原理" class="pagebody-header">
+    1 Linux网络配置原理
+  </h2>
+</div><blockquote>
+<p class="component-content component">虚拟机NAT网络配置原理</p>
+</blockquote>
+<p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-cf6fcb2508154bfa0d1ca2b0cbed29de" id="lhtcf6fcb2508154bfa0d1ca2b0cbed29de">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E8%99%9A%E6%8B%9F%E6%9C%BANAT%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h2 id="2-查看网络ip和网关" class="pagebody-header">
+    2 查看网络IP和网关
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21-虚拟机网络编辑器" class="pagebody-header">
+    2.1 虚拟机网络编辑器
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9f94f9e5fbe2079200b77e287e67a525" id="lht9f94f9e5fbe2079200b77e287e67a525">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%BC%96%E8%BE%91%E5%99%A8.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="22-修改ip地址" class="pagebody-header">
+    2.2 修改IP地址
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-1c1d4558fe407dd13b3964f8b1ce49d0" id="lht1c1d4558fe407dd13b3964f8b1ce49d0">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E4%BF%AE%E6%94%B9IP%E5%9C%B0%E5%9D%80.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="23-查看网关" class="pagebody-header">
+    2.3 查看网关
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-48c8f86962fd0b0a2ec3b5ee82e5b49c" id="lht48c8f86962fd0b0a2ec3b5ee82e5b49c">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E6%9F%A5%E7%9C%8B%E7%BD%91%E5%85%B3.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="24-查看windows中的虚拟网卡的ip地址" class="pagebody-header">
+    2.4 查看windows中的虚拟网卡的ip地址
+  </h3>
+</div><div class="component-content component"><ul>
+<li>windows中使用ipconfig查看ip配置</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="3-ping测试" class="pagebody-header">
+    3. ping测试
+  </h2>
+</div><blockquote>
+<p class="component-content component">基本语法: ping [主机地址]</p>
+</blockquote>
+<div class="component-content component"><ul>
+<li>例如： ping <a href="https://www.baidu.com">www.baidu.com</a></li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="4-linux网络环境配置" class="pagebody-header">
+    4. Linux网络环境配置
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="41-自动抓取" class="pagebody-header">
+    4.1 自动抓取
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-40847f4a457f80b453f0ca0a618f9ca3" id="lht40847f4a457f80b453f0ca0a618f9ca3">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E8%87%AA%E5%8A%A8%E6%8A%93%E5%8F%96.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+<p class="component-content component"><strong><code>缺点：</code></strong> 每次自动获取的ip地址可能不一样，不适用于做服务器</p>
+
+<div class="component-content pagebody component">
+  <h3 id="42-指定ip地址" class="pagebody-header">
+    4.2 指定ip地址
+  </h3>
+</div><div class="component-content component"><ol>
+<li>直接修改配置文件来指定IP，并可以连接到外网，编辑：vim /etc/sysconfig/network-scripts/ifcfg-eth0
+
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-3e6dd797ebd954a1d257e1da9543f107" id="lht3e6dd797ebd954a1d257e1da9543f107">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9%E6%8C%87%E5%AE%9Aip%E5%9C%B0%E5%9D%80.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</li>
+<li>重启网络服务：service network restart</li>
+<li>重启系统：reboot
+
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e69eb991388e046f059550ad0adbce60" id="lhte69eb991388e046f059550ad0adbce60">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/3.9ifcfg-eth0%E8%AF%B4%E6%98%8E.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</li>
+</ol></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2021年11月24日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

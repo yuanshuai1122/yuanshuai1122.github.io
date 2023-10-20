@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="Linux之目录结构和远程登录" />
+<meta property="og:description" content="Linux基本目录机构 1. 基本介绍 Linux的文件系统采用级层式子的树状目录结构， 最上层是根目录“/” Linux世界里，一切皆文件。 2. 目录用途" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/linux%E4%B9%8B%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E5%92%8C%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-24T08:51:18+00:00" />
+<meta property="article:modified_time" content="2021-11-24T08:51:18+00:00" />
+<title>Linux之目录结构和远程登录</title>
+
+    <link rel="canonical" href="/archives/linux%E4%B9%8B%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84%E5%92%8C%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        linux
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 24, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">Linux之目录结构和远程登录</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/linux" class="tag">
+                    linux
+                  </a>
+                
+                  
+                  <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F" class="tag">
+                    操作系统
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h1 id="linux基本目录机构" class="pagebody-header">
+    Linux基本目录机构
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1-基本介绍" class="pagebody-header">
+    1. 基本介绍
+  </h2>
+</div><div class="component-content component"><ul>
+<li>Linux的文件系统采用级层式子的树状目录结构，</li>
+<li>最上层是根目录“/”</li>
+<li><strong>Linux世界里，一切皆文件。</strong>
+
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-9d55b4fb2f6b3a7f65fc4ece40753f5e" id="lht9d55b4fb2f6b3a7f65fc4ece40753f5e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/linux/%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84.jpg" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="2-目录用途" class="pagebody-header">
+    2. 目录用途
+  </h2>
+</div><div class="component-content component"><ul>
+<li><code>/bin：</code> 是Binary的缩写，这个目录存放着最经常使用的命令。</li>
+<li>/sbin：s就是Super User的意思，这里存放的是系统管理员使用的系统管理程序。</li>
+<li><code>/home：</code>存放普通用户的主目录，在Linux中每个用户都有一个自己的目录，一般该目录名是以用户的账号命名的。</li>
+<li><code>/root：</code>该目录为系统管理员，也称作超级权限者的用户主目录。</li>
+<li>/lib：系统开机所需要最基本的动态连接共享库，其作用类似于Windows里的DLL文件。几乎所有的应用程序都需要用到这些共享库。</li>
+<li>/lost+found：这个目录一般情况下是空的，当系统非法关机后，这里就存放了一些文件。</li>
+<li>/etc：所有的系统管理所需要的配置文件和子目录my.conf。</li>
+<li><code>/usr/local</code>：这是一个非常重要的目录，用户的很多应用程序和文件都放在这个目录下，类似与windows下的program files目录。</li>
+<li><code>/boot：</code>存放的是启动Linux时使用的一些核心文件，包括一些连接文件以及镜像文件。</li>
+<li>/proc：这个目录是一个虚拟的目录，它是系统内存的映射，访问这个目录来获取系统信息。</li>
+<li>/srv：service的缩写，该目录存放一些服务启动之后需要提供的数据。</li>
+<li>/sys：这是linux2.6内核的一个很大的变化。该目录下安装了2.6内核中新出现的一个文件系统sysfs。</li>
+<li>/tmp：这个目录是用来存放一些临时文件的。</li>
+<li>/dev：类似windows的设备管理器，把所有的硬件用文件的形式存储。</li>
+<li><code>/media：</code>linux系统会自动识别一些设备，例如U盘光驱等等，当识别后，linux会把识别的设备挂载到这个目录下。</li>
+<li><code>/mnt：</code>系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将外部的存储挂载在/mnt/上，然后进入该目录就可以查看里面的内容了。</li>
+<li><code>/opt：</code>这是给主机额外安装软件所摆放的目录，如安装ORACLE数据库就可放到该目录下。默认为空。</li>
+<li>/usr/local：这是另一个给主机额外安装软件所安装的目录，一般是通过编译源码的方式安装的程序。</li>
+<li><code>/var：</code>这个目录中存放着在不断扩充着的东西，习惯将经常被修改的目录放在这个目录下，包括各种日志文件。</li>
+<li>/selinux：SELinux是一种安全子系统，它能控制程序只能访问特定文件。</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="3-总结" class="pagebody-header">
+    3. 总结
+  </h2>
+</div><div class="component-content component"><ol>
+<li>Linux的目录中有且只有一个根目录。</li>
+<li>Linux的各个目录存放的内容是规划好，不用乱放文件。</li>
+<li>Linux是以文件的形式管理我们的设备，因此linux系统，一切皆为文件。</li>
+<li>Linux的各个文件目录下存放什么内容，必须有一个认识。</li>
+</ol></div>
+
+<div class="component-content pagebody component">
+  <h1 id="远程登录linux系统" class="pagebody-header">
+    远程登录Linux系统
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="1-远程登录方法" class="pagebody-header">
+    1. 远程登录方法
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11xshell" class="pagebody-header">
+    1.1Xshell
+  </h3>
+</div><div class="component-content component"><ul>
+<li>可用Xshell等软件输入主机的IP地址，登录名链接</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="12ssh" class="pagebody-header">
+    1.2ssh
+  </h3>
+</div><div class="component-content component"><ul>
+<li>链接指令 ssh -p 22 [登录用户]@[地址]</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="2-ftp文件传输" class="pagebody-header">
+    2. ftp文件传输
+  </h2>
+</div><div class="component-content component"><ul>
+<li>主要用于向服务上传或下载文件</li>
+</ul></div>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 24, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

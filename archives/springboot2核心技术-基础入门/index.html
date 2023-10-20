@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="en">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="SpringBoot2核心技术-基础入门" />
+<meta property="og:description" content="组件 &mdash;&gt;** xxxxProperties里面拿值 &mdash;-&gt; application.properties 3.4、最佳实践 引入场景依赖 https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter 查看自动配置了哪些（选做） 自己分析，引入场景对应的自动配置一般都" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/archives/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-26T21:32:52+00:00" />
+<meta property="article:modified_time" content="2021-11-26T21:32:52+00:00" />
+<title>SpringBoot2核心技术-基础入门</title>
+
+    <link rel="canonical" href="/archives/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">iTheme</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">Articles</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">About</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        Java
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">November 26, 2021</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">SpringBoot2核心技术-基础入门</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/java" class="tag">
+                    Java
+                  </a>
+                
+                  
+                  <a href="/tags/springboot" class="tag">
+                    SpringBoot
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            <blockquote>
+<p class="component-content component">组件  &mdash;&gt;** <strong>xxxxProperties里面拿值  &mdash;-&gt; application.properties</strong></p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h2 id="34最佳实践" class="pagebody-header">
+    3.4、最佳实践
+  </h2>
+</div><div class="component-content component"><ul>
+<li>
+<p class="component-content component">引入场景依赖</p>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter">https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter</a></li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">查看自动配置了哪些（选做）</p>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>自己分析，引入场景对应的自动配置一般都生效了</li>
+<li>配置文件中debug=true开启自动配置报告。Negative（不生效）\Positive（生效）</li>
+</ul></div>
+</li>
+<li>
+<p class="component-content component">是否需要修改</p>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>参照文档修改配置项</li>
+</ul></div>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>
+<div class="component-content component"><ul>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties">https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties</a></li>
+<li>自己分析。xxxxProperties绑定了配置文件的哪些。</li>
+</ul></div>
+</li>
+</ul></div>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>自定义加入或者替换组件</li>
+</ul></div>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>
+<div class="component-content component"><ul>
+<li>@Bean、@Component。。。</li>
+</ul></div>
+</li>
+</ul></div>
+</li>
+<li>
+<div class="component-content component"><ul>
+<li>自定义器  <strong>XXXXXCustomizer</strong>；</li>
+<li>&hellip;&hellip;</li>
+</ul></div>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h1 id="4开发小技巧" class="pagebody-header">
+    4、开发小技巧
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="41lombok" class="pagebody-header">
+    4.1、Lombok
+  </h2>
+</div><p class="component-content component">简化JavaBean开发</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+
+idea中搜索安装lombok插件
+===============================简化JavaBean开发===================================
+@NoArgsConstructor
+//@AllArgsConstructor
+@Data
+@ToString
+@EqualsAndHashCode
+public class User {
+
+    private String name;
+    private Integer age;
+
+    private Pet pet;
+
+    public User(String name,Integer age){
+        this.name = name;
+        this.age = age;
+    }
+
+
+}
+
+
+
+================================简化日志开发===================================
+@Slf4j
+@RestController
+public class HelloController {
+    @RequestMapping(&#34;/hello&#34;)
+    public String handle01(@RequestParam(&#34;name&#34;) String name){
+        
+        log.info(&#34;请求进来了....&#34;);
+        
+        return &#34;Hello, Spring Boot 2!&#34;&#43;&#34;你好：&#34;&#43;name;
+    }
+}</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="42dev-tools" class="pagebody-header">
+    4.2、dev-tools
+  </h2>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;</code></pre>
+  
+</div><p class="component-content component">项目或者页面修改以后：Ctrl+F9；</p>
+
+<div class="component-content pagebody component">
+  <h2 id="43spring-initailizr项目初始化向导" class="pagebody-header">
+    4.3、Spring Initailizr（项目初始化向导）
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="0选择我们需要的开发场景" class="pagebody-header">
+    0、选择我们需要的开发场景
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-a4ae7736e86c263bcbb504710c00cd8a" id="lhta4ae7736e86c263bcbb504710c00cd8a">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="1自动依赖引入" class="pagebody-header">
+    1、自动依赖引入
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-e9c112aa5696db002b3cbd098ec4c91b" id="lhte9c112aa5696db002b3cbd098ec4c91b">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="2自动创建项目结构" class="pagebody-header">
+    2、自动创建项目结构
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-fe3cbf082b567a44884fb88ad2faa98e" id="lhtfe3cbf082b567a44884fb88ad2faa98e">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h3 id="3自动编写好主配置类" class="pagebody-header">
+    3、自动编写好主配置类
+  </h3>
+</div><p class="component-content component">
+
+
+
+
+
+
+
+
+<figure class="image component image-fullbleed body-copy-wide nr-scroll-animation nr-scroll-animation--on image-big">  <div class="component-content">
+    <div class="image-sharesheet">
+      <div class="image image-load image-asset image-468720acbdb83a281d7b6b6c754862a6" id="lht468720acbdb83a281d7b6b6c754862a6">
+        <picture  class="picture">
+          <img class="picture-image" data-src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png" alt=""  />
+        </picture>
+      </div>
+    </div>
+    <div class="image-description">
+      <div class="image-caption">
+        
+      </div>
+    </div>
+  </div>
+</figure>
+</p>
+
+<div class="component-content pagebody component">
+  <h1 id="04配置文件" class="pagebody-header">
+    04、配置文件
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h1 id="1文件类型" class="pagebody-header">
+    1、文件类型
+  </h1>
+</div>
+<div class="component-content pagebody component">
+  <h2 id="11properties" class="pagebody-header">
+    1.1、properties
+  </h2>
+</div><p class="component-content component">同以前的properties用法</p>
+
+<div class="component-content pagebody component">
+  <h2 id="12yaml" class="pagebody-header">
+    1.2、yaml
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="121简介" class="pagebody-header">
+    1.2.1、简介
+  </h3>
+</div><p class="component-content component">YAML 是 &ldquo;YAML Ain&rsquo;t Markup Language&rdquo;（YAML 不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是：&ldquo;Yet Another Markup Language&rdquo;（仍是一种标记语言）。</p>
+<p class="component-content component">非常适合用来做以数据为中心的配置文件</p>
+
+<div class="component-content pagebody component">
+  <h3 id="122基本语法" class="pagebody-header">
+    1.2.2、基本语法
+  </h3>
+</div><div class="component-content component"><ul>
+<li>key: value；kv之间有空格</li>
+<li>大小写敏感</li>
+<li>使用缩进表示层级关系</li>
+<li>缩进不允许使用tab，只允许空格</li>
+<li>缩进的空格数不重要，只要相同层级的元素左对齐即可</li>
+<li>&lsquo;#&lsquo;表示注释</li>
+<li>字符串无需加引号，如果要加，&lsquo;&lsquo;与&quot;&ldquo;表示字符串内容 会被 转义/不转义</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="123数据类型" class="pagebody-header">
+    1.2.3、数据类型
+  </h3>
+</div><div class="component-content component"><ul>
+<li>字面量：单个的、不可再分的值。date、boolean、string、number、null</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">k</span>: <span style="color:#ae81ff">v</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>对象：键值对的集合。map、hash、set、object</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">行内写法：  k</span>: {<span style="color:#ae81ff">k1:v1,k2:v2,k3:v3}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#或</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">k</span>: 
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">k1</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">k2</span>: <span style="color:#ae81ff">v2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">k3</span>: <span style="color:#ae81ff">v3</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content component"><ul>
+<li>数组：一组按次序排列的值。array、list、queue</li>
+</ul></div>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#f92672">行内写法：  k</span>: [<span style="color:#ae81ff">v1,v2,v3]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#或者</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">k</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">v2</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#ae81ff">v3</span></span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="124示例" class="pagebody-header">
+    1.2.4、示例
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Data</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Person</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String userName<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Boolean boss<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Date birth<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer age<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Pet pet<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String<span style="color:#f92672">[]</span> interests<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> animal<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> score<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Set<span style="color:#f92672">&lt;</span>Double<span style="color:#f92672">&gt;</span> salarys<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Pet<span style="color:#f92672">&gt;&gt;</span> allPets<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Data</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pet</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String name<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Double weight<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span></span></span></code></pre></div></div>
+  
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yml" data-lang="yml"><span style="display:flex;"><span><span style="color:#75715e"># yaml表示以上对象</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">person</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">userName</span>: <span style="color:#ae81ff">zhangsan</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">boss</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">birth</span>: <span style="color:#ae81ff">2019</span><span style="color:#ae81ff">/12/12 20:12:33</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">age</span>: <span style="color:#ae81ff">18</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">pet</span>: 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">tomcat</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">weight</span>: <span style="color:#ae81ff">23.4</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">interests</span>: [<span style="color:#ae81ff">篮球,游泳]</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">animal</span>: 
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">jerry</span>
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">mario</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">score</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">english</span>: 
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">first</span>: <span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">second</span>: <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">third</span>: <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">math</span>: [<span style="color:#ae81ff">131</span>,<span style="color:#ae81ff">140</span>,<span style="color:#ae81ff">148</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">chinese</span>: {<span style="color:#f92672">first: 128,second</span>: <span style="color:#ae81ff">136</span>}
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">salarys</span>: [<span style="color:#ae81ff">3999</span>,<span style="color:#ae81ff">4999.98</span>,<span style="color:#ae81ff">5999.99</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">allPets</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">sick</span>:
+</span></span><span style="display:flex;"><span>      - {<span style="color:#f92672">name</span>: <span style="color:#ae81ff">tom}</span>
+</span></span><span style="display:flex;"><span>      - {<span style="color:#f92672">name: jerry,weight</span>: <span style="color:#ae81ff">47</span>}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">health</span>: [{<span style="color:#f92672">name: mario,weight</span>: <span style="color:#ae81ff">47</span>}]</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h1 id="2配置提示" class="pagebody-header">
+    2、配置提示
+  </h1>
+</div><p class="component-content component">自定义的类和配置文件绑定一般没有提示。</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>        <span style="color:#f92672">&lt;dependency&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-configuration-processor<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;optional&gt;</span>true<span style="color:#f92672">&lt;/optional&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/dependency&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;build&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;plugins&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;plugin&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;configuration&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;excludes&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;exclude&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-configuration-processor<span style="color:#f92672">&lt;/artifactId&gt;</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">&lt;/exclude&gt;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">&lt;/excludes&gt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">&lt;/configuration&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&lt;/plugin&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&lt;/plugins&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/build&gt;</span></span></span></code></pre></div></div>
+  
+</div>
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">Author:   </p>
+                <p class="content">Posted on:  November 26, 2021</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:floyd.li@outlook.com">floyd.li@outlook.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">Social Media</div>
+            
+              <a href="https://github.com/floyd-li" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">Related</div>
+            
+              <a href="https://yufengbiji.com/" target="_blank">驭风笔记</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>
