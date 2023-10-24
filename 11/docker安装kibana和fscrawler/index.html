@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="docker安装Kibana和Fscrawler" />
+<meta property="og:description" content="一、安装Kibana 1.1 Kibana是什么 引用ES官方说法 https://www.elastic.co/cn/what-is/kibana Kibana 是一款免费且开放的前端应用程序，其基础是 Elastic Stack，可以为 Elasticsearch 中索引的数据提供搜" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/11/docker%E5%AE%89%E8%A3%85kibana%E5%92%8Cfscrawler/" /><meta property="article:section" content="11" />
+<meta property="article:published_time" content="2023-07-19T18:12:20+00:00" />
+<meta property="article:modified_time" content="2023-07-19T18:12:20+00:00" />
+<title>docker安装Kibana和Fscrawler</title>
+
+    <link rel="canonical" href="/11/docker%E5%AE%89%E8%A3%85kibana%E5%92%8Cfscrawler/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        docker
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2023年7月19日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">docker安装Kibana和Fscrawler</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/docker" class="tag">
+                    docker
+                  </a>
+                
+                  
+                  <a href="/tags/es" class="tag">
+                    es
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h2 id="一安装kibana" class="pagebody-header">
+    一、安装Kibana
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="11-kibana是什么" class="pagebody-header">
+    1.1 Kibana是什么
+  </h3>
+</div><p class="component-content component">引用ES官方说法</p>
+<p class="component-content component"><code>https://www.elastic.co/cn/what-is/kibana</code></p>
+<blockquote>
+<p class="component-content component">Kibana 是一款免费且开放的前端应用程序，其基础是 Elastic Stack，可以为 Elasticsearch 中索引的数据提供搜索和数据可视化功能。尽管人们通常将 Kibana 视作 Elastic Stack（之前称作 ELK Stack，分别表示 Elasticsearch、Logstash 和 Kibana）的制图工具，但也可将 Kibana 作为用户界面来监测和管理 Elastic Stack 集群并确保集群安全性，还可将其作为基于 Elastic Stack 所开发内置解决方案的汇集中心。Elasticsearch 社区于 2013 年开发出了 Kibana，现在 Kibana 已发展成为 Elastic Stack 的窗口，是用户和公司的一个门户。</p>
+</blockquote>
+<p class="component-content component">简单来说，<code>Kibana</code>是<code>ElasticSearch</code>的可视化工具。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="12-版本适配" class="pagebody-header">
+    1.2 版本适配
+  </h3>
+</div><p class="component-content component">我们在上一节安装了<code>ElasticSearch:1.17.7</code>版本，查看官方版本兼容适配：</p>
+<blockquote>
+<p class="component-content component"><a href="https://www.elastic.co/cn/support/matrix#matrix_compatibility">https://www.elastic.co/cn/support/matrix#matrix_compatibility</a></p>
+</blockquote>
+<p class="component-content component">这里就不上图了，我们安装<code>kibana:7.17.7</code></p>
+
+<div class="component-content pagebody component">
+  <h3 id="13-拉取镜像并启动" class="pagebody-header">
+    1.3 拉取镜像并启动
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="131-拉取镜像" class="pagebody-header">
+    1.3.1 拉取镜像
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull kibana:7.17.7</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="132-临时启动" class="pagebody-header">
+    1.3.2 临时启动
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d --name kibana -p 5601:5601 kibana:7.17.7</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="133-拷贝配置文件" class="pagebody-header">
+    1.3.3 拷贝配置文件
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建工作空间</span>
+</span></span><span style="display:flex;"><span>mkdir -p /yyss/kibana
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 进入工作空间</span>
+</span></span><span style="display:flex;"><span>cd /yyss/kibana
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 拷贝容器中配置文件到本地</span>
+</span></span><span style="display:flex;"><span>docker cp kibana:/usr/share/kibana/config ./
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编辑配置文件</span>
+</span></span><span style="display:flex;"><span>cd config/
+</span></span><span style="display:flex;"><span>vim kibana.yml</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">配置示例：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">server.host</span>: <span style="color:#e6db74">&#34;0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">server.shutdownTimeout</span>: <span style="color:#e6db74">&#34;5s&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">elasticsearch.hosts</span>: [ <span style="color:#e6db74">&#34;http://192.168.100.139:9200&#34;</span> ]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">monitoring.ui.container.elasticsearch.enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">elasticsearch.username</span>: <span style="color:#e6db74">&#34;elastic&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">elasticsearch.password</span>: <span style="color:#e6db74">&#34;123456&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">xpack.security.sessionTimeout</span>: <span style="color:#ae81ff">600000</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">i18n.locale</span>: <span style="color:#e6db74">&#34;zh-CN&#34;</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">主要设置和ES相关的配置，毕竟我们是要连接ES的。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="134-停掉临时容器并重新启动" class="pagebody-header">
+    1.3.4 停掉临时容器并重新启动
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 删除临时容器</span>
+</span></span><span style="display:flex;"><span>docker rm -f kibana
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 重新启动</span>
+</span></span><span style="display:flex;"><span>docker run -d --name kibana -p 5601:5601 -v /yyss/kibana/config:/usr/share/kibana/config kibana:7.17.7</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">参数介绍：</p>
+<div class="component-content component"><ul>
+<li>-p 5601:5601 将宿主机端口映射到容器端口</li>
+<li>-v /yyss/kibana/config:/usr/share/kibana/config 将宿主机config目录挂载到容器config目录</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h3 id="135-测试访问" class="pagebody-header">
+    1.3.5 测试访问
+  </h3>
+</div><p class="component-content component">打开浏览器，访问IP:5601</p>
+<p class="component-content component">账号：elastic</p>
+<p class="component-content component">密码：123456</p>
+<p class="component-content component">云服务器记得开端口</p>
+<!-- raw HTML omitted -->
+<p class="component-content component">进入页面如图所示。</p>
+
+<div class="component-content pagebody component">
+  <h2 id="二安装elastic-head" class="pagebody-header">
+    二、安装elastic-head
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="21-elastic-head简介" class="pagebody-header">
+    2.1 elastic-head简介
+  </h3>
+</div><blockquote>
+<p class="component-content component">ealsticsearch是一个分布式、RESTful 风格的搜索和数据分析引擎，所有的数据都是后台服务存储着，类似于Mysql服务器，因此如果我们需要直观的查看数据，就需要使用可视化工具了。elasticsearch-head是Web前端，用于浏览和与Elastic Search集群进行交互，可用于集群管理、数据可视化、增删改查工具Elasticsearch语句可视化等。</p>
+<p class="component-content component">简答来说，<code>elasticsearch-head</code>是es的集群可视化管理工具。</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="22-elastic-head安装" class="pagebody-header">
+    2.2 elastic-head安装
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -d <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--name<span style="color:#f92672">=</span>elasticsearch-head <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-p 9100:9100 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>mobz/elasticsearch-head:5-alpine</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="23-elastic-head访问" class="pagebody-header">
+    2.3 elastic-head访问
+  </h3>
+</div><p class="component-content component">浏览器访问地址：http://IP:9100/</p>
+<!-- raw HTML omitted -->
+<p class="component-content component">在上方输入框连接ES集群:http://IP:9200/</p>
+<p class="component-content component">后续带x-pack的认证信息的访问</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">http://{ip}:9100/?auth_user=elastic&amp;auth_password=123456</code></pre>
+  
+</div>
+<div class="component-content pagebody component">
+  <h2 id="三安装fscrawler" class="pagebody-header">
+    三、安装FSCrawler
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h3 id="31-fscrawler简介" class="pagebody-header">
+    3.1 FSCrawler简介
+  </h3>
+</div><blockquote>
+<p class="component-content component">Welcome to the FS Crawler for <a href="https://elastic.co/">Elasticsearch</a></p>
+<p class="component-content component">This crawler helps to index binary documents such as PDF, Open Office, MS Office.</p>
+<p class="component-content component"><strong>Main features</strong>:</p>
+<div class="component-content component"><ul>
+<li>Local file system (or a mounted drive) crawling and index new files, update existing ones and removes old ones.</li>
+<li>Remote file system over SSH/FTP crawling.</li>
+<li>REST interface to let you &ldquo;upload&rdquo; your binary documents to elasticsearch.</li>
+</ul></div>
+</blockquote>
+<p class="component-content component">简单来说就是帮助ES索引文件的。</p>
+
+<div class="component-content pagebody component">
+  <h3 id="32-版本适配" class="pagebody-header">
+    3.2 版本适配
+  </h3>
+</div><blockquote>
+<p class="component-content component"><a href="https://github.com/dadoonet/fscrawler">https://github.com/dadoonet/fscrawler</a></p>
+</blockquote>
+<!-- raw HTML omitted -->
+<p class="component-content component">我们ES版本是<code>7.17.7</code>，所以我们选择<code>FSCrawler:2.9</code></p>
+
+<div class="component-content pagebody component">
+  <h3 id="33-拉取镜像" class="pagebody-header">
+    3.3 拉取镜像
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull dadoonet/fscrawler:2.9</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="34-创建目录并启动" class="pagebody-header">
+    3.4 创建目录并启动
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="341-创建目录" class="pagebody-header">
+    3.4.1 创建目录
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建工作目录</span>
+</span></span><span style="display:flex;"><span>mkdir -p /yyss/fscrawler
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建文档目录 即要被摄入的文档位置</span>
+</span></span><span style="display:flex;"><span>mkdir -p /yyss/disk/es-docs</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="342-启动镜像" class="pagebody-header">
+    3.4.2 启动镜像
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -it -d --name fscrawler -v /yyss/fscrawler:/root/.fscrawler -v /yyss/disk/es-docs:/tmp/es:ro dadoonet/fscrawler:2.9 fscrawler test-job</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">参数介绍：</p>
+<div class="component-content component"><ul>
+<li>-v /yyss/fscrawler:/root/.fscrawler 挂载本地工作目录到镜像</li>
+<li>-v /yyss/disk/es-docs:/tmp/es:ro 挂载本地文档位置到镜像</li>
+<li>fscrawler test-job 创建一个名为<code>test-job</code>的作业</li>
+</ul></div>
+<p class="component-content component">在第一次运行时，如果 ~/.fscrawler 中尚不存在该作业，FSCrawler 将询问你是否要创建它</p>
+<blockquote>
+<p class="component-content component"><strong>注意</strong>：配置文件实际上存储在你机器上的 /yyss/fscrawler/job_name/_settings.yaml 中。 请记住更改你的 elasticsearch 实例的 URL，因为容器将无法看到它在默认 127.0.0.1 下运行。 你将需要使用主机的实际 IP 地址。</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h4 id="343-编辑配置" class="pagebody-header">
+    3.4.3 编辑配置
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 进入目录</span>
+</span></span><span style="display:flex;"><span>cd /yyss/fscrawler/test-job/
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编辑配置</span>
+</span></span><span style="display:flex;"><span>vim _settings.yaml</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">配置示例：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#e6db74">&#34;test-job&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">fs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">url</span>: <span style="color:#e6db74">&#34;/tmp/es&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">update_rate</span>: <span style="color:#e6db74">&#34;15m&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">excludes</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#e6db74">&#34;*/~*&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">json_support</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">filename_as_id</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">add_filesize</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">remove_deleted</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">add_as_inner_object</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">store_source</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">index_content</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">attributes_support</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">raw_metadata</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">xml_support</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">index_folders</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">lang_detect</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">continue_on_error</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ocr</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">language</span>: <span style="color:#e6db74">&#34;eng&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">pdf_strategy</span>: <span style="color:#e6db74">&#34;ocr_and_text&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">follow_symlinks</span>: <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">elasticsearch</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nodes</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">url</span>: <span style="color:#e6db74">&#34;http://192.168.100.139:9200&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">username</span>: <span style="color:#e6db74">&#34;elastic&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">password</span>: <span style="color:#e6db74">&#34;123456&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">bulk_size</span>: <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">flush_interval</span>: <span style="color:#e6db74">&#34;5s&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">byte_size</span>: <span style="color:#e6db74">&#34;10mb&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ssl_verification</span>: <span style="color:#66d9ef">false</span></span></span></code></pre></div></div>
+  
+</div><p class="component-content component">如上所示，我们需要做上面的配置。为了方便，我们特意设置 ssl_verification 为 false。你需要根据自己的 Elasticsearch 端点及用户账号信息进行修改。修改完后保存，我们再次运行 Docker：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker restart fscrawler</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">到这里，我们添加了索引，并监听<code>/yyss/disk/es-docs</code>内文件的变化，我们可以进入该目录下添加点文件，fscrawler会帮我们重新创建文件索引。</p>
+
+<div class="component-content pagebody component">
+  <h4 id="344-进入kibana验证" class="pagebody-header">
+    3.4.4 进入Kibana验证
+  </h4>
+</div><p class="component-content component">我们进入到上第一步安装的kibana界面，点左边开发工具，进入控制台，输入</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GET _cat/indices</span></span></code></pre></div></div>
+  
+</div><!-- raw HTML omitted -->
+<p class="component-content component">可以看到我们的索引<code>test-job</code>已经可以查到。</p>
+<p class="component-content component">查看索引下详细文件</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>GET test-job_folder/_search?filter_path<span style="color:#f92672">=</span>**.hits</span></span></code></pre></div></div>
+  
+</div><!-- raw HTML omitted -->
+<p class="component-content component">可以看到我们<code>/yyss/disk/es-docs</code>文件夹下所有内容。</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2023年7月19日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html class="js no-touch  progressive-image  no-reduced-motion progressive" lang="zh-hans">
+  <head>
+    <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="/img/favicon.ico">
+
+    <meta name="keyword" content=""><meta property="og:title" content="docker安装部署ElasticSearch（单机版）" />
+<meta property="og:description" content="一、ElasticSearch安装部署 什么是ElasticSearch？ 简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.io/11/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" /><meta property="article:section" content="11" />
+<meta property="article:published_time" content="2023-07-19T18:12:20+00:00" />
+<meta property="article:modified_time" content="2023-07-19T18:12:20+00:00" />
+<title>docker安装部署ElasticSearch（单机版）</title>
+
+    <link rel="canonical" href="/11/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/">
+
+    <link rel="stylesheet" href="/css/global.css">
+
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="stylesheet" href="/css/search.css" />
+
+    
+    
+
+    
+    
+
+</head>
+  </head>
+  <body class=" page-article   ">
+    <header>
+      <nav class="nav">
+  <div class="nav-wrapper">
+    <div class="nav-content-wrapper">
+      <div class="nav-content">
+        <a href="/ " class="nav-title">🧀</a>
+        <div class="nav-menu">
+          <div class="nav-item-wrapper">
+            <a href="/posts " class="nav-item-content">目录</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/about" class="nav-item-content">关于</a>
+          </div><div class="nav-item-wrapper">
+            <a href="/index.xml" class="nav-item-content" target="_blank">RSS</a>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleSearchModal(){
+    const template = `
+    <div class="modal-body">
+      <div id="autocomplete" onclick="event.stopPropagation();"></div>
+    </div>
+    `
+    const modal = document.querySelector("#modal-wrapper")
+    if(!modal){
+      const div = document.createElement("div")
+      document.body.setAttribute("style","overflow: hidden;")
+      div.setAttribute("id", "modal-wrapper")
+      div.setAttribute("onclick", "toggleSearchModal()")
+      div.innerHTML = template
+      const script = document.createElement("script");script.setAttribute("src", "https://yuanshuai1122.github.io/js/algolia.js")
+      div.appendChild(script)
+      document.body.append(div)
+    } else {
+      document.body.removeAttribute("style")
+      document.body.removeChild(modal)
+    }
+  }
+</script>
+    </header>
+    
+  
+  
+  <main id="main" class="main">
+      <section>
+        <article class="article">
+          
+          <div class=" article-header ">
+            <div class="category component">
+              <div class="component-content">
+                <div class="category-eyebrow">
+                  <span class="category-eyebrow__category category_original">
+                    
+                      
+                        docker
+                      
+                    
+                  </span>
+                  <span class="category-eyebrow__date">2023年7月19日</span>
+                </div>
+              </div>
+            </div>
+            <div class="pagetitle component">
+              <div class="component-content">
+                <h1 class="hero-headline">docker安装部署ElasticSearch（单机版）</h1>
+              </div>
+            </div>
+            <div class="component  article-subhead ">
+              <div class="component-content"></div>
+            </div>
+
+            <div class="tagssheet component">
+              <div class="component-content">
+                
+                  
+                  <a href="/tags/docker" class="tag">
+                    docker
+                  </a>
+                
+                  
+                  <a href="/tags/es" class="tag">
+                    es
+                  </a>
+                
+              </div>
+            </div>
+          </div>
+          
+          <div class="pagebody">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+<div class="component-content pagebody component">
+  <h2 id="一elasticsearch安装部署" class="pagebody-header">
+    一、ElasticSearch安装部署
+  </h2>
+</div><p class="component-content component">什么是<code>ElasticSearch</code>？</p>
+<blockquote>
+<p class="component-content component">简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获取文档的员工，到在网上购物寻找适合自己鞋子的客户。但从更技术的角度来说，大致描述如下：</p>
+<p class="component-content component">Elasticsearch 是一个免费且开放的分布式搜索和分析引擎，适用于包括文本、数字、地理空间、结构化和非结构化数据等在内的所有类型的数据。Elasticsearch 在 Apache Lucene 的基础上开发而成，由 Elasticsearch N.V.（即现在的 Elastic）于 2010 年首次发布。Elasticsearch 以其简单的 REST 风格 API、分布式特性、速度和可扩展性而闻名，是 Elastic Stack 的核心组件；Elastic Stack 是一套适用于数据采集、扩充、存储、分析和可视化的免费开源工具。人们通常将 Elastic Stack 称为 ELK Stack（代指 Elasticsearch、Logstash 和 Kibana），目前 Elastic Stack 包括一系列丰富的轻量型数据采集代理，这些代理统称为 Beats，可用来向 Elasticsearch 发送数据。</p>
+<p class="component-content component">&mdash; 来自ES官方 <a href="https://www.elastic.co/cn/what-is/elasticsearch">https://www.elastic.co/cn/what-is/elasticsearch</a></p>
+</blockquote>
+<p class="component-content component"><code>简单来说，可以当作一个高性能搜索数据库</code></p>
+
+<div class="component-content pagebody component">
+  <h3 id="11-elasticsearch和jdk版本" class="pagebody-header">
+    1.1 ElasticSearch和JDK版本
+  </h3>
+</div><p class="component-content component">ElasticSearch和JDK版本适配图（2023-07-25）。</p>
+<p class="component-content component"><strong>官网地址：https://www.elastic.co/cn/support/matrix#matrix_jvm</strong></p>
+<!-- raw HTML omitted -->
+<p class="component-content component">可以看到从ES8.0开始，就只支持JDK17以上了。</p>
+<p class="component-content component">由于我们环境为：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[root@server ~]# java --version
+openjdk 11.0.18 2023-01-17 LTS
+OpenJDK Runtime Environment (Red_Hat-11.0.18.0.10-1.el7_9) (build 11.0.18&#43;10-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-11.0.18.0.10-1.el7_9) (build 11.0.18&#43;10-LTS, mixed mode, sharing)</code></pre>
+  
+</div><p class="component-content component">所以我们本着最新原则，选择镜像<code>elasticsearch:7.17.7</code></p>
+<p class="component-content component">千万别选最新<code>7.17.9</code>,IK中文分词器只支持到<code>7.17.7</code>，导致安装不上，除非自己编译，大坑😭</p>
+<p class="component-content component">(PS:官方还说明了ES和Linux版本兼容关系，我们环境时<code>CentOS7.x</code>，正好也是兼容ES7版本的&hellip;)</p>
+
+<div class="component-content pagebody component">
+  <h3 id="12-拉取镜像" class="pagebody-header">
+    1.2 拉取镜像
+  </h3>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker pull elasticsearch:7.17.7</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h3 id="13-创建挂载目录" class="pagebody-header">
+    1.3 创建挂载目录
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="131-docker工作目录" class="pagebody-header">
+    1.3.1 docker工作目录
+  </h4>
+</div><p class="component-content component">ps:请根据自己的环境修改自己的路径</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建工作目录</span>
+</span></span><span style="display:flex;"><span>mkdir -p /yyss/elasticsearch/
+</span></span><span style="display:flex;"><span>cd /yyss/elasticsearch/
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># logs挂载目录</span>
+</span></span><span style="display:flex;"><span>mkdir logs</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">给权限（这里很重要，否则es会因为没权限起不来）</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 由于这里时演示 所以给了777权限 生产环境别学我😄</span>
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">777</span> /yyss/elasticsearch/</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="132-初次启动镜像" class="pagebody-header">
+    1.3.2 初次启动镜像
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 因为只是获取其配置文件，启动时设置了较小的JVM</span>
+</span></span><span style="display:flex;"><span>docker run --name es -p 9200:9200 -p 9300:9300 -e <span style="color:#e6db74">&#34;discovery.type=single-node&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-e ES_JAVA_OPTS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;-Xms64m -Xmx128m&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d elasticsearch:7.17.7</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="133-拷贝镜像内配置" class="pagebody-header">
+    1.3.3 拷贝镜像内配置
+  </h4>
+</div><p class="component-content component">先确定下自己所在的位置</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">[root@server elasticsearch]# pwd
+/yyss/elasticsearch</code></pre>
+  
+</div><p class="component-content component">拷贝镜像中的文件</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker cp es:/usr/share/elasticsearch/config/ ./
+</span></span><span style="display:flex;"><span>docker cp es:/usr/share/elasticsearch/data/ ./
+</span></span><span style="display:flex;"><span>docker cp es:/usr/share/elasticsearch/plugins/ ./</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">查看下现在目录下的文件</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@server elasticsearch<span style="color:#f92672">]</span><span style="color:#75715e"># ll</span>
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>drwxrwxrwx. <span style="color:#ae81ff">3</span> root root <span style="color:#ae81ff">270</span> Aug  <span style="color:#ae81ff">5</span> 13:52 config
+</span></span><span style="display:flex;"><span>drwxrwxrwx. <span style="color:#ae81ff">3</span> root root  <span style="color:#ae81ff">19</span> Aug  <span style="color:#ae81ff">5</span> 13:49 data
+</span></span><span style="display:flex;"><span>drwxrwxrwx. <span style="color:#ae81ff">2</span> root root  <span style="color:#ae81ff">37</span> Aug  <span style="color:#ae81ff">5</span> 13:55 logs
+</span></span><span style="display:flex;"><span>drwxrwxrwx. <span style="color:#ae81ff">2</span> root root   <span style="color:#ae81ff">6</span> Jan <span style="color:#ae81ff">31</span>  <span style="color:#ae81ff">2023</span> plugins</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">可以看到 我们需要的都拷贝出来了</p>
+
+<div class="component-content pagebody component">
+  <h3 id="14-修改配置" class="pagebody-header">
+    1.4 修改配置
+  </h3>
+</div><blockquote>
+<p class="component-content component">根据实际情况修改JVM内存大小</p>
+</blockquote>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd config/
+</span></span><span style="display:flex;"><span>vim jvm.options</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">默认配置为：</p>
+<blockquote>
+<p class="component-content component">-Xms1g -Xmx1g</p>
+</blockquote>
+<p class="component-content component"><strong>编辑elasticsearch.yml：</strong></p>
+<p class="component-content component">追加内容：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>http.cors.enabled: true
+</span></span><span style="display:flex;"><span>http.cors.allow-origin: <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>node.name: node-1
+</span></span><span style="display:flex;"><span>discovery.seed_hosts: <span style="color:#f92672">[</span><span style="color:#e6db74">&#34;127.0.0.1&#34;</span><span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>xpack.security.enabled: true <span style="color:#75715e"># 这条配置表示开启xpack认证机制 spring boot连接使用</span>
+</span></span><span style="display:flex;"><span>xpack.security.transport.ssl.enabled: true</span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component">xpack.security配置后，elasticsearch需要账号密码使用，建议安排上。如果使用springboot查询，那一定要设置，否者会报错！</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h3 id="15-挂载启动" class="pagebody-header">
+    1.5 挂载启动
+  </h3>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="151-删除之前启动的临时容器" class="pagebody-header">
+    1.5.1 删除之前启动的临时容器
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker rm -f es</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="152-挂载启动新容器" class="pagebody-header">
+    1.5.2 挂载启动新容器
+  </h4>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run --name  --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-p 9200:9200 -p 9300:9300 -e <span style="color:#e6db74">&#34;discovery.type=single-node&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /yyss/elasticsearch/config:/usr/share/elasticsearch/config <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /yyss/elasticsearch/data:/usr/share/elasticsearch/data <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /yyss/elasticsearch/plugins:/usr/share/elasticsearch/plugins <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /yyss/elasticsearch/logs:/usr/share/elasticsearch/logs <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d elasticsearch:7.17.7</span></span></code></pre></div></div>
+  
+</div><p class="component-content component"><code>参数解释</code></p>
+<div class="component-content component"><ul>
+<li>
+<p class="component-content component">&ndash;name es  ：指定容器名称</p>
+</li>
+<li>
+<p class="component-content component">-p 9200:9200  -p 9300:9300 ：指定端口号映射 格式 宿主机端口号:容器端口号</p>
+</li>
+<li>
+<p class="component-content component">-e  &ldquo;discovery.type=single-node&rdquo;  ：单机模式</p>
+</li>
+<li>
+<p class="component-content component">-v /yyss/elasticsearch/config:/usr/share/elasticsearch/config 映射配置文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p class="component-content component">-v /yyss/elasticsearch/data:/usr/share/elasticsearch/data 映射日志文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p class="component-content component">-v /yyss/elasticsearch/plugins:/usr/share/elasticsearch/plugins 映射插件在宿主机的挂载位置</p>
+</li>
+<li>
+<p class="component-content component">-v /yyss/elasticsearch/logs:/usr/share/elasticsearch/logs 映射日志文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p class="component-content component">-d elasticsearch:7.17.7  ：指定镜像和版本</p>
+</li>
+</ul></div>
+
+<div class="component-content pagebody component">
+  <h2 id="二初始化密码" class="pagebody-header">
+    二、初始化密码
+  </h2>
+</div><p class="component-content component">此项仅在上文xpack配置的情况下才需要执行，首先进入容器命令行：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker exec -it es /bin/bash</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">然后直行初始化命令:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <pre><code class="">bin/elasticsearch-setup-passwords interactive</code></pre>
+  
+</div><!-- raw HTML omitted -->
+<blockquote>
+<p class="component-content component">然后老老实实依次输入密码（需要输入很多很多次，别挣扎了，输入吧！😭）</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h2 id="三-验证安装" class="pagebody-header">
+    三、 验证安装
+  </h2>
+</div><p class="component-content component">访问ip:9200，如果上文开启了xpack.security，需要输入账号密码。</p>
+<p class="component-content component"><code>云服务器记得放行端口安全组～</code></p>
+<p class="component-content component">账号/密码：elastic/上文设置的密码</p>
+<p class="component-content component">如果出现以下页面，则代表成功。</p>
+<!-- raw HTML omitted -->
+
+<div class="component-content pagebody component">
+  <h2 id="四插件安装ik中文分词器" class="pagebody-header">
+    四、插件安装：IK中文分词器
+  </h2>
+</div>
+<div class="component-content pagebody component">
+  <h4 id="41-版本对应" class="pagebody-header">
+    4.1 版本对应
+  </h4>
+</div><p class="component-content component">下载地址：https://github.com/medcl/elasticsearch-analysis-ik/releases</p>
+<p class="component-content component">下载的版本需要与es版本一致；（必须严格一致）</p>
+<p class="component-content component">地址：<code>https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.17.7/elasticsearch-analysis-ik-7.17.7.zip</code></p>
+
+<div class="component-content pagebody component">
+  <h4 id="42-安装" class="pagebody-header">
+    4.2 安装
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="421-进入到插件挂载目录" class="pagebody-header">
+    4.2.1 进入到插件挂载目录
+  </h5>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /yyss/elasticsearch/plugins</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h5 id="422-下载对ik中文分词器" class="pagebody-header">
+    4.2.2 下载对IK中文分词器
+  </h5>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.17.7/elasticsearch-analysis-ik-7.17.7.zip</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h5 id="423-解压并清理" class="pagebody-header">
+    4.2.3 解压并清理
+  </h5>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 如果unzip命令不存在，则安装：yum install unzip</span>
+</span></span><span style="display:flex;"><span>unzip elasticsearch-analysis-ik-7.17.7.zip -d ik-analyzer
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 解压完成后，删除`elasticsearch-analysis-ik-7.17.7.zip`压缩包</span>
+</span></span><span style="display:flex;"><span>rm elasticsearch-analysis-ik-7.17.7.zip</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h5 id="324-重启容器" class="pagebody-header">
+    3.2.4 重启容器
+  </h5>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker restart es</span></span></code></pre></div></div>
+  
+</div>
+<div class="component-content pagebody component">
+  <h4 id="43-验证" class="pagebody-header">
+    4.3 验证
+  </h4>
+</div><div class="component-content component"><ul>
+<li>使用<code>docker exec -it es /bin/bash </code>命令 进入容器内部</li>
+<li>进入容器的 <code>cd /usr/share/elasticsearch/bin</code> 目录</li>
+<li>执行 <code>elasticsearch-plugin list</code> 命令(列出es安装的所有插件)</li>
+<li>如果列出了 <code>ik-analyzer</code> 就说明es的ik中文分词器安装成功了</li>
+</ul></div>
+<!-- raw HTML omitted -->
+
+<div class="component-content pagebody component">
+  <h4 id="44-测试" class="pagebody-header">
+    4.4 测试
+  </h4>
+</div>
+<div class="component-content pagebody component">
+  <h5 id="441-测试普通分词器" class="pagebody-header">
+    4.4.1 测试普通分词器
+  </h5>
+</div><div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// GET http://IP:9200/_analyze
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;analyzer&#34;</span>: <span style="color:#e6db74">&#34;standard&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;text&#34;</span>:     <span style="color:#e6db74">&#34;测试分词器&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">response:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;tokens&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;测&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;试&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;分&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;词&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">3</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;器&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><blockquote>
+<p class="component-content component">可以看到，查询出的内容，每个文字都是单独的，不会组成一个<code>词</code>；</p>
+</blockquote>
+
+<div class="component-content pagebody component">
+  <h5 id="442-使用ik分词器" class="pagebody-header">
+    4.4.2 使用<code>IK分词器</code>
+  </h5>
+</div><p class="component-content component">请求json如下：</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// GET http://IP:9200/_analyze
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;analyzer&#34;</span>: <span style="color:#e6db74">&#34;ik_max_word&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;text&#34;</span>:     <span style="color:#e6db74">&#34;测试分词器&#34;</span>
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">response:</p>
+<div class="component-content pagebody component code">
+  
+  
+  
+  <div class=""><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;tokens&#34;</span>: [
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;测试&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;CN_WORD&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;分词器&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;CN_WORD&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;分词&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;CN_WORD&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;token&#34;</span>: <span style="color:#e6db74">&#34;器&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;start_offset&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;end_offset&#34;</span>: <span style="color:#ae81ff">5</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;CN_CHAR&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&#34;position&#34;</span>: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div></div>
+  
+</div><p class="component-content component">结束!</p>
+
+          </div><div class="component">
+            <div class="component-content">
+              <div class="article-copyright">
+                <p class="content">
+                  版权声明: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed" target="_blank">版权声明：署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a>
+                </p>
+                <p class="content">作者:  yuanshuai </p>
+                <p class="content">发表日期:  2023年7月19日</p>
+              </div>
+            </div>
+          </div></article>
+      </section>
+  </main>
+
+  <script>
+    var script = document.createElement("script");script.src = "https://yuanshuai1122.github.io/js/initPost.js";
+    document.head.appendChild(script);
+  </script>
+
+    
+    <div class="footer-main ">
+  <div class="content-body footer-wraper">
+    <div class="footer-box">
+      <div class="foot-nav">
+        <div class="foot-nav-items">
+          <div class="item">
+            <div class="logo"></div>
+            <div class="email">Email: <a href="mailto:shuaiyuan@gmail.com">shuaiyuan@gmail.com</a></div>
+          </div>
+
+          <div class="item community">
+            <div class="item-title">社交媒体</div>
+            
+              <a href="https://github.com/yuanshuai1122" target="_blank">Github</a>
+            
+          </div>
+
+          <div class="item resources">
+            <div class="item-title">友链</div>
+            
+              <a href="https://yuanshuaicn.com/" target="_blank">👋</a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="item copyright">
+          &copy; 2023
+          Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> & <a href="https://github.com/floyd-li/hugo-theme-itheme" target="_blank">iTheme</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+    
+    
+
+    
+    
+</html>
