@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>BTC-密码学原理 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="介绍BTC涉及到的密码学原理 比特币被称为加密货币crypto-currency 区块链上内容都是公开的，包括区块的地址，转账的金额。 比特币主要" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/btc-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8E%9F%E7%90%86-btc--mi-ma-xue-yuan-li/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="BTC-密码学原理" />
+<meta property="og:description" content="介绍BTC涉及到的密码学原理 比特币被称为加密货币crypto-currency 区块链上内容都是公开的，包括区块的地址，转账的金额。 比特币主要" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/btc-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8E%9F%E7%90%86-btc--mi-ma-xue-yuan-li/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="BTC-密码学原理">
+<meta itemprop="description" content="介绍BTC涉及到的密码学原理 比特币被称为加密货币crypto-currency 区块链上内容都是公开的，包括区块的地址，转账的金额。 比特币主要">
+
+<meta itemprop="wordCount" content="1659">
+<meta itemprop="keywords" content="BTC,web3.0," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="BTC-密码学原理"/>
+<meta name="twitter:description" content="介绍BTC涉及到的密码学原理 比特币被称为加密货币crypto-currency 区块链上内容都是公开的，包括区块的地址，转账的金额。 比特币主要"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">BTC-密码学原理</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 1659 字 </span>
+          <span class="more-meta"> 预计阅读 4 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <blockquote>
+<p>介绍BTC涉及到的密码学原理</p>
+</blockquote>
+<p>比特币被称为加密货币<code>crypto-currency</code></p>
+<p>区块链上内容都是公开的，包括区块的地址，转账的金额。</p>
+<p>比特币主要用到了密码学中的两个功能:1.哈希2.签名</p>
+<p>1.密码学中用到的哈希函数被称为<code>cryptographic hash function</code>:    它有两个重要的性质:</p>
+<p>①<code>collision(这里指哈希碰撞) resistance</code>  :例如x≠y H(x)=H(y) 两个不同的输入，输出却是相等的，这就称哈希碰撞。它是不可避免的，因为输入空间总大于输出空间。给出x，很难找到y，除非蛮力求解(<code>brute-force</code>)。
+该性质的作用:对一个<code>message</code>求<code>digest</code>
+比如message取m m的哈希值是H(m)=digest 如果有人想篡改m值而H(m)不变，则无法做到。
+哈希碰撞无法人为制造，无法验证，是根据实践经验得来的。</p>
+<p>②<code>hiding</code>哈希函数的计算过程是单向的，不可逆的。(从H(x)无法推导出x) hiding性质前提是输入空间足够大，分布比较均匀。如果不是足够大，一般在x后面拼接一个随机数，如H(x||nonce)。
+该性质的作用:和<code>collision resistance</code> 结合在一起，用来实现<code>digital commitment</code>(又称为<code>digital equivalent of a sealed envelope</code>)
+把预测结果作为输入x，算出一个哈希值，讲哈希值公布，hiding让人们知道哈希值而不知道预测值，最后再将x公布，因为有<code>collision resistance</code>的性质，预测结果是不可篡改的。</p>
+<p>除了密码学中要求的这两个性质外，比特币中用到的哈希函数还有第三个性质:</p>
+<p>③puzzle friendly 指哈希值的预算事先是不可预测的。假如哈希值是00&hellip;0XX&hellip;X，一样事先无法知道哪个值更容易算出这个结果，还是要一个一个带入。</p>
+<p>比特币挖矿的过程中实际就是找一个<code>nonce</code>，nonce跟区块的块头里的其他信息合一起作为输入，得出的哈希值要小于等于某个指定的目标预值。H(block header)≤target。block header 指块头，块头里有很多域，其中一个域是我们可以设置的随机数nonce，挖矿的过程是不停的试随机数，使得block header取哈希后落在指定的范围之内。</p>
+<p><code>puzzle friendly</code>是指挖矿过程中没有捷径，为了使输出值落在指定范围，只能一个一个去试。所以这个过程还可以作为工作量证明(proof of work)。</p>
+<p>挖矿很难，验证很容易。(<code>difficult to solve ,but easy to verify</code>)</p>
+<p>比特币中用的哈希函数叫作<code>SHA-256</code>(secure hash algorithm )以上三个性质它都是满足的。</p>
+<p>2.在比特币系统中开账户:</p>
+<p>在本地创立一个公私钥匙对(<code>public key</code> ,<code>private key</code>)，这就是一个账户。公私钥匙对是来自于非对称的加密技术(<code>asymmetric encryption algorithm</code>)</p>
+<p>两人之间信息的交流可以利用密钥(<code>encryption key</code>)，A将信息加密后发给B，B收到后用密钥解密，因为加密和解密用的是同一个密钥，所以叫对称加密。前提是有渠道可以安全地把密钥分发给通讯的双方。因此对称加密的缺点就是密钥的分发不方便，因为在网络上很容易被窃听。非对称密钥是用一对密钥而不是一个，加密用公钥，解密用私钥，加密和解密用的都是接收方的公钥和私钥。公钥是不用保密的，私钥要保密但是私钥只要保存在本地就行，不用传给对方。公钥相当于银行账号，别人转账只要知道公钥就行，私钥相当于账户密码，知道私钥可以把账户上钱转走。公钥和私钥是用来签名。</p>
+<p>假如A想向B转10个比特币，A把交易放在区块链上，别人怎么知道这笔交易是A发起的呢?这就需要A要用自己的私钥给交易签名，其他人收到这笔交易后，要用A的公钥去验证签名。签名用私钥，验证用公钥，用的仍然是同一个人的。创建账户产生相同公私钥的可能性微乎其微，所以大量创建账户来窃取其他人账户是不可行的。</p>
+<p>我们假设产生公私钥时有一个好的随机源(<code>a good source of randomness</code>)，产生公私钥是随机的，如果随机源不好，就有可能产生相同的公私钥。比特币中用的签名算法，不仅是生成公私钥的时候要有好的随机源，之后每一次签名时也要有好的随机源。只要有一次签名用的随机源不好的话，就有可能泄露私钥。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/btc/">BTC</a>
+          <a href="/yuanshuai1122.github.io/tags/web3.0/">web3.0</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Java强化之泛型</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/btc-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-btc--shu-ju-jie-gou/">
+            <span class="next-text nav-default">BTC-数据结构</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

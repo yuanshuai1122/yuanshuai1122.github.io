@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Redis之事务 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="1、是什么 可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞 2、能" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E4%BA%8B%E5%8A%A1-redis%E4%B9%8B%E4%BA%8B%E5%8A%A1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Redis之事务" />
+<meta property="og:description" content="1、是什么 可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞 2、能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/redis%E4%B9%8B%E4%BA%8B%E5%8A%A1-redis%E4%B9%8B%E4%BA%8B%E5%8A%A1/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Redis之事务">
+<meta itemprop="description" content="1、是什么 可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞 2、能">
+
+<meta itemprop="wordCount" content="1049">
+<meta itemprop="keywords" content="数据库,Redis," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之事务"/>
+<meta name="twitter:description" content="1、是什么 可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞 2、能"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Redis之事务</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 1049 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1是什么">1、是什么</a></li>
+        <li><a href="#2能干嘛">2、能干嘛</a></li>
+        <li><a href="#3怎么玩">3、怎么玩</a>
+          <ul>
+            <li><a href="#31常用命令">3.1、常用命令</a></li>
+            <li><a href="#32case1正常执行">3.2、Case1：正常执行</a></li>
+            <li><a href="#33case2放弃事务">3.3、Case2：放弃事务</a></li>
+            <li><a href="#34case3全体连坐">3.4、Case3：全体连坐</a></li>
+            <li><a href="#35case4冤头债主">3.5、Case4：冤头债主</a></li>
+            <li><a href="#36case5watch监控">3.6、Case5：watch监控</a></li>
+          </ul>
+        </li>
+        <li><a href="#43个阶段">4、<strong>3</strong>个阶段</a></li>
+        <li><a href="#53个特性">5、3个特性</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h2 id="1是什么">1、是什么</h2>
+<p>可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其它命令插入，不许加塞</p>
+<h2 id="2能干嘛">2、能干嘛</h2>
+<p>一个队列中，一次性、顺序性、排他性的执行一系列命令</p>
+<h2 id="3怎么玩">3、怎么玩</h2>
+<h3 id="31常用命令">3.1、常用命令</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/96.png" alt=""></p>
+<h3 id="32case1正常执行">3.2、Case1：正常执行</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/97.png" alt=""></p>
+<h3 id="33case2放弃事务">3.3、Case2：放弃事务</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/98.png" alt=""></p>
+<h3 id="34case3全体连坐">3.4、Case3：全体连坐</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/99.png" alt=""></p>
+<h3 id="35case4冤头债主">3.5、Case4：冤头债主</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/100.png" alt=""></p>
+<h3 id="36case5watch监控">3.6、Case5：watch监控</h3>
+<h4 id="361悲观锁乐观锁cascheck-and-set">3.6.1、悲观锁/乐观锁/CAS(Check And Set)</h4>
+<ul>
+<li>悲观锁</li>
+</ul>
+<p>悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁</p>
+<ul>
+<li>乐观锁</li>
+</ul>
+<p>乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改， 所以不会上锁 ，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，</p>
+<p>乐观锁策略:提交版本必须大于记录当前版本才能执行更新</p>
+<ul>
+<li>CAS</li>
+</ul>
+<h4 id="362初始化信用卡可用余额和欠额">3.6.2、初始化信用卡可用余额和欠额</h4>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/101.png" alt=""></p>
+<h4 id="363无加塞篡改先监控再开启multi保证两笔金额变动在同一个事务内">3.6.3、无加塞篡改，先监控再开启multi，保证两笔金额变动在同一个事务内</h4>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/102.png" alt=""></p>
+<h4 id="364有加塞篡改">3.6.4、有加塞篡改</h4>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/103.png" alt=""></p>
+<p>监控了key，如果key被修改了，后面一个事务的执行失效</p>
+<h4 id="365unwatch">3.6.5、unwatch</h4>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/104.png" alt=""></p>
+<h4 id="366一旦执行了exec之前加的监控锁都会被取消掉了">3.6.6、一旦执行了exec之前加的监控锁都会被取消掉了</h4>
+<h4 id="367小结">3.6.7、小结</h4>
+<ul>
+<li>
+<p>Watch指令，类似乐观锁，事务提交时，如果Key的值已被别的客户端改变，比如某个list已被别的客户端push/pop过了，整个事务队列都不会被执行</p>
+</li>
+<li>
+<p>EXEC命令执行的事务都将被放弃，同时返回Nullmulti-bulk应答以通知调用者事务执行失败</p>
+</li>
+</ul>
+<h2 id="43个阶段">4、<strong>3</strong>个阶段</h2>
+<ul>
+<li>开启：以MULTI开始一个事务</li>
+<li>入队：将多个命令入队到事务中，接到这些命令并不会立即执行，而是放到等待执行的事务队列里面</li>
+<li>执行：由EXEC命令触发事务</li>
+</ul>
+<h2 id="53个特性">5、3个特性</h2>
+<ul>
+<li>单独的隔离操作：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。</li>
+<li>没有隔离级别的概念：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题</li>
+<li>不保证原子性：redis同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+          <a href="/yuanshuai1122.github.io/tags/redis/">Redis</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D-redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Redis之入门介绍</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-redis%E4%B9%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">
+            <span class="next-text nav-default">Redis之数据类型</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

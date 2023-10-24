@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>JVM内存与垃圾回收篇第12章执行引擎 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="第 12 章 执行引擎 1、执行引擎概述 执行引擎位置 执行引擎属于JVM的下层，里面包括：解释器、即时编译器、垃圾回收器 1.1、执行引擎概述 执行引擎概述" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="JVM内存与垃圾回收篇第12章执行引擎" />
+<meta property="og:description" content="第 12 章 执行引擎 1、执行引擎概述 执行引擎位置 执行引擎属于JVM的下层，里面包括：解释器、即时编译器、垃圾回收器 1.1、执行引擎概述 执行引擎概述" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="JVM内存与垃圾回收篇第12章执行引擎">
+<meta itemprop="description" content="第 12 章 执行引擎 1、执行引擎概述 执行引擎位置 执行引擎属于JVM的下层，里面包括：解释器、即时编译器、垃圾回收器 1.1、执行引擎概述 执行引擎概述">
+
+<meta itemprop="wordCount" content="8017">
+<meta itemprop="keywords" content="Java,JVM," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM内存与垃圾回收篇第12章执行引擎"/>
+<meta name="twitter:description" content="第 12 章 执行引擎 1、执行引擎概述 执行引擎位置 执行引擎属于JVM的下层，里面包括：解释器、即时编译器、垃圾回收器 1.1、执行引擎概述 执行引擎概述"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">JVM内存与垃圾回收篇第12章执行引擎</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 8017 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#第-12-章-执行引擎">第 12 章 执行引擎</a>
+      <ul>
+        <li><a href="#1执行引擎概述">1、执行引擎概述</a>
+          <ul>
+            <li><a href="#11执行引擎概述">1.1、执行引擎概述</a></li>
+            <li><a href="#12执行引擎工作过程">1.2、执行引擎工作过程</a></li>
+          </ul>
+        </li>
+        <li><a href="#2java-代码编译和执行过程">2、Java 代码编译和执行过程</a>
+          <ul>
+            <li><a href="#21解释执行和即时编译">2.1、解释执行和即时编译</a></li>
+            <li><a href="#22解释器和编译器">2.2、解释器和编译器</a></li>
+          </ul>
+        </li>
+        <li><a href="#3机器码-指令-汇编语言">3、机器码 指令 汇编语言</a>
+          <ul>
+            <li><a href="#31机器码">3.1、机器码</a></li>
+            <li><a href="#32指令和指令集">3.2、指令和指令集</a></li>
+            <li><a href="#33汇编语言">3.3、汇编语言</a></li>
+            <li><a href="#34高级语言">3.4、高级语言</a></li>
+            <li><a href="#35程序编译流程">3.5、程序编译流程</a></li>
+            <li><a href="#36字节码">3.6、字节码</a></li>
+          </ul>
+        </li>
+        <li><a href="#4解释器">4、解释器</a>
+          <ul>
+            <li><a href="#41为什么要有解释器">4.1、为什么要有解释器</a></li>
+            <li><a href="#42解释器的分类">4.2、解释器的分类</a></li>
+            <li><a href="#43解释器的现状">4.3、解释器的现状</a></li>
+          </ul>
+        </li>
+        <li><a href="#5jit-编译器">5、JIT 编译器</a>
+          <ul>
+            <li><a href="#51为什么还需要解释器">5.1、为什么还需要解释器</a></li>
+            <li><a href="#52即时编译器的案例">5.2、即时编译器的案例</a></li>
+            <li><a href="#53编译器相关概念">5.3、编译器相关概念</a></li>
+            <li><a href="#54热点代码及探测方式">5.4、热点代码及探测方式</a></li>
+            <li><a href="#55设置程序的执行方法">5.5、设置程序的执行方法</a></li>
+            <li><a href="#56hotspotvm-jit">5.6、HotSpotVM JIT</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="第-12-章-执行引擎">第 12 章 执行引擎</h1>
+<h2 id="1执行引擎概述">1、执行引擎概述</h2>
+<blockquote>
+<p><strong>执行引擎位置</strong></p>
+</blockquote>
+<p>执行引擎属于JVM的下层，里面包括：解释器、即时编译器、垃圾回收器</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/198.png" alt=""></p>
+<h3 id="11执行引擎概述">1.1、执行引擎概述</h3>
+<blockquote>
+<p><strong>执行引擎概述</strong></p>
+</blockquote>
+<ol>
+<li>执行引擎是Java虚拟机核心的组成部分之一。“虚拟机”是一个相对于“物理机”的概念，这两种机器都有代码执行能力，其区别是物理机的执行引擎是直接建立在处理器、缓存、指令集和操作系统层面上的，而虚拟机的执行引擎则是由软件自行实现的，因此可以不受物理条件制约地定制指令集与执行引擎的结构体系，能够执行那些不被硬件直接支持的指令集格式。</li>
+<li>JVM的主要任务是负责装载字节码到其内部，但字节码并不能够直接运行在操作系统之上，因为字节码指令并非等价于本地机器指令，它内部包含的仅仅只是一些能够被JVM所识别的字节码指令、符号表，以及其他辅助信息。</li>
+<li>那么，如果想要让一个Java程序运行起来，执行引擎（Execution Engine）的任务就是将字节码指令解释/编译为对应平台上的本地机器指令才可以。简单来说，JVM中的执行引擎充当了将高级语言翻译为机器语言的译者。</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/199.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/200.png" alt=""></p>
+<h3 id="12执行引擎工作过程">1.2、执行引擎工作过程</h3>
+<blockquote>
+<p><strong>执行引擎工作过程</strong></p>
+</blockquote>
+<ol>
+<li>执行引擎在执行的过程中究竟需要执行什么样的字节码指令完全依赖于PC寄存器。</li>
+<li>每当执行完一项指令操作后，PC寄存器就会更新下一条需要被执行的指令地址。</li>
+<li>当然方法在执行的过程中，执行引擎有可能会通过存储在局部变量表中的对象引用准确定位到存储在Java堆区中的对象实例信息，以及通过对象头中的元数据指针定位到目标对象的类型信息。</li>
+<li>从外观上来看，所有的Java虚拟机的执行引擎输入、处理、输出都是一致的：输入的是字节码二进制流，处理过程是字节码解析执行、即时编译的等效过程，输出的是执行过程。</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/201.png" alt=""></p>
+<h2 id="2java-代码编译和执行过程">2、Java 代码编译和执行过程</h2>
+<h3 id="21解释执行和即时编译">2.1、解释执行和即时编译</h3>
+<blockquote>
+<p><strong>Java 代码的解释执行和即时编译</strong></p>
+</blockquote>
+<p>大部分的程序代码转换成物理机的目标代码或虚拟机能执行的指令集之前，都需要经过下图中的各个步骤：</p>
+<ol>
+<li>前面橙色部分是编译生成生成字节码文件的过程（javac 指令），和JVM无关</li>
+<li>后面绿色（解释执行）和蓝色（即时编译）才是JVM需要考虑的过程</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/202.png" alt=""></p>
+<ol start="3">
+<li>Java代码编译是由Java源码编译器来完成，流程图如下所示：</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/203.png" alt=""></p>
+<ol start="4">
+<li>Java字节码的执行是由JVM执行引擎来完成，流程图如下所示</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/204.png" alt=""></p>
+<ol start="5">
+<li>我们用一个总的图，来总结解释器和编译器</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/205.png" alt=""></p>
+<h3 id="22解释器和编译器">2.2、解释器和编译器</h3>
+<blockquote>
+<p><strong>什么是解释器？什么是JIT编译器？</strong></p>
+</blockquote>
+<ol>
+<li>解释器（Interpreter）：当Java虚拟机启动时会根据预定义的规范对字节码采用逐行解释的方式执行，将每条字节码文件中的内容“翻译”为对应平台的本地机器指令执行。</li>
+<li>JIT（Just In Time Compiler）编译器：就是虚拟机将源代码直接编译成和本地机器平台相关的机器语言。</li>
+</ol>
+<blockquote>
+<p><strong>为什么Java是半编译半解释型语言？</strong></p>
+</blockquote>
+<ol>
+<li>JDK1.0时代，将Java语言定位为“解释执行”还是比较准确的。再后来，Java也发展出可以直接生成本地代码的编译器。</li>
+<li>现在JVM在执行Java代码的时候，通常都会将解释执行与编译执行二者结合起来进行。</li>
+<li>将字节码翻译成本地代码后，就可以做一个缓存操作，存储在方法区的JIT 代码缓存中</li>
+</ol>
+<h2 id="3机器码-指令-汇编语言">3、机器码 指令 汇编语言</h2>
+<h3 id="31机器码">3.1、机器码</h3>
+<blockquote>
+<p><strong>机器码</strong></p>
+</blockquote>
+<ol>
+<li>各种用二进制编码方式表示的指令，叫做机器指令码。开始，人们就用它采编写程序，这就是机器语言。</li>
+<li>机器语言虽然能够被计算机理解和接受，但和人们的语言差别太大，不易被人们理解和记忆，并且用它编程容易出差错。</li>
+<li>用它编写的程序一经输入计算机，CPU直接读取运行，因此和其他语言编的程序相比，执行速度最快。</li>
+<li>机器指令与CPU紧密相关，所以不同种类的CPU所对应的机器指令也就不同。</li>
+</ol>
+<h3 id="32指令和指令集">3.2、指令和指令集</h3>
+<blockquote>
+<p><strong>指令和指令集</strong></p>
+</blockquote>
+<p><strong>指令</strong></p>
+<ol>
+<li>由于机器码是由0和1组成的二进制序列，可读性实在太差，于是人们发明了指令。</li>
+<li>指令就是把机器码中特定的0和1序列，简化成对应的指令（一般为英文简写，如mov，inc等），可读性稍好</li>
+<li>由于不同的硬件平台，执行同一个操作，对应的机器码可能不同，所以不同的硬件平台的同一种指令（比如mov），对应的机器码也可能不同。</li>
+</ol>
+<hr>
+<p><strong>指令集</strong></p>
+<p>不同的硬件平台，各自支持的指令，是有差别的。因此每个平台所支持的指令，称之为对应平台的指令集。如常见的</p>
+<ol>
+<li>x86指令集，对应的是x86架构的平台</li>
+<li>ARM指令集，对应的是ARM架构的平台</li>
+</ol>
+<h3 id="33汇编语言">3.3、汇编语言</h3>
+<blockquote>
+<p><strong>汇编语言</strong></p>
+</blockquote>
+<ol>
+<li>由于指令的可读性还是太差，于是人们又发明了汇编语言。</li>
+<li>在汇编语言中，用助记符（Mnemonics）代替机器指令的操作码，用地址符号（Symbol）或标号（Label）代替指令或操作数的地址。在不同的硬件平台，汇编语言对应着不同的机器语言指令集，通过汇编过程转换成机器指令。</li>
+<li>由于计算机只认识指令码，所以用汇编语言编写的程序还必须翻译（汇编）成机器指令码，计算机才能识别和执行。</li>
+</ol>
+<h3 id="34高级语言">3.4、高级语言</h3>
+<blockquote>
+<p><strong>高级语言</strong></p>
+</blockquote>
+<ol>
+<li>为了使计算机用户编程序更容易些，后来就出现了各种高级计算机语言。</li>
+<li>高级语言比机器语言、汇编语言更接近人的语言当计算机执行高级语言编写的程序时，仍然需要把程序解释和编译成机器的指令码。完成这个过程的程序就叫做解释程序或编译程序。</li>
+<li>高级语言也不是直接翻译成 机器指令
+<ul>
+<li>首先需要通过编译阶段，将高级语言翻译为为汇编语言</li>
+<li>再通过汇编阶段，将生成的汇编语言翻译成机器指令</li>
+<li>如下面说的C和C++</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/206.png" alt=""></p>
+<h3 id="35程序编译流程">3.5、程序编译流程</h3>
+<blockquote>
+<p><strong>C、C++源程序执行过程</strong></p>
+</blockquote>
+<p><strong>编译过程又可以分成两个阶段：编译和汇编。</strong></p>
+<ol>
+<li>编译过程：是读取源程序（字符流），对之进行词法和语法的分析，将高级语言指令转换为功能等效的汇编代码</li>
+<li>汇编过程：实际上指把汇编语言代码翻译成目标机器指令的过程。</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/207.png" alt=""></p>
+<h3 id="36字节码">3.6、字节码</h3>
+<blockquote>
+<p><strong>字节码</strong></p>
+</blockquote>
+<ol>
+<li>字节码是一种中间状态（中间码）的二进制代码（文件），它比机器码更抽象，需要直译器转译后才能成为机器码</li>
+<li>字节码主要为了实现特定软件运行和软件环境、与硬件环境无关。</li>
+<li>字节码的实现方式是通过编译器和虚拟机器。编译器将源码编译成字节码，特定平台上的虚拟机器将字节码转译为可以直接执行的指令。</li>
+<li>字节码典型的应用为：Java bytecode</li>
+</ol>
+<h2 id="4解释器">4、解释器</h2>
+<h3 id="41为什么要有解释器">4.1、为什么要有解释器</h3>
+<blockquote>
+<p><strong>为什么要有解释器？</strong></p>
+</blockquote>
+<ol>
+<li>JVM设计者们的初衷仅仅只是单纯地为了满足Java程序实现跨平台特性，因此避免采用静态编译的方式直接生成本地机器指令，从而诞生了实现解释器在运行时采用逐行解释字节码执行程序的想法。</li>
+<li>解释器真正意义上所承担的角色就是一个运行时“翻译者”，将字节码文件中的内容“翻译”为对应平台的本地机器指令执行。</li>
+<li>当一条字节码指令被解释执行完成后，接着再根据PC寄存器中记录的下一条需要被执行的字节码指令执行解释操作。</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/208.png" alt=""></p>
+<h3 id="42解释器的分类">4.2、解释器的分类</h3>
+<blockquote>
+<p><strong>解释器的分类</strong></p>
+</blockquote>
+<ol>
+<li>在Java的发展历史里，一共有两套解释执行器，即古老的字节码解释器、现在普遍使用的模板解释器。
+<ul>
+<li>字节码解释器在执行时通过纯软件代码模拟字节码的执行，效率非常低下。</li>
+<li>而模板解释器将每一条字节码和一个模板函数相关联，模板函数中直接产生这条字节码执行时的机器码，从而很大程度上提高了解释器的性能。</li>
+</ul>
+</li>
+<li>在HotSpot VM中，解释器主要由Interpreter模块和Code模块构成。
+<ul>
+<li>Interpreter模块：实现了解释器的核心功能</li>
+<li>Code模块：用于管理HotSpot VM在运行时生成的本地机器指令</li>
+</ul>
+</li>
+</ol>
+<h3 id="43解释器的现状">4.3、解释器的现状</h3>
+<blockquote>
+<p><strong>解释器的现状</strong></p>
+</blockquote>
+<ol>
+<li>由于解释器在设计和实现上非常简单，因此除了Java语言之外，还有许多高级语言同样也是基于解释器执行的，比如Python、Perl、Ruby等。但是在今天，基于解释器执行已经沦落为低效的代名词，并且时常被一些C/C++程序员所调侃。</li>
+<li>为了解决这个问题，JVM平台支持一种叫作即时编译的技术。即时编译的目的是避免函数被解释执行，而是将整个函数体编译成为机器码，每次函数执行时，只执行编译后的机器码即可，这种方式可以使执行效率大幅度提升。</li>
+<li>不过无论如何，基于解释器的执行模式仍然为中间语言的发展做出了不可磨灭的贡献。</li>
+</ol>
+<h2 id="5jit-编译器">5、JIT 编译器</h2>
+<h3 id="51为什么还需要解释器">5.1、为什么还需要解释器</h3>
+<blockquote>
+<p><strong>Java 代码执行的分类</strong></p>
+</blockquote>
+<ol>
+<li>第一种是将源代码编译成字节码文件，然后在运行时通过解释器将字节码文件转为机器码执行</li>
+<li>第二种是编译执行（直接编译成机器码）。现代虚拟机为了提高执行效率，会使用即时编译技术（JIT，Just In Time）将方法编译成机器码后再执行</li>
+</ol>
+<blockquote>
+<p><strong>Hotspot 同时采用解释器和即时编译器</strong></p>
+</blockquote>
+<ol>
+<li>HotSpot VM是目前市面上高性能虚拟机的代表作之一。它采用解释器与即时编译器并存的架构。</li>
+<li>在Java虚拟机运行时，解释器和即时编译器能够相互协作，各自取长补短，尽力去选择最合适的方式来权衡编译本地代码的时间和直接解释执行代码的时间。</li>
+<li>在今天，Java程序的运行性能早已脱胎换骨，已经达到了可以和C/C++ 程序一较高下的地步。</li>
+</ol>
+<blockquote>
+<p><strong>为啥我们还需要解释器呢？</strong></p>
+</blockquote>
+<ol>
+<li>有些开发人员会感觉到诧异，既然HotSpot VM中已经内置JIT编译器了，那么为什么还需要再使用解释器来“拖累”程序的执行性能呢？比如JRockit VM内部就不包含解释器，字节码全部都依靠即时编译器编译后执行。</li>
+<li>JRockit虚拟机是砍掉了解释器，也就是只采及时编译器。那是因为呢JRockit只部署在服务器上，一般已经有时间让他进行指令编译的过程了，对于响应来说要求不高，等及时编译器的编译完成后，就会提供更好的性能</li>
+</ol>
+<p><strong>首先明确两点：</strong></p>
+<ol>
+<li>当程序启动后，解释器可以马上发挥作用，响应速度快，省去编译的时间，立即执行。</li>
+<li>编译器要想发挥作用，把代码编译成本地代码，需要一定的执行时间，但编译为本地代码后，执行效率高。</li>
+</ol>
+<p><strong>结论：</strong></p>
+<ol>
+<li>尽管JRockit VM中程序的执行性能会非常高效，但程序在启动时必然需要花费更长的时间来进行编译。对于服务端应用来说，启动时间并非是关注重点，但对于那些看中启动时间的应用场景而言，或许就需要采用解释器与即时编译器并存的架构来换取一个平衡点。</li>
+<li>当解释器与即时编译器共存，在Java虚拟器启动时，解释器可以首先发挥作用，而不必等待即时编译器全部编译完成后再执行，这样可以省去许多不必要的编译时间。随着时间的推移，编译器发挥作用，把越来越多的代码编译成本地代码，获得更高的执行效率。</li>
+<li>同时，解释执行在编译器进行激进优化不成立的时候，作为编译器的“逃生门”。</li>
+</ol>
+<h3 id="52即时编译器的案例">5.2、即时编译器的案例</h3>
+<blockquote>
+<p><strong>Hotspot JVM 代码执行方式</strong></p>
+</blockquote>
+<ol>
+<li>当虚拟机启动的时候，解释器可以首先发挥作用，而不必等待即时编译器全部编译完成再执行，这样可以省去许多不必要的编译时间。</li>
+<li>随着程序运行时间的推移，即时编译器逐渐发挥作用，根据热点探测功能，将有价值的字节码编译为本地机器指令，以换取更高的程序执行效率。</li>
+</ol>
+<blockquote>
+<p><strong>即时编译器的案例</strong></p>
+</blockquote>
+<ol>
+<li>注意解释执行与编译执行在线上环境微妙的辩证关系。机器在热机状态可以承受的负载要大于冷机状态。如果以热机状态时的流量进行切流，可能使处于冷机状态的服务器因无法承载流量而假死。</li>
+<li>在生产环境发布过程中，以分批的方式进行发布，根据机器数量划分成多个批次，每个批次的机器数至多占到整个集群的1/8。曾经有这样的故障案例：某程序员在发布平台进行分批发布，在输入发布总批数时，误填写成分为两批发布。如果是热机状态，在正常情况下一半的机器可以勉强承载流量，但由于刚启动的JVM均是解释执行，还没有进行热点代码统计和JIT动态编译，导致机器启动之后，当前1/2发布成功的服务器马上全部宕机，此故障说明了JIT的存在。—阿里团队</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/209.png" alt=""></p>
+<blockquote>
+<p><strong>代码示例</strong></p>
+</blockquote>
+<ul>
+<li>代码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  10:35
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">JITTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&#34;让天下没有难学的技术&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>通过 JVisualVM 查看 JIT 编译器执行的编译次数</li>
+</ul>
+<p><img src="img/210.png" alt="210"></p>
+<h3 id="53编译器相关概念">5.3、编译器相关概念</h3>
+<blockquote>
+<p><strong>编译器相关概念解释</strong></p>
+</blockquote>
+<p><strong>Java 语言的“编译期”其实是一段“不确定”的操作过程</strong></p>
+<ol>
+<li>因为它可能是指一个前端编译器（其实叫“编译器的前端”更准确一些）把.java文件转变成.class文件的过程</li>
+<li>也可能是指虚拟机的后端运行期编译器（JIT编译器，Just In Time Compiler）把字节码转变成机器码的过程。</li>
+<li>还可能是指使用静态提前编译器（AOT编译器，Ahead of Time Compiler）直接把.java文件编译成本地机器代码的过程。</li>
+</ol>
+<hr>
+<p><strong>典型的编译器：</strong></p>
+<ol>
+<li>前端编译器：Sun的javac、Eclipse JDT中的增量式编译器（ECJ）。</li>
+<li>JIT编译器：HotSpot VM的C1、C2编译器。</li>
+<li>AOT 编译器：GNU Compiler for the Java（GCJ）、Excelsior JET。</li>
+</ol>
+<h3 id="54热点代码及探测方式">5.4、热点代码及探测方式</h3>
+<blockquote>
+<p><strong>热点代码及探测方式</strong></p>
+</blockquote>
+<p><strong>热点代码</strong></p>
+<ol>
+<li>当然是否需要启动JIT编译器将字节码直接编译为对应平台的本地机器指令，则需要根据代码被调用执行的频率而定。</li>
+<li>关于那些需要被编译为本地代码的字节码，也被称之为“热点代码”，JIT编译器在运行时会针对那些频繁被调用的“热点代码”做出深度优化，将其直接编译为对应平台的本地机器指令，以此提升Java程序的执行性能。</li>
+<li>一个方法究竟要被调用多少次，或者一个循环体究竟需要执行多少次循环才可以达到这个标准？必然需要一个明确的阈值，JIT编译器才会将这些“热点代码”编译为本地机器指令执行。这里主要依靠热点探测功能。</li>
+</ol>
+<hr>
+<p><strong>热点探测技术</strong></p>
+<ol>
+<li>目前HotSpot VM所采用的热点探测方式是基于计数器的热点探测。</li>
+<li>采用基于计数器的热点探测，HotSpot VM将会为每一个方法都建立2个不同类型的计数器，分别为方法调用计数器（Invocation Counter）和回边计数器（Back Edge Counter）。
+<ul>
+<li>方法调用计数器用于统计方法的调用次数</li>
+<li>回边计数器则用于统计循环体执行的循环次数</li>
+</ul>
+</li>
+</ol>
+<h4 id="541方法调用计数器">5.4.1、方法调用计数器</h4>
+<blockquote>
+<p><strong>方法调用计数器</strong></p>
+</blockquote>
+<ol>
+<li>这个计数器就用于统计方法被调用的次数，它的默认阀值在Client模式下是1500次，在Server模式下是10000次。超过这个阈值，就会触发JIT编译。</li>
+<li>这个阀值可以通过虚拟机参数 -XX:CompileThreshold 来人为设定。</li>
+<li>当一个方法被调用时，会先检查该方法是否存在被JIT编译过的版本
+<ul>
+<li>如果存在，则优先使用编译后的本地代码来执行</li>
+<li>如果不存在已被编译过的版本，则将此方法的调用计数器值加1，然后判断方法调用计数器与回边计数器值之和是否超过方法调用计数器的阀值。
+<ul>
+<li>如果已超过阈值，那么将会向即时编译器提交一个该方法的代码编译请求。</li>
+<li>如果未超过阈值，则使用解释器对字节码文件解释执行</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/211.png" alt=""></p>
+<h4 id="542热度衰减">5.4.2、热度衰减</h4>
+<blockquote>
+<p><strong>热度衰减</strong></p>
+</blockquote>
+<ol>
+<li>如果不做任何设置，方法调用计数器统计的并不是方法被调用的绝对次数，而是一个相对的执行频率，即一段时间之内方法被调用的次数。</li>
+<li>当超过一定的时间限度，如果方法的调用次数仍然不足以让它提交给即时编译器编译，那这个方法的调用计数器就会被减少一半，这个过程称为方法调用计数器热度的衰减（Counter Decay），而这段时间就称为此方法统计的半衰周期（Counter Half Life Time）</li>
+<li>半衰周期是化学中的概念，比如出土的文物通过查看C60来获得文物的年龄</li>
+<li>JVM 进行热度衰减的动作是在虚拟机进行垃圾收集时顺便进行的，可以使用虚拟机参数
+-XX:-UseCounterDecay 来关闭热度衰减</li>
+<li>如果让方法计数器统计方法调用的绝对次数，只要系统运行时间足够长，绝大部分方法都会被编译成本地代码。</li>
+<li>另外，可以使用-XX:CounterHalfLifeTime参数设置半衰周期的时间，单位是秒。</li>
+</ol>
+<h4 id="543回边计数器">5.4.3、回边计数器</h4>
+<blockquote>
+<p><strong>回边计数器</strong></p>
+</blockquote>
+<ol>
+<li>它的作用是统计一个方法中循环体代码执行的次数，在字节码中遇到控制流向后跳转的指令称为“回边”（Back Edge）。</li>
+<li>显然，建立回边计数器统计的目的就是为了触发OSR编译。</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/212.png" alt=""></p>
+<h3 id="55设置程序的执行方法">5.5、设置程序的执行方法</h3>
+<blockquote>
+<p><strong>HotSpotVM 可以设置程序执行方法</strong></p>
+</blockquote>
+<p>缺省情况下HotSpot VM是采用解释器与即时编译器并存的架构，当然开发人员可以根据具体的应用场景，通过命令显式地为Java虚拟机指定在运行时到底是完全采用解释器执行，还是完全采用即时编译器执行。如下所示：</p>
+<ol>
+<li>-Xint：完全采用解释器模式执行程序；</li>
+<li>-Xcomp：完全采用即时编译器模式执行程序。如果即时编译出现问题，解释器会介入执行</li>
+<li>-Xmixed：采用解释器+即时编译器的混合模式共同执行程序。</li>
+</ol>
+<hr>
+<p><strong>通过命令行设置程序执行方式</strong></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/213.png" alt=""></p>
+<p><strong>代码测试</strong></p>
+<ul>
+<li>代码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 测试解释器模式和JIT编译模式
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  -Xint  : 5660ms
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  -Xcomp : 781ms
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  -Xmixed : 819ms
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  12:40
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">IntCompTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">testPrimeNumber</span><span class="o">(</span><span class="mi">1000000</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;花费的时间为：&#34;</span> <span class="o">+</span> <span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">testPrimeNumber</span><span class="o">(</span><span class="kt">int</span> <span class="n">count</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">count</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//计算100以内的质数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">label</span><span class="o">:</span><span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span><span class="n">j</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="o">;</span><span class="n">j</span><span class="o">++){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span><span class="n">k</span> <span class="o">&lt;=</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">j</span><span class="o">);</span><span class="n">k</span><span class="o">++){</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span><span class="o">(</span><span class="n">j</span> <span class="o">%</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">continue</span> <span class="n">label</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="o">}</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">//System.out.println(j);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>结论：只用解释器执行是真的慢</li>
+</ul>
+<h3 id="56hotspotvm-jit">5.6、HotSpotVM JIT</h3>
+<h4 id="561hotspotvm-jit-分类">5.6.1、HotSpotVM JIT 分类</h4>
+<blockquote>
+<p><strong>HotSpotVM中 JIT 分类</strong></p>
+</blockquote>
+<p>JIT的编译器还分为了两种，分别是C1和C2，在HotSpot VM中内嵌有两个JIT编译器，分别为Client Compiler和Server Compiler，但大多数情况下我们简称为C1编译器 和 C2编译器。开发人员可以通过如下命令显式指定Java虚拟机在运行时到底使用哪一种即时编译器，如下所示：</p>
+<ol>
+<li>-client：指定Java虚拟机运行在Client模式下，并使用C1编译器；
+<ul>
+<li>C1编译器会对字节码进行简单和可靠的优化，耗时短，以达到更快的编译速度。</li>
+</ul>
+</li>
+<li>-server：指定Java虚拟机运行在server模式下，并使用C2编译器。
+<ul>
+<li>C2进行耗时较长的优化，以及激进优化，但优化的代码执行效率更高。（使用C++）</li>
+</ul>
+</li>
+</ol>
+<h4 id="562c1-c2-编译器比较">5.6.2、C1 C2 编译器比较</h4>
+<blockquote>
+<p><strong>C1 和 C2编译器不同的优化策略</strong></p>
+</blockquote>
+<ol>
+<li>在不同的编译器上有不同的优化策略，C1编译器上主要有方法内联，去虚拟化、元余消除。
+<ul>
+<li>方法内联：将引用的函数代码编译到引用点处，这样可以减少栈帧的生成，减少参数传递以及跳转过程</li>
+<li>去虚拟化：对唯一的实现樊进行内联</li>
+<li>冗余消除：在运行期间把一些不会执行的代码折叠掉</li>
+</ul>
+</li>
+<li>C2的优化主要是在全局层面，逃逸分析是优化的基础。基于逃逸分析在C2上有如下几种优化：
+<ul>
+<li>标量替换：用标量值代替聚合对象的属性值</li>
+<li>栈上分配：对于未逃逸的对象分配对象在栈而不是堆</li>
+<li>同步消除：清除同步操作，通常指synchronized</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>分层编译策略</strong></p>
+</blockquote>
+<ol>
+<li>分层编译（Tiered Compilation）策略：程序解释执行（不开启性能监控）可以触发C1编译，将字节码编译成机器码，可以进行简单优化，也可以加上性能监控，C2编译会根据性能监控信息进行激进优化。</li>
+<li>不过在Java7版本之后，一旦开发人员在程序中显式指定命令“-server&quot;时，默认将会开启分层编译策略，由C1编译器和C2编译器相互协作共同来执行编译任务。</li>
+</ol>
+<blockquote>
+<p><strong>即时编译器的性能总结</strong></p>
+</blockquote>
+<ol>
+<li>一般来讲，JIT编译出来的机器码性能比解释器解释执行的性能高</li>
+<li>C2编译器启动时长比C1慢，系统稳定执行以后，C2编译器执行速度远快于C1编译器</li>
+</ol>
+<h4 id="563graal-编译器">5.6.3、Graal 编译器</h4>
+<blockquote>
+<p><strong>Graal 编译器</strong></p>
+</blockquote>
+<ul>
+<li>自JDK10起，HotSpot又加入了一个全新的及时编译器：Graal编译器</li>
+<li>编译效果短短几年时间就追平了G2编译器，未来可期</li>
+<li>目前，带着实验状态标签，需要使用开关参数去激活才能使用</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">-XX:+UnlockExperimentalvMOptions -XX:+UseJVMCICompiler
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="564aot编译器">5.6.4、AOT编译器</h4>
+<blockquote>
+<p><strong>AOT 编译器</strong></p>
+</blockquote>
+<ol>
+<li>jdk9引入了AoT编译器（静态提前编译器，Ahead of Time Compiler）</li>
+<li>Java 9引入了实验性AOT编译工具jaotc。它借助了Graal编译器，将所输入的Java类文件转换为机器码，并存放至生成的动态共享库之中。</li>
+<li>所谓AOT编译，是与即时编译相对立的一个概念。
+<ul>
+<li>我们知道，即时编译指的是在程序的运行过程中，将字节码转换为可在硬件上直接运行的机器码，并部署至托管环境中的过程。</li>
+<li>而AOT编译指的则是，在程序运行之前，便将字节码转换为机器码的过程。</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.java -&gt; .class -&gt; (使用jaotc) -&gt; .so
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>AOT编译器编译器的优缺点</strong></p>
+</blockquote>
+<p><strong>最大的好处：</strong></p>
+<ol>
+<li>Java虚拟机加载已经预编译成二进制库，可以直接执行。</li>
+<li>不必等待即时编译器的预热，减少Java应用给人带来“第一次运行慢” 的不良体验</li>
+</ol>
+<hr>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>破坏了 java “ 一次编译，到处运行”，必须为每个不同的硬件，OS编译对应的发行包</li>
+<li>降低了Java链接过程的动态性，加载的代码在编译器就必须全部已知。</li>
+<li>还需要继续优化中，最初只支持Linux X64 java base</li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/java/">Java</a>
+          <a href="/yuanshuai1122.github.io/tags/jvm/">JVM</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">JVM内存与垃圾回收篇第11章直接内存</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC13%E7%AB%A0stringtable-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC13%E7%AB%A0stringtable/">
+            <span class="next-text nav-default">JVM内存与垃圾回收篇第13章StringTable</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Vue之Router（二） - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="一、动态路由 1.产生背景 为什么会有动态路由呢？因为在一般的项目中，都会涉及到用户登陆的操作，我们希望某某用户登陆某个网页的时候，能够在该网页" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/vue%E4%B9%8Brouter%E4%BA%8C-vue%E4%B9%8Brouter%E4%BA%8C/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Vue之Router（二）" />
+<meta property="og:description" content="一、动态路由 1.产生背景 为什么会有动态路由呢？因为在一般的项目中，都会涉及到用户登陆的操作，我们希望某某用户登陆某个网页的时候，能够在该网页" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/vue%E4%B9%8Brouter%E4%BA%8C-vue%E4%B9%8Brouter%E4%BA%8C/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Vue之Router（二）">
+<meta itemprop="description" content="一、动态路由 1.产生背景 为什么会有动态路由呢？因为在一般的项目中，都会涉及到用户登陆的操作，我们希望某某用户登陆某个网页的时候，能够在该网页">
+
+<meta itemprop="wordCount" content="5952">
+<meta itemprop="keywords" content="Vue," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之Router（二）"/>
+<meta name="twitter:description" content="一、动态路由 1.产生背景 为什么会有动态路由呢？因为在一般的项目中，都会涉及到用户登陆的操作，我们希望某某用户登陆某个网页的时候，能够在该网页"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Vue之Router（二）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 5952 字 </span>
+          <span class="more-meta"> 预计阅读 12 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一动态路由">一、动态路由</a>
+      <ul>
+        <li><a href="#1产生背景">1.产生背景</a></li>
+        <li><a href="#2使用步骤">2.使用步骤</a>
+          <ul>
+            <li><a href="#3-route">3. route</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#4-router-和route-的区别">4. router 和route 的区别</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#二路由懒加载">二、路由懒加载</a>
+      <ul>
+        <li><a href="#一打包文件解析">（一）、打包文件解析</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#二路由懒加载-1">（二）、路由懒加载</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#三路由的嵌套使用">三、路由的嵌套使用</a>
+      <ul>
+        <li><a href="#1产生背景-1">1.产生背景</a></li>
+        <li><a href="#2实现步骤">2.实现步骤</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#四参数传递">四、参数传递</a></li>
+    <li><a href="#一传递方式">一、传递方式</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#二代码传递的方式">（二）、代码传递的方式</a>
+          <ul>
+            <li><a href="#1params-的代码书写方式">1.params 的代码书写方式</a></li>
+            <li><a href="#2query-代码的书写方式">2.query 代码的书写方式</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="一动态路由">一、动态路由</h1>
+<h2 id="1产生背景">1.产生背景</h2>
+<p>  为什么会有动态路由呢？因为在一般的项目中，都会涉及到用户登陆的操作，我们希望某某用户登陆某个网页的时候，能够在该网页的UURL地址上显示用户的登录名或者用户ID等的信息。
+  <strong>动态路由就是根据不同的用户将在网页的URL中动态追加登录名或者ID等信息。</strong>
+比如:</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/316.png" alt=""></p>
+<p>当用户“zhangsan”登陆系统，进入到系统的首页时，就会在首页的URL后面显示“zhangsan”</p>
+<h2 id="2使用步骤">2.使用步骤</h2>
+<p><strong>① 在 routes 加字段</strong>
+如果想在URL后面追加字段，首先得将字段添加到跳转路径的后面。
+比如：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/317.png" alt=""></p>
+<p>本例子中，在uesr页面的跳转路径path添加了 uesrID 的字段，希望当某个用户登陆系统，进入到 uesr 页面时在该页面的URL上显示用户的ID信息。</p>
+<p><strong>② 在 router-link 添加字段的值</strong>
+  光是在 routes 的 path 上添加字段是没有用的，因为没有具体的数值，而且如果path:是 &lsquo;/user/:userID&rsquo; 这种形式，就没有办法显示“user”这个页面的，因为根本没有这样的路径，所以我们需要在 <strong>router-link 的to属性添加字段的值</strong>，有两种方式：静态添加和动态添加
+<strong>2.1 静态添加</strong>
+所谓的静态添加就是<strong>字段的数值是写死的</strong>，比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/user/zhangsan&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">用户</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/318.png" alt=""></p>
+<p>为 user页面的URL地址后追加的用户名为“zahngsan”的用户。但是正常的开发过程中，用户千千万，我怎知你是谁呢，所以一般采用动态添加的方式。
+<strong>2.2 动态添加</strong>
+所谓的动态添加就是<strong>字段的值用变量来替代</strong>，比如：
+<strong>首先得在data中声明变量</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">//在App.vue文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">userID</span><span class="o">:</span><span class="s2">&#34;李四&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>然后通过 v-bind 指令使用变量 userID</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">router-link</span> <span class="o">:</span><span class="na">to</span><span class="o">=</span><span class="s">&#34; &#39;/user/&#39; +userID&#34;</span><span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">用户</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里要注意的是常量和变量的拼接。
+<strong>常量：<strong>要用</strong>引号包裹</strong>，因为用引号包裹后就是普普通通的字符串
+<strong>变量：不需要引号包裹</strong>，和常量通过 + 拼接
+其效果图如下：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/319.png" alt=""></p>
+<h3 id="3-route">3. route</h3>
+<p>现在有一个新的需求。希望拿到追加在URL后面的字段并且显示在页面中。
+比如：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/320.png" alt=""></p>
+<p>在路由中提供了另外一种方法： $route。具体用法如下：
+<strong>① 首先，通过 route 获取 URL后面的字段值：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">//在App.vue文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">userID</span><span class="o">:</span><span class="s2">&#34;李四&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="nx">computed</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">userid</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用计算属性，将通过route 获取的userID传递到变量userid中。
+<strong>② 然后在页面显示该值</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">//在App.vue文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/home&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">首页</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/about&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">关于</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="nt">:to=&#34;&#39;/user/&#39;+userID&#34;tag</span><span class="s">=&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">用户</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">userid</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/321.png" alt=""></p>
+<h1 id="4-router-和route-的区别">4. router 和route 的区别</h1>
+<p>  之前在用代码实现路由跳转的时候用过 router；今天在获取URL追加的字段的时候用过 route 。虽然只是相差了一个单词，但是意义完全不一样，具体的区别如下：</p>
+<h5 id="-字面差别">① 字面差别</h5>
+<p>  这个差别很明显了，router 比route 多了个 字母 r。不要笑噢，这个也是很严肃哒，细节决定成败，说的就是这个理儿</p>
+<h5 id="-本质">② 本质</h5>
+<p>router：本质是<strong>router对象</strong>
+route：本质是router对象里的一个属性routes，routes下面有很多个route，而<strong>通过 $route 获取的路由是处于激活状态下的路由</strong>。具体关系见下图：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/322.png" alt=""></p>
+<h1 id="二路由懒加载">二、路由懒加载</h1>
+<h2 id="一打包文件解析">（一）、打包文件解析</h2>
+<h4 id="1前言">1.前言</h4>
+<p>  当我们把所有的文件都打包到 bound.js 文件夹下，该文件夹就会变得很大，加载缓慢。如果我们<strong>把不同路由对应的组件分割成不同的代码块，分别打包，当路由被访问时才加载相应的组件</strong>，就变得高效起来。所以我们要将不同的文件打包在不同的地方。</p>
+<p>  既然如此，这么多的 css 文件、 js文件、html文件，我们怎么知道它们分别在那个包呢？</p>
+<h4 id="2文件解析">2.文件解析</h4>
+<p>  首先，执行 npm run build 执行，对项目进行打包，打包后产生的 dist 文件夹有以下的内容：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/323.png" alt=""></p>
+<h5 id="-css-文件">① CSS 文件</h5>
+<p>  当我们打开 CSS 文件夹的时候，看到里面仅仅包含了 .css 的文件，由此可见，打包的 css 文件都放在这里了。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/324.png" alt=""></p>
+<h5 id="-js-文件">② js 文件</h5>
+<p>  当我们打开 js 文件夹的时候，看到里面主要包含了三类的文件：app.XXXX、manifest.XXXX、vendor.XXXX</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/325.png" alt=""></p>
+<p><strong>2.1 app.XXXX</strong>
+  app 是application的缩写，主要是<strong>包含当前应用开发的所有代码</strong>，简单说就是自家写的代码。</p>
+<p><strong>2.2 vendor.XXXX</strong>
+  vendor 译为提供商，也就是你在项目中<strong>引用第三方的东西</strong>。比如 vue、vue-router 等等。</p>
+<p><strong>2.3 manifest.XXXX</strong>
+  <strong>为打包的代码做底层支撑</strong>。其实跟webpack的原理挺像的，因为没有webpack，一些 ES6、CommonJS 模块是没有办法被浏览器识别的，有了webpack做为底层支撑，一些不能被浏览器识别的模块就能识别了。
+总结起来就是 ：<strong>app是自家的代码，vendor是别家的代码，mainfest是底层支撑。</strong></p>
+<h2 id="二路由懒加载-1">（二）、路由懒加载</h2>
+<h4 id="1原因回顾">1.原因回顾</h4>
+<p>  上面已经提及到，当我们把所有的文件都打包到 bound.js 文件夹下，该文件夹就会变得很大，加载缓慢。如果我们<strong>把不同路由对应的组件分割成不同的代码块，分别打包，当路由被访问时才加载相应的组件</strong>，就变得高效起来。
+比如：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/326.png" alt=""></p>
+<p>在这个页面中，有三个按钮：首页、购物车、我的。那么这三个按钮肯定有对应的页面，这三个页面又可以看成是是个不同的组件。
+  如果没有路由懒加载时，当用户进入到该页面，就<strong>会向静态资源服务器一下子请求了“首页”、“购物车”、“我的”三个页面的所有资源</strong>。三个还好说，但是当数据量庞大的时候，加载就会变得缓慢，甚至用户的界面会出现空白的情况。
+  有了路由懒加载之后，**当用户进入了“首页”，仅仅请求有关“首页”的资源。**其余没有用到的资源都不请求。这样不管有多少的数据，我没用到的都不管我的事，所以就变得十分高效</p>
+<h4 id="2路由懒加载做了什么">2.路由懒加载做了什么？</h4>
+<p>① 将路由对应的组件<strong>打包</strong>成一个个的 <strong>js 代码块</strong>
+② 只有在这个路由<strong>被访问</strong>的时候<strong>才加载对应的组件</strong>。</p>
+<h4 id="3懒加载的方式">3.懒加载的方式</h4>
+<p><strong>① 结合 vue 的异步组件和Webpack 的代码分析</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Home</span>  <span class="o">=</span> <span class="nx">resolve</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">require</span><span class="p">.</span><span class="nx">ensure</span><span class="p">([</span> <span class="s1">&#39;../components/Home.vue&#39;</span><span class="p">],()</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">resolve</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../components/Home.vue&#39;</span><span class="err">&#39;</span><span class="p">))})};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>② AMD写法</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">About</span> <span class="o">=</span> <span class="nx">resolve</span> <span class="p">=&gt;</span> <span class="nx">require</span><span class="p">([</span><span class="s1">&#39;../components/About.vue&#39;</span><span class="p">],</span><span class="nx">resolve</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>③ 箭头函数</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Home</span> <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../components/Home.vue&#39;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>下面用方法③结合我们的程序跑一下呗</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//在index.js 文件修改
+</span></span></span><span class="line"><span class="cl"><span class="c1">//1.导入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="nx">Vue</span> <span class="nx">from</span> <span class="s1">&#39;vue&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">VueRouter</span> <span class="nx">from</span> <span class="s1">&#39;vue-router&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Home</span> <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../components/home.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">About</span> <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../components/about.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">User</span> <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../components/user.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Vue</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">VueRouter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//2.创建路由对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 负责URL和页面的映射关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">redirect</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/about&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">About</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/user/:userID&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">User</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mode</span><span class="o">:</span><span class="s1">&#39;history&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">linkActiveClass</span><span class="o">:</span><span class="s2">&#34;warp&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//3.导出路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">export</span>  <span class="k">default</span> <span class="nx">router</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/327.png" alt=""></p>
+<p>可以看到在打包好的js文件夹下多的三类的 .js文件。 为什么是三个呢？因为有三个页面用了懒加载呀！</p>
+<h1 id="三路由的嵌套使用">三、路由的嵌套使用</h1>
+<h2 id="1产生背景-1">1.产生背景</h2>
+<p>  嵌套路由的产生是因为<strong>在一个页面中，可以将不同功能的部分进行划分，组成小的组件，然后点击相应的链接就会跳转到相应的内容。</strong></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/328.png" alt=""></p>
+<p>假设现在分别有 home 和 about 两个大的页面。我们希望通过 /home/new 来访问 home 中有关 new 的内容；通过 /home/message 来访问 home 中有关 message 的内容。一个路径映射一个组件，访问 /home/new 和 /home/message 就会分别渲染 new 组件和 message 组件。
+  简单来说，就是<strong>对一个页面的不同功能使用路由来达到跳转的目的。</strong></p>
+<h2 id="2实现步骤">2.实现步骤</h2>
+<h5 id="-创建对应的子组件并且在路由的映射中配置对应的子路由">① 创建对应的子组件，并且在路由的映射中配置对应的子路由</h5>
+<p>首先创建 HomeNews 和 HomeMessage 两个子组件，组件的内容分别如下所示：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/329.png" alt=""></p>
+<p>然后在 index.js 文件配置相应的路由映射关系如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">children</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;new&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeNews</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeMessage</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>配置映射关系是要注意两点：
+第一：<strong>不能在 routes 内部最后面追加</strong>。因为如果在最后面追加，相当于 new 和 message 两个子页面就和 home 页面是同级的关系，而不是包含关系。所以这里需要在 home 内部<strong>使用 children 配置映射关系</strong>。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/330.png" alt=""></p>
+<p>第二：<strong>子级的路径不需要加 /</strong> 。因为路由在解析的时候会自动帮我们添加上去，就不需要我们再画蛇添足啦~</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/331.png" alt=""></p>
+<h5 id="-在组件内部使用-router-view-标签">② 在组件内部使用 <router-view> 标签</h5>
+<p>  经过上面的步骤，我们已经配置好了 new 和 message 两个子页面的内容，接下来就是找地方给它们展示自己了
+  首先我们要知道，展示肯定是要用 <strong>router-view</strong> 展示，然后就是确定 router-view 的位置。如果我们将 router-view 放到了 App.vue 下，可想而知,当你进网页的时候看到的就是这样的效果：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/332.png" alt=""></p>
+<p>为什么？因为new 和message 取代了 home 和 about 页面的位置  所以我们应该<strong>将显示 new 和 message 的router-view 放在 home 组件的内部</strong>，因为 new 和 message 是在 home 页面下显示的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span><span class="nx">我是首页</span><span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/home/new&#34;</span><span class="p">&gt;</span><span class="nx">新闻</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/home/message&#34;</span><span class="p">&gt;</span><span class="nx">消息</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个时候你就可以看到下面的效果：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/334.gif" alt=""></p>
+<p>但是我们点首页，新闻的具体内容没有显示出来，需要我们点击“新闻”这个标题之后才会显示。这个简单，加个默认路径就可以了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">children</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">redirect</span><span class="o">:</span><span class="s2">&#34;new&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;new&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeNews</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeMessage</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>  
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/335.gif" alt=""></p>
+<h1 id="四参数传递">四、参数传递</h1>
+<h1 id="一传递方式">一、传递方式</h1>
+<p>  传递参数主要有两种类型： params 和 query 。</p>
+<h4 id="1params">1.params</h4>
+<p>主要分成下面三个步骤：
+<strong>① 配置路由格式</strong>
+  说白了就是在 routes 映射关系中的 path 后面添加多一个变量，该变量就是要传递的参数。
+比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 负责URL和页面的映射关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">redirect</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>      
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/user/:userID&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">User</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们希望在“user” 页面的URL中添加上用户的ID。所以在 routes 的 path 中添加了userID 变量，该变量就是想要传递的参数O(∩_∩)O</p>
+<p><strong>② 给参数赋值</strong>
+  上面一步我们已经为路由的路径后面添加多了userID 参数，接下来我们就要为这个参数赋值。
+在路由对象的 data 中声明该变量并且为变量赋值。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">userID</span><span class="o">:</span><span class="s2">&#34;李四&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们希望用户“李四” 登陆系统后能将他的ID传递到用户页面的URL中。所以为 userID 赋值为 “lisi”。</p>
+<p><strong>③ 显示变量</strong>
+上面一步我们已经有了数据，接下来就是将该数据显示在用户页面的URL中。
+  使用<strong>计算属性</strong>重新定义一个变量，然后通过**$route 获取原来变量的值并返回给新的变量**。最后一定要记得，在 <strong>route-link 标签的 to 属性也要添加上该变量</strong>，否则不能成功跳转页面。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">//显示数据的模板
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/home&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">首页</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/about&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">关于</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="nt">:to=&#34;&#39;/user/&#39;+userID&#34;tag</span><span class="s">=&#34;button&#34;</span> <span class="p">&gt;</span><span class="nx">用户</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">userid</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//路由配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">userID</span><span class="o">:</span><span class="s2">&#34;李四&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"> <span class="nx">computed</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">userid</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在该例子中，定义了新的变量 userid，然后通过 route.params.userID获取了userID的值，最后在模板中显示如下：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/336.png" alt=""></p>
+<h4 id="2query-类型">2.query 类型</h4>
+<p>  在进行正式配置之前，我们要准备前期的工作，重新创建一个 profile.vue 组件。这里已经创建好了，就不一一叙述啦</p>
+<p>重点是下面：
+我们通过 query 传递参数的时候，也可以大概分成下面三步：
+<strong>① 配置路由</strong>
+这个配置路由的方式就是跟往常配置路由的方式是一样的。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 负责URL和页面的映射关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">redirect</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/about&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">About</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/user/:userID&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">User</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/profile&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Profile</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在这里，当路径出现 “/profile” 时就跳转到 profile.vue 组件的页面。</p>
+<p><strong>② 通过router-link 实现跳转</strong>
+在模板中通过 router-link 实现路径和页面的跳转。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/home&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">首页</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#34;/about&#34;</span> <span class="na">tag</span><span class="o">=</span><span class="s">&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">关于</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="nt">:to=&#34;&#39;/user/&#39;+userID&#34;tag</span><span class="s">=&#34;button&#34;</span> <span class="na">replace</span><span class="p">&gt;</span><span class="nx">用户</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-link</span> <span class="na">to</span><span class="o">=</span><span class="s">&#39;/profile&#39;</span><span class="p">&gt;</span><span class="nx">档案</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">userid</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当用户点击了 “档案” ，就会跳转到 “/profile”路径下的 profile.vue组件。
+<strong>③ 传递参数</strong>
+  query 和params不同的是，query传递的是一个对象，所以在 router-link 标签的 to 属性不是单单的传递一个变量，而是一个对象。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;</span><span class="nt">router-link</span> <span class="o">:</span><span class="na">to</span><span class="o">=</span><span class="s">&#34;{path:&#39;/profile&#39; , query:{name:&#39;zhangsan&#39;,age:18}}&#34;</span><span class="p">&gt;</span><span class="nx">档案</span><span class="o">&lt;</span><span class="err">/router-link&gt;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用query传递参数是需要注意两点：
+  第一：<strong>传递的是对象</strong>。因为传递的是对象，所以在 to 前面要使用 v-bind（简写是 ：）来获取，否则如果是 to=“{&hellip;}” 传递的是一个{}字符串儿不是一个对象。
+  第二：<strong>query 也是对象</strong>，所以在query的内部可以传递很多的属性。
+上面的例子中，当用户点击的“档案” ，跳转到“档案”页面时，该页面的URL就会显示 query 对象传递过去的参数。比如：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/337.png" alt=""></p>
+<p>同理，如果我们想要将 URL 中的信息拿到页面中该怎么办呢？
+很简单，只需要通过 $route.query 就可以了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">// 在 profile.vue 添加
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span><span class="nx">我是profile</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;{{</span><span class="nx">$route</span><span class="p">.</span><span class="nx">query</span><span class="p">}}&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/338.png" alt=""></p>
+<p>不仅如此，我还可以获取更加详细的信息，比如单独的姓名、年龄：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/339.png" alt=""></p>
+<h2 id="二代码传递的方式">（二）、代码传递的方式</h2>
+<h3 id="1params-的代码书写方式">1.params 的代码书写方式</h3>
+<p>  首先就是把 router-link 变成 <strong>button 标签</strong>，紧接着为 button <strong>添加点击事件</strong>，最后再绑定的事件通过 <strong>$route.push 获取path</strong>。比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--</span> <span class="mf">1.</span><span class="nx">将router</span><span class="o">-</span><span class="nx">link</span> <span class="nx">转换成button</span> <span class="nx">标签并添加点击事件</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;HomeClick&#34;</span><span class="p">&gt;</span><span class="na">首页</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;AboutClick&#34;</span><span class="p">&gt;</span><span class="na">关于</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;UserClick&#34;</span><span class="p">&gt;</span><span class="na">用户</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;ProfileClick&#34;</span><span class="p">&gt;</span><span class="na">档案</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">userid</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">userID</span><span class="o">:</span><span class="s2">&#34;李四&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">computed</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">userid</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userID</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//绑定点击事件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">HomeClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/home&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">AboutClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/about&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">UserClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s1">&#39;/user/&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">userID</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">ProfileClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/profile&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">query</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">age</span><span class="o">:</span><span class="mi">18</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里要主要的是两点：
+  <strong>① 地址拼接：</strong> 常量需要用引号包括，变量不需要引号包裹，常量和变浪之间通过 + 进行拼接。比如： this.$router.push(&rsquo;/user/&rsquo; + this.userID); /user 代表路径，是一个常量，需要用引号包裹，而 userID 是变量，通过this来获取当前的变量；
+  <strong>② 参数传递</strong>：如果连接中涉及到参数传递的，路径后面要加“/”。比如(&rsquo;/user/&rsquo; + this.userID); 我们需要将userID传递到URL中，所以路径 /user 后面要加 /</p>
+<h3 id="2query-代码的书写方式">2.query 代码的书写方式</h3>
+<p>代码加上图所示。这里小编主要分析如何书写用query传递参数的代码表示方式。
+  依旧是通过 <strong>$router.push</strong> 来获取，只是 push 内部不再是简简单单的变量，而是一个<strong>对象</strong>。对象内部有 path 和 query，而query又是一个对象，里面包含了 name 和age 两个属性。如下图所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"> <span class="nx">ProfileClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/profile&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="nx">query</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">age</span><span class="o">:</span><span class="mi">18</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">          <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/vue/">Vue</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/vue%E4%B9%8Bpromise-vue%E4%B9%8Bpromise/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Vue之Promise</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/">
+            <span class="next-text nav-default">Vue之Router（三）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

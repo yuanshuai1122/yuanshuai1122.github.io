@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Vue之块级作用域let和var - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="1.背景 js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Br" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar-vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Vue之块级作用域let和var" />
+<meta property="og:description" content="1.背景 js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Br" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar-vue%E4%B9%8B%E5%9D%97%E7%BA%A7%E4%BD%9C%E7%94%A8%E5%9F%9Flet%E5%92%8Cvar/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Vue之块级作用域let和var">
+<meta itemprop="description" content="1.背景 js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Br">
+
+<meta itemprop="wordCount" content="1490">
+<meta itemprop="keywords" content="Vue," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之块级作用域let和var"/>
+<meta name="twitter:description" content="1.背景 js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Br"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Vue之块级作用域let和var</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 1490 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1背景">1.背景</a></li>
+        <li><a href="#2var">2.var</a></li>
+        <li><a href="#3var-if">3.var-if</a></li>
+        <li><a href="#4var-for">4.var-for</a></li>
+        <li><a href="#3let">3.let</a>
+          <ul>
+            <li><a href="#let和var的区别">let和var的区别</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h2 id="1背景">1.背景</h2>
+<p>js的作者Brendan Eich公开说明过var其实是js语言设计上的错误，但是这种错误多半不能修复和移除，所以大概在十几年前，Brendan Eich就修复了这个问题，添加了一个新的关键词：let
+let可以看做是更完美的var</p>
+<h2 id="2var">2.var</h2>
+<p>1.var
+<strong>var在声明一个变量时，该变量只有在函数中才有自己的作用，在if和for中没有自己的作用域。</strong>
+作用域是什么？
+作用域就是变量和函数生效的区域。</p>
+<p>2.var-function</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            function text(){
+</span></span><span class="line"><span class="cl">                var a = 123;
+</span></span><span class="line"><span class="cl">                console.log(&#39;在函数内打印:&#39; + a);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            text();
+</span></span><span class="line"><span class="cl">            console.log(&#39;在函数外打印:&#39; + a);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在函数内var的a有自己的作用域，a生效的区域只在这个函数内，外部打印a会显示a is not defined，因为a不存在在外部</p>
+<p>这就是作用域的作用</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/45.png" alt=""></p>
+<p>声明在if或for中的变量没有自己的作用域</p>
+<h2 id="3var-if">3.var-if</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        if(true) {
+</span></span><span class="line"><span class="cl">            var a = 123;
+</span></span><span class="line"><span class="cl">            console.log(a);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        console.log(a);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>因为if没有作用域的概念，所以在if内var的a可以被共享，即使在if外也能使用a</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/46.png" alt=""></p>
+<h2 id="4var-for">4.var-for</h2>
+<p>实现点击按钮，显示该按钮的序号</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span class="line"><span class="cl">            for(var i = 0; i <span class="p">&lt;</span> <span class="nt">btns.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="na">btns</span><span class="err">[</span><span class="na">i</span><span class="err">].</span><span class="na">onclick </span><span class="o">=</span> <span class="s">function()</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">i</span><span class="err">);</span>
+</span></span><span class="line"><span class="cl">                <span class="err">}</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>重大缺陷：无论点击哪个，i都是最后一个。
+在for中的i是没有自己的作用域的，且js是异步执行，在js执行完后，才开始渲染页面，那就意味着我们在点击已经渲染出的button时，for循环已经遍历到最后一个，且这个for中的i没有自己的作用域，他是被共享的，遍历四次他就被改变了四次，所以我们无论点击哪个按钮出现的i都是4.</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/47.png" alt=""></p>
+<p>那这时候，为了实现效果就会引入函数（因为var在函数中有自己的作用域），借助函数的作用域让每个i都有自己的作用域，点击按钮出现相应序号。<strong>这就是我们js常用的闭包。</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span class="line"><span class="cl">            for(var i = 0; i <span class="p">&lt;</span> <span class="nt">btns.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="err">(</span><span class="na">function</span><span class="err">(</span><span class="na">i</span><span class="err">){</span>
+</span></span><span class="line"><span class="cl">                    <span class="na">btns</span><span class="err">[</span><span class="na">i</span><span class="err">].</span><span class="na">onclick </span><span class="o">=</span> <span class="s">function()</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(&#39;</span><span class="na">点击了第</span><span class="err">&#39;</span> <span class="err">+</span> <span class="na">i</span> <span class="err">+</span> <span class="err">&#39;</span><span class="na">个按钮</span><span class="err">&#39;);</span>
+</span></span><span class="line"><span class="cl">                    <span class="err">}</span>
+</span></span><span class="line"><span class="cl">                <span class="err">}(</span><span class="na">i</span><span class="err">))</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/48.png" alt=""></p>
+<p>在function中声明的i都有自己的作用域，这四个作用域互不影响</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            i=0
+</span></span><span class="line"><span class="cl">            (function(i){
+</span></span><span class="line"><span class="cl">                btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }(0))
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            i=1
+</span></span><span class="line"><span class="cl">            (function(i){
+</span></span><span class="line"><span class="cl">                btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }(1))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            i=2
+</span></span><span class="line"><span class="cl">            (function(i){
+</span></span><span class="line"><span class="cl">                btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }(2))
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            i=3
+</span></span><span class="line"><span class="cl">            (function(i){
+</span></span><span class="line"><span class="cl">                btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                    console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }(3))   
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3let">3.let</h2>
+<p>用let声明的变量在if、for、function内都有自己的作用域
+用let解决点击按钮的问题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            var btns = document.getElementsByTagName(&#39;button&#39;);
+</span></span><span class="line"><span class="cl">            for(let i = 0; i <span class="p">&lt;</span> <span class="nt">btns.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="na">btns</span><span class="err">[</span><span class="na">i</span><span class="err">].</span><span class="na">onclick </span><span class="o">=</span> <span class="s">function()</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(&#39;</span><span class="na">点击了第</span><span class="err">&#39;</span> <span class="err">+</span> <span class="na">i</span> <span class="err">+</span> <span class="err">&#39;</span><span class="na">个按钮</span><span class="err">&#39;);</span>
+</span></span><span class="line"><span class="cl">                <span class="err">}</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>因为用let声明的变量有自己的作用域，不用像var一样需要借助function生成自己的作用域。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/49.png" alt=""></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            i=0
+</span></span><span class="line"><span class="cl">            btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            i=1
+</span></span><span class="line"><span class="cl">            btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            i=2
+</span></span><span class="line"><span class="cl">            btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            i=3
+</span></span><span class="line"><span class="cl">            btns[i].onclick = function() {
+</span></span><span class="line"><span class="cl">                console.log(&#39;点击了第&#39; + i + &#39;个按钮&#39;);
+</span></span><span class="line"><span class="cl">            }   
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="let和var的区别">let和var的区别</h3>
+<p><strong>用let声明的变量在if、for、function内都有自己的作用域
+用var声明的变量只有在function内有自己的作用域</strong></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/vue/">Vue</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7-vue%E4%B9%8B%E8%AE%A1%E7%AE%97%E5%B1%9E%E6%80%A7/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Vue之计算属性</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC-vue%E4%B9%8B%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC/">
+            <span class="next-text nav-default">Vue之事件监听</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

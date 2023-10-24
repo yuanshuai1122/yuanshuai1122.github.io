@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>JVM内存与垃圾回收篇第10章对象的实例化内存布局与访问定位 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="第 10 章 对象的实例化内存布局与访问定位 1、对象的实例化 大厂面试题 美团： 对象在JVM中是怎么存储的？ 对象头信息里面有哪些东西？ 蚂蚁金服： 二面：j" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="JVM内存与垃圾回收篇第10章对象的实例化内存布局与访问定位" />
+<meta property="og:description" content="第 10 章 对象的实例化内存布局与访问定位 1、对象的实例化 大厂面试题 美团： 对象在JVM中是怎么存储的？ 对象头信息里面有哪些东西？ 蚂蚁金服： 二面：j" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="JVM内存与垃圾回收篇第10章对象的实例化内存布局与访问定位">
+<meta itemprop="description" content="第 10 章 对象的实例化内存布局与访问定位 1、对象的实例化 大厂面试题 美团： 对象在JVM中是怎么存储的？ 对象头信息里面有哪些东西？ 蚂蚁金服： 二面：j">
+
+<meta itemprop="wordCount" content="3044">
+<meta itemprop="keywords" content="Java,JVM," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM内存与垃圾回收篇第10章对象的实例化内存布局与访问定位"/>
+<meta name="twitter:description" content="第 10 章 对象的实例化内存布局与访问定位 1、对象的实例化 大厂面试题 美团： 对象在JVM中是怎么存储的？ 对象头信息里面有哪些东西？ 蚂蚁金服： 二面：j"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">JVM内存与垃圾回收篇第10章对象的实例化内存布局与访问定位</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 3044 字 </span>
+          <span class="more-meta"> 预计阅读 7 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#第-10-章-对象的实例化内存布局与访问定位">第 10 章 对象的实例化内存布局与访问定位</a>
+      <ul>
+        <li><a href="#1对象的实例化">1、对象的实例化</a>
+          <ul>
+            <li><a href="#11对象创建的方式">1.1、对象创建的方式</a></li>
+            <li><a href="#12对象创建的步骤">1.2、对象创建的步骤</a></li>
+          </ul>
+        </li>
+        <li><a href="#2对象的内存布局">2、对象的内存布局</a>
+          <ul>
+            <li><a href="#21对象头">2.1、对象头</a></li>
+            <li><a href="#22实例数据">2.2、实例数据</a></li>
+            <li><a href="#23对齐填充">2.3、对齐填充</a></li>
+          </ul>
+        </li>
+        <li><a href="#3对象的访问定位">3、对象的访问定位</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="第-10-章-对象的实例化内存布局与访问定位">第 10 章 对象的实例化内存布局与访问定位</h1>
+<h2 id="1对象的实例化">1、对象的实例化</h2>
+<blockquote>
+<p><strong>大厂面试题</strong></p>
+</blockquote>
+<p>美团：</p>
+<ol>
+<li>对象在<code>JVM</code>中是怎么存储的？</li>
+<li>对象头信息里面有哪些东西？</li>
+</ol>
+<hr>
+<p>蚂蚁金服：</p>
+<p>二面：<code>java</code>对象头里有什么</p>
+<blockquote>
+<p><strong>对象实例化</strong></p>
+</blockquote>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/185.png" alt=""></p>
+<h3 id="11对象创建的方式">1.1、对象创建的方式</h3>
+<blockquote>
+<p><strong>对象创建的方式</strong></p>
+</blockquote>
+<ol>
+<li>new：最常见的方式、单例类中调用getInstance的静态类方法，XXXFactory的静态方法</li>
+<li>Class的newInstance方法：在JDK9里面被标记为过时的方法，因为只能调用空参构造器，并且权限必须为 public</li>
+<li>Constructor的newInstance(Xxxx)：反射的方式，可以调用空参的，或者带参的构造器</li>
+<li>使用clone()：不调用任何的构造器，要求当前的类需要实现Cloneable接口中的clone方法</li>
+<li>使用序列化：序列化一般用于Socket的网络传输</li>
+<li>第三方库 Objenesis</li>
+</ol>
+<h3 id="12对象创建的步骤">1.2、对象创建的步骤</h3>
+<blockquote>
+<p><strong>从字节码看待对象的创建过程</strong></p>
+</blockquote>
+<ul>
+<li>代码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  17:16
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>main() 方法对应的字节码（后面细讲）：
+<ul>
+<li>调用 new 指令后后，加载 Object 类</li>
+<li>调用 Object 类的 init() 方法</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0 new #2 &lt;java/lang/Object&gt;
+</span></span><span class="line"><span class="cl">3 dup
+</span></span><span class="line"><span class="cl">4 invokespecial #1 &lt;java/lang/Object.&lt;init&gt;&gt;
+</span></span><span class="line"><span class="cl">7 astore_1
+</span></span><span class="line"><span class="cl">8 return
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p><strong>创建对象的步骤</strong></p>
+</blockquote>
+<hr>
+<p><strong>1、判断对象对应的类是否加载、链接、初始化</strong></p>
+<ol>
+<li>虚拟机遇到一条new指令，首先去检查这个指令的参数能否在Metaspace的常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已经被加载，解析和初始化。（即判断类元信息是否存在）。</li>
+<li>如果该类没有加载，那么在双亲委派模式下，使用当前类加载器以ClassLoader + 包名 + 类名为key进行查找对应的.class文件，如果没有找到文件，则抛出ClassNotFoundException异常，如果找到，则进行类加载，并生成对应的Class对象。</li>
+</ol>
+<hr>
+<p><strong>2、为对象分配内存</strong></p>
+<ol>
+<li>首先计算对象占用空间的大小，接着在堆中划分一块内存给新对象。如果实例成员变量是引用变量，仅分配引用变量空间即可，即4个字节大小</li>
+<li>如果内存规整：采用指针碰撞分配内存
+<ul>
+<li>如果内存是规整的，那么虚拟机将采用的是指针碰撞法（Bump The Point）来为对象分配内存。</li>
+<li>意思是所有用过的内存在一边，空闲的内存放另外一边，中间放着一个指针作为分界点的指示器，分配内存就仅仅是把指针往空闲内存那边挪动一段与对象大小相等的距离罢了。</li>
+<li>如果垃圾收集器选择的是Serial ，ParNew这种基于压缩算法的，虚拟机采用这种分配方式。一般使用带Compact（整理）过程的收集器时，使用指针碰撞。</li>
+<li>标记压缩（整理）算法会整理内存碎片，堆内存一存对象，另一边为空闲区域</li>
+</ul>
+</li>
+<li>如果内存不规整
+<ul>
+<li>如果内存不是规整的，已使用的内存和未使用的内存相互交错，那么虚拟机将采用的是空闲列表来为对象分配内存。</li>
+<li>意思是虚拟机维护了一个列表，记录上哪些内存块是可用的，再分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的内容。这种分配方式成为了 “空闲列表（Free List）”</li>
+<li>选择哪种分配方式由Java堆是否规整所决定，而Java堆是否规整又由所采用的垃圾收集器是否带有压缩整理功能决定</li>
+<li>标记清除算法清理过后的堆内存，就会存在很多内存碎片。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3、处理并发问题</strong></p>
+<ol>
+<li>采用CAS+失败重试保证更新的原子性</li>
+<li>每个线程预先分配TLAB - 通过设置 -XX:+UseTLAB参数来设置（区域加锁机制）</li>
+<li>在Eden区给每个线程分配一块区域</li>
+</ol>
+<hr>
+<p><strong>4、初始化分配到的内存</strong></p>
+<p>所有属性设置默认值，保证对象实例字段在不赋值可以直接使用</p>
+<hr>
+<p><strong>5、设置对象的对象头</strong></p>
+<p>将对象的所属类（即类的元数据信息）、对象的HashCode和对象的GC信息、锁信息等数据存储在对象的对象头中。这个过程的具体设置方式取决于JVM实现。</p>
+<hr>
+<p><strong>6、执行init方法进行初始化</strong></p>
+<ol>
+<li>在Java程序的视角看来，初始化才正式开始。初始化成员变量，执行实例化代码块，调用类的构造方法，并把堆内对象的首地址赋值给引用变量</li>
+<li>因此一般来说（由字节码中跟随invokespecial指令所决定），new指令之后会接着就是执行init方法，把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算完成创建出来。</li>
+</ol>
+<hr>
+<p>回顾给对象属性赋值的顺序：</p>
+<ol>
+<li>属性的默认值初始化</li>
+<li>显示初始化/代码块初始化（并列关系，谁先谁后看代码编写的顺序）</li>
+<li>构造器初始化</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>从字节码角度看 init 方法</strong></p>
+</blockquote>
+<ul>
+<li>代码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 测试对象实例化的过程
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  ① 加载类元信息 - ② 为对象分配内存 - ③ 处理并发问题  - ④ 属性的默认初始化（零值初始化）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  - ⑤ 设置对象头的信息 - ⑥ 属性的显式初始化、代码块中初始化、构造器中初始化
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  给对象的属性赋值的操作：
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  ① 属性的默认初始化 - ② 显式初始化 / ③ 代码块中初始化 - ④ 构造器中初始化
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  17:58
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Customer</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1001</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Account</span> <span class="n">acct</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">name</span> <span class="o">=</span> <span class="s">&#34;匿名客户&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Customer</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">acct</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Account</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Account</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>init() 方法的字节码指令：
+<ul>
+<li>属性的默认值初始化：<code>id = 1001;</code></li>
+<li>显示初始化/代码块初始化：<code>name = &quot;匿名客户&quot;;</code></li>
+<li>构造器初始化：<code>acct = new Account();</code></li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> 0 aload_0
+</span></span><span class="line"><span class="cl"> 1 invokespecial #1 &lt;java/lang/Object.&lt;init&gt;&gt;
+</span></span><span class="line"><span class="cl"> 4 aload_0
+</span></span><span class="line"><span class="cl"> 5 sipush 1001
+</span></span><span class="line"><span class="cl"> 8 putfield #2 &lt;com/atguigu/java/Customer.id&gt;
+</span></span><span class="line"><span class="cl">11 aload_0
+</span></span><span class="line"><span class="cl">12 ldc #3 &lt;匿名客户&gt;
+</span></span><span class="line"><span class="cl">14 putfield #4 &lt;com/atguigu/java/Customer.name&gt;
+</span></span><span class="line"><span class="cl">17 aload_0
+</span></span><span class="line"><span class="cl">18 new #5 &lt;com/atguigu/java/Account&gt;
+</span></span><span class="line"><span class="cl">21 dup
+</span></span><span class="line"><span class="cl">22 invokespecial #6 &lt;com/atguigu/java/Account.&lt;init&gt;&gt;
+</span></span><span class="line"><span class="cl">25 putfield #7 &lt;com/atguigu/java/Customer.acct&gt;
+</span></span><span class="line"><span class="cl">28 return
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2对象的内存布局">2、对象的内存布局</h2>
+<blockquote>
+<p><strong>对象内存布局</strong></p>
+</blockquote>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/186.png" alt=""></p>
+<h3 id="21对象头">2.1、对象头</h3>
+<blockquote>
+<p><strong>对象头</strong></p>
+</blockquote>
+<p><strong>对象头包含两部分：运行时元数据（Mark Word）和类型指针</strong></p>
+<ol>
+<li>运行时元数据
+<ul>
+<li>哈希值（HashCode），可以看作是堆中对象的地址</li>
+<li>GC分代年龄（年龄计数器）</li>
+<li>锁状态标志</li>
+<li>线程持有的锁</li>
+<li>偏向线程ID</li>
+<li>偏向时间戳</li>
+</ul>
+</li>
+<li>类型指针
+<ul>
+<li>指向类元数据InstanceKlass，确定该对象所属的类型。指向的其实是方法区中存放的类元信息</li>
+</ul>
+</li>
+</ol>
+<p>说明：如果对象是数组，还需要记录数组的长度</p>
+<h3 id="22实例数据">2.2、实例数据</h3>
+<blockquote>
+<p><strong>实例数据（Instance Data）</strong></p>
+</blockquote>
+<ol>
+<li>说明
+<ul>
+<li>它是对象真正存储的有效信息，包括程序代码中定义的各种类型的字段（包括从父类继承下来的和本身拥有的字段）</li>
+</ul>
+</li>
+<li>规则
+<ul>
+<li>相同宽度的字段总是被分配在一起</li>
+<li>父类中定义的变量会出现在子类之前（父类在子类之前加载）</li>
+<li>如果CompactFields参数为true（默认为true）：子类的窄变量可能插入到父类变量的空隙</li>
+</ul>
+</li>
+</ol>
+<h3 id="23对齐填充">2.3、对齐填充</h3>
+<blockquote>
+<p><strong>对齐填充</strong></p>
+</blockquote>
+<p>不是必须的，也没特别含义，仅仅起到占位符的作用</p>
+<blockquote>
+<p><strong>内存布局总结</strong></p>
+</blockquote>
+<ul>
+<li>代码</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 测试对象实例化的过程
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  ① 加载类元信息 - ② 为对象分配内存 - ③ 处理并发问题  - ④ 属性的默认初始化（零值初始化）
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  - ⑤ 设置对象头的信息 - ⑥ 属性的显式初始化、代码块中初始化、构造器中初始化
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  给对象的属性赋值的操作：
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *  ① 属性的默认初始化 - ② 显式初始化 / ③ 代码块中初始化 - ④ 构造器中初始化
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  17:58
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Customer</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1001</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Account</span> <span class="n">acct</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">name</span> <span class="o">=</span> <span class="s">&#34;匿名客户&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Customer</span><span class="o">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">acct</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Account</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Account</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @author shkstart  shkstart@126.com
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @create 2020  17:16
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectTest</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>图解内存布局</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/187.png" alt=""></p>
+<h2 id="3对象的访问定位">3、对象的访问定位</h2>
+<blockquote>
+<p><strong>JVM是如何通过栈帧中的对象引用访问到其内部的对象实例呢？</strong></p>
+</blockquote>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/188.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/189.png" alt=""></p>
+<blockquote>
+<p><strong>对象的两种访问方式：句柄访问和直接指针</strong></p>
+</blockquote>
+<p><strong>1、句柄访问</strong></p>
+<ol>
+<li>缺点：在堆空间中开辟了一块空间作为句柄池，句柄池本身也会占用空间；通过两次指针访问才能访问到堆中的对象，效率低</li>
+<li>优点：reference中存储稳定句柄地址，对象被移动（垃圾收集时移动对象很普遍）时只会改变句柄中实例数据指针即可，reference本身不需要被修改</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/190.png" alt=""></p>
+<p><strong>2、直接指针（HotSpot采用）</strong></p>
+<ol>
+<li>优点：直接指针是局部变量表中的引用，直接指向堆中的实例，在对象实例中有类型指针，指向的是方法区中的对象类型数据</li>
+<li>缺点：对象被移动（垃圾收集时移动对象很普遍）时需要修改 reference 的值</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/jvm_first/191.png" alt=""></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/java/">Java</a>
+          <a href="/yuanshuai1122.github.io/tags/jvm/">JVM</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/git%E5%92%8Cgithub%E4%B9%8Bgit%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C-git%E5%92%8Cgithub%E4%B9%8Bgit%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%93%8D%E4%BD%9C/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Git和Github之Git命令行操作</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/">
+            <span class="next-text nav-default">JVM内存与垃圾回收篇第11章直接内存</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

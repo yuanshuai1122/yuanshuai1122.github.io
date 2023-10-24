@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Docker之镜像 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="Docker 镜像 1、是什么 镜像是一种轻量级、可执行的独立软件包， 用来打包软件运行环境和基于运行环境开发的软件 ，它包含运行某个软件所需的所有内容，包括代" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E9%95%9C%E5%83%8F-docker%E4%B9%8B%E9%95%9C%E5%83%8F/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Docker之镜像" />
+<meta property="og:description" content="Docker 镜像 1、是什么 镜像是一种轻量级、可执行的独立软件包， 用来打包软件运行环境和基于运行环境开发的软件 ，它包含运行某个软件所需的所有内容，包括代" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/docker%E4%B9%8B%E9%95%9C%E5%83%8F-docker%E4%B9%8B%E9%95%9C%E5%83%8F/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Docker之镜像">
+<meta itemprop="description" content="Docker 镜像 1、是什么 镜像是一种轻量级、可执行的独立软件包， 用来打包软件运行环境和基于运行环境开发的软件 ，它包含运行某个软件所需的所有内容，包括代">
+
+<meta itemprop="wordCount" content="1452">
+<meta itemprop="keywords" content="docker," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker之镜像"/>
+<meta name="twitter:description" content="Docker 镜像 1、是什么 镜像是一种轻量级、可执行的独立软件包， 用来打包软件运行环境和基于运行环境开发的软件 ，它包含运行某个软件所需的所有内容，包括代"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Docker之镜像</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 1452 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#docker-镜像"><strong>Docker</strong> <strong>镜像</strong></a>
+      <ul>
+        <li><a href="#1是什么">1、<strong>是什么</strong></a>
+          <ul>
+            <li><a href="#11unionfs联合文件系统">1.1、UnionFS（联合文件系统）</a></li>
+            <li><a href="#12docker镜像加载原理">1.2、Docker镜像加载原理</a></li>
+            <li><a href="#13分层的镜像">1.3、分层的镜像</a></li>
+            <li><a href="#14为什么-docker-镜像要采用这种分层结构呢">1.4、为什么 Docker 镜像要采用这种分层结构呢</a></li>
+          </ul>
+        </li>
+        <li><a href="#2特点">2、<strong>特点</strong></a></li>
+        <li><a href="#3docker镜像commit操作补充">3、Docker镜像commit操作补充</a>
+          <ul>
+            <li><a href="#31docker-commit提交容器副本使之成为一个新的镜像">3.1、docker commit提交容器副本使之成为一个新的镜像</a></li>
+            <li><a href="#32案例演示">3.2、案例演示</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="docker-镜像"><strong>Docker</strong> <strong>镜像</strong></h1>
+<h2 id="1是什么">1、<strong>是什么</strong></h2>
+<p>镜像是一种轻量级、可执行的独立软件包， 用来打包软件运行环境和基于运行环境开发的软件 ，它包含运行某个软件所需的所有内容，包括代码、运行时、库、环境变量和配置文件。</p>
+<h3 id="11unionfs联合文件系统">1.1、UnionFS（联合文件系统）</h3>
+<p>UnionFS（联合文件系统）：Union文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，它支持 对文件系统的修改作为一次提交来一层层的叠加， 同时可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。Union 文件系统是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。</p>
+<p>特性：一次同时加载多个文件系统，但从外面看起来，只能看到一个文件系统，联合加载会把各层文件系统叠加起来，这样最终的文件系统会包含所有底层的文件和目录</p>
+<h3 id="12docker镜像加载原理">1.2、Docker镜像加载原理</h3>
+<p>Docker镜像加载原理：</p>
+<p>docker的镜像实际上由一层一层的文件系统组成，这种层级的文件系统UnionFS。</p>
+<p>bootfs(boot file system)主要包含bootloader和kernel, bootloader主要是引导加载kernel, Linux刚启动时会加载bootfs文件系统，在Docker镜像的最底层是bootfs。 这一层与我们典型的Linux/Unix系统是一样的，包含boot加载器和内核。当boot加载完成之后整个内核就都在内存中了，此时内存的使用权已由bootfs转交给内核，此时系统也会卸载bootfs。</p>
+<p>rootfs (root file system) ，在bootfs之上 。包含的就是典型 Linux 系统中的 /dev, /proc, /bin, /etc 等标准目录和文件。rootfs就是各种不同的操作系统发行版，比如Ubuntu，Centos等等。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/24.png" alt=""></p>
+<p>平时我们安装进虚拟机的CentOS都是好几个G，为什么docker这里才200M？？</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/25.png" alt=""></p>
+<p>对于一个精简的OS，rootfs可以很小，只需要包括最基本的命令、工具和程序库就可以了，因为底层直接用Host的kernel，自己只需要提供 rootfs 就行了。由此可见对于不同的linux发行版, bootfs基本是一致的, rootfs会有差别, 因此不同的发行版可以公用bootfs。</p>
+<h3 id="13分层的镜像">1.3、分层的镜像</h3>
+<p>以我们的pull为例，在下载的过程中我们可以看到docker的镜像好像是在一层一层的在下载</p>
+<h3 id="14为什么-docker-镜像要采用这种分层结构呢">1.4、为什么 Docker 镜像要采用这种分层结构呢</h3>
+<p>最大的一个好处就是 - 共享资源</p>
+<p>比如：有多个镜像都从相同的 base 镜像构建而来，那么宿主机只需在磁盘上保存一份base镜像，</p>
+<p>同时内存中也只需加载一份 base 镜像，就可以为所有容器服务了。而且镜像的每一层都可以被共享。</p>
+<h2 id="2特点">2、<strong>特点</strong></h2>
+<p>Docker镜像都是只读的</p>
+<p>当容器启动时，一个新的可写层被加载到镜像的顶部。</p>
+<p>这一层通常被称作“容器层”，“容器层”之下的都叫“镜像层”。</p>
+<h2 id="3docker镜像commit操作补充">3、Docker镜像commit操作补充</h2>
+<h3 id="31docker-commit提交容器副本使之成为一个新的镜像">3.1、docker commit提交容器副本使之成为一个新的镜像</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker commit -m<span class="o">=</span>“提交的描述信息” -a<span class="o">=</span>“作者” 容器ID 要创建的目标镜像名:<span class="o">[</span>标签名<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="32案例演示">3.2、案例演示</h3>
+<ol>
+<li>
+<h4 id="从hub上下载tomcat镜像到本地并成功运行">从Hub上下载tomcat镜像到本地并成功运行</h4>
+</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/26.png" alt=""></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -it -p 8080:8080 tomcat
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>-p 主机端口:docker容器端口</p>
+</li>
+<li>
+<p>-P 随机分配端口</p>
+</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/27.png" alt=""></p>
+<ul>
+<li>
+<p>i:交互</p>
+</li>
+<li>
+<p>t:终端</p>
+</li>
+</ul>
+<ol start="2">
+<li>
+<h4 id="故意删除上一步镜像生产tomcat容器的文档">故意删除上一步镜像生产tomcat容器的文档</h4>
+</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/28.png" alt=""></p>
+<ol start="3">
+<li>
+<h4 id="也即当前的tomcat运行实例是一个没有文档内容的容器以它为模板commit一个没有doc的tomcat新镜像atguigutomcat02">也即当前的tomcat运行实例是一个没有文档内容的容器，以它为模板commit一个没有doc的tomcat新镜像atguigu/tomcat02</h4>
+</li>
+</ol>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/29.png" alt=""></p>
+<ol start="4">
+<li>
+<h4 id="启动我们的新镜像并和原来的对比">启动我们的新镜像并和原来的对比</h4>
+</li>
+</ol>
+<ul>
+<li>启动atguigu/tomcat02，它没有docs</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/30.png" alt=""></p>
+<ul>
+<li>新启动原来的tomcat，它有docs</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/31.png" alt=""></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/docker/">docker</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E7%AE%80%E4%BB%8B-docker%E4%B9%8B%E7%AE%80%E4%BB%8B/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Docker之简介</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7-docker%E4%B9%8B%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7/">
+            <span class="next-text nav-default">Docker之容器数据卷</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

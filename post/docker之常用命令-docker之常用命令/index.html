@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Docker之常用命令 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="Docker常用命令 1、帮助命令 1 docker version 1 docker info 1 docker --help 2、镜像命令 2.1、docker images 1 docker images 列出本地主机上的镜像 各个选项说明: REPOSITO" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Docker之常用命令" />
+<meta property="og:description" content="Docker常用命令 1、帮助命令 1 docker version 1 docker info 1 docker --help 2、镜像命令 2.1、docker images 1 docker images 列出本地主机上的镜像 各个选项说明: REPOSITO" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4-docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Docker之常用命令">
+<meta itemprop="description" content="Docker常用命令 1、帮助命令 1 docker version 1 docker info 1 docker --help 2、镜像命令 2.1、docker images 1 docker images 列出本地主机上的镜像 各个选项说明: REPOSITO">
+
+<meta itemprop="wordCount" content="2413">
+<meta itemprop="keywords" content="docker," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Docker之常用命令"/>
+<meta name="twitter:description" content="Docker常用命令 1、帮助命令 1 docker version 1 docker info 1 docker --help 2、镜像命令 2.1、docker images 1 docker images 列出本地主机上的镜像 各个选项说明: REPOSITO"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Docker之常用命令</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 2413 字 </span>
+          <span class="more-meta"> 预计阅读 5 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#docker常用命令"><strong>Docker</strong>常用命令</a>
+      <ul>
+        <li><a href="#1帮助命令">1、<strong>帮助命令</strong></a></li>
+        <li><a href="#2镜像命令">2、镜像命令</a>
+          <ul>
+            <li><a href="#21docker-images">2.1、docker images</a></li>
+            <li><a href="#22docker-search-某个xxx镜像名字">2.2、docker search 某个XXX镜像名字</a></li>
+            <li><a href="#23docker-pull-某个xxx镜像名字">2.3、docker pull 某个XXX镜像名字</a></li>
+            <li><a href="#24docker-rmi-某个xxx镜像名字id">2.4、docker rmi 某个XXX镜像名字ID</a></li>
+          </ul>
+        </li>
+        <li><a href="#3容器命令">3、<strong>容器命令</strong></a>
+          <ul>
+            <li><a href="#31有镜像才能创建容器这是根本前提下载一个centos镜像演示">3.1、有镜像才能创建容器，这是根本前提(下载一个CentOS镜像演示)</a></li>
+            <li><a href="#32新建并启动容器">3.2、新建并启动容器</a></li>
+            <li><a href="#33列出当前所有正在运行的容器">3.3、列出当前所有正在运行的容器</a></li>
+            <li><a href="#34退出容器">3.4、退出容器</a></li>
+            <li><a href="#35启动容器">3.5、启动容器</a></li>
+            <li><a href="#36重启容器">3.6、重启容器</a></li>
+            <li><a href="#37停止容器">3.7、停止容器</a></li>
+            <li><a href="#38强制停止容器">3.8、强制停止容器</a></li>
+            <li><a href="#39删除已停止的容器">3.9、删除已停止的容器</a></li>
+            <li><a href="#310重要">3.10、<strong>重要</strong></a></li>
+          </ul>
+        </li>
+        <li><a href="#4小总结">4、<strong>小总结</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="docker常用命令"><strong>Docker</strong>常用命令</h1>
+<h2 id="1帮助命令">1、<strong>帮助命令</strong></h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker version
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker info
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker --help
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="2镜像命令">2、镜像命令</h2>
+<h3 id="21docker-images">2.1、docker images</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker images
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>列出本地主机上的镜像</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/18.png" alt=""></p>
+<p>各个选项说明:</p>
+<blockquote>
+<p>REPOSITORY：表示镜像的仓库源</p>
+<p>TAG：镜像的标签</p>
+<p>IMAGE ID：镜像ID</p>
+<p>CREATED：镜像创建时间</p>
+<p>SIZE：镜像大小</p>
+</blockquote>
+<p>同一仓库源可以有多个 TAG，代表这个仓库源的不同个版本，我们使用 REPOSITORY:TAG 来定义不同的镜像。</p>
+<p>如果你不指定一个镜像的版本标签，例如你只使用 ubuntu，docker 将默认使用 ubuntu:latest 镜像</p>
+<ul>
+<li>OPTIONS说明：</li>
+</ul>
+<p>-a :列出本地所有的镜像（含中间映像层）</p>
+<p>-q :只显示镜像ID。</p>
+<p>&ndash;digests :显示镜像的摘要信息</p>
+<p>&ndash;no-trunc :显示完整的镜像信息</p>
+<h3 id="22docker-search-某个xxx镜像名字">2.2、docker search 某个XXX镜像名字</h3>
+<ul>
+<li>网站</li>
+</ul>
+<p><a href="https://hub.docker.com">https://hub.docker.com</a></p>
+<ul>
+<li>命令</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker search <span class="o">[</span>OPTIONS<span class="o">]</span> 镜像名字
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>OPTIONS说明：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">--no-trunc : 显示完整的镜像描述
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">-s : 列出收藏数不小于指定值的镜像。
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">--automated : 只列出 automated build类型的镜像；
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="23docker-pull-某个xxx镜像名字">2.3、docker pull 某个XXX镜像名字</h3>
+<ul>
+<li>下载镜像</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull 镜像名字<span class="o">[</span>:TAG<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="24docker-rmi-某个xxx镜像名字id">2.4、docker rmi 某个XXX镜像名字ID</h3>
+<ul>
+<li>
+<p>删除镜像</p>
+</li>
+<li>
+<p>删除单个</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rmi  -f 镜像ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>删除多个</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rmi -f 镜像名1:TAG 镜像名2:TAG 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>删除全部</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rmi -f <span class="k">$(</span>docker images -qa<span class="k">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="3容器命令">3、<strong>容器命令</strong></h2>
+<h3 id="31有镜像才能创建容器这是根本前提下载一个centos镜像演示">3.1、有镜像才能创建容器，这是根本前提(下载一个CentOS镜像演示)</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull centos
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="32新建并启动容器">3.2、新建并启动容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run <span class="o">[</span>OPTIONS<span class="o">]</span> IMAGE <span class="o">[</span>COMMAND<span class="o">]</span> <span class="o">[</span>ARG...<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>OPTIONS说明</li>
+</ul>
+<blockquote>
+<p>OPTIONS说明（常用）：有些是一个减号，有些是两个减号</p>
+<p>&ndash;name=&ldquo;容器新名字&rdquo;: 为容器指定一个名称；</p>
+<p>-d: 后台运行容器，并返回容器ID，也即启动守护式容器；</p>
+<p>-i：以交互模式运行容器，通常与 -t 同时使用；</p>
+<p>-t：为容器重新分配一个伪输入终端，通常与 -i 同时使用；</p>
+<p>-P: 随机端口映射；</p>
+<p>-p: 指定端口映射，有以下四种格式</p>
+<p>ip:hostPort:containerPort</p>
+<p>ip::containerPort</p>
+<p>​    hostPort:containerPort</p>
+<p>containerPort</p>
+</blockquote>
+<ul>
+<li>启动交互式容器</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/19.png" alt=""></p>
+<p>#使用镜像centos:latest以交互模式启动一个容器,在容器内执行/bin/bash命令。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -it centos /bin/bash 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33列出当前所有正在运行的容器">3.3、列出当前所有正在运行的容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker ps <span class="o">[</span>OPTIONS<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>OPTIONS说明</li>
+</ul>
+<blockquote>
+<p>OPTIONS说明（常用）：</p>
+<p>-a : 列出当前所有 正在运行 的容器 + 历史上运行过 的</p>
+<p>-l :显示最近创建的容器。</p>
+<p>-n：显示最近n个创建的容器。</p>
+<p>-q :静默模式，只显示容器编号。</p>
+<p>&ndash;no-trunc :不截断输出。</p>
+</blockquote>
+<h3 id="34退出容器">3.4、退出容器</h3>
+<p>两种退出方式:</p>
+<ul>
+<li>容器停止退出</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">exit</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>容器不停止退出</p>
+<p>ctrl+P+Q</p>
+<h3 id="35启动容器">3.5、启动容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker start 容器ID或者容器名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="36重启容器">3.6、重启容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker restart 容器ID或者容器名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="37停止容器">3.7、停止容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker stop 容器ID或者容器名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="38强制停止容器">3.8、强制停止容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker <span class="nb">kill</span> 容器ID或者容器名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="39删除已停止的容器">3.9、删除已停止的容器</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rm 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>一次性删除多个容器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rm -f <span class="k">$(</span>docker ps -a -q<span class="k">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker ps -a -q <span class="p">|</span> xargs docker rm
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="310重要">3.10、<strong>重要</strong></h3>
+<ul>
+<li>启动守护式容器</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -d 容器名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>使用镜像centos:latest以后台模式启动一个容器</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -d centos 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>问题：然后</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker ps -a 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>进行查看, 会发现容器已经退出</p>
+<p>很重要的要说明的一点: Docker容器后台运行,就必须有一个前台进程.</p>
+<p>容器运行的命令如果不是那些 一直挂起的命令 （比如运行top，tail），就是会自动退出的。</p>
+<p>这个是docker的机制问题,比如你的web容器,我们以nginx为例，正常情况下,我们配置启动服务只需要启动响应的service即可。例如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">service nginx start 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>但是,这样做,nginx为后台进程模式运行,就导致docker前台没有运行的应用, 这样的容器后台启动后,会立即自杀因为他觉得他没事可做了.</p>
+<p>所以，最佳的解决方案是,将你要运行的程序以前台进程的形式运行</p>
+<ul>
+<li>查看容器日志</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker logs -f -t --tail 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run -d centos /bin/sh -c <span class="s2">&#34;while true;do echo hello zzyy;sleep 2;done&#34;</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>*  -t 是加入时间戳</p>
+<p>*  -f 跟随最新的日志打印</p>
+<p>*  &ndash;tail 数字 显示最后多少条</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/20.png" alt=""></p>
+<ul>
+<li>查看容器内运行的进程</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker top 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>查看容器内部细节</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker inspect 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>进入正在运行的容器并以命令行交互</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it 容器ID bashShell
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/21.png" alt=""></p>
+<ul>
+<li>重新进入</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker attach 容器ID
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>上述两个区别</p>
+<ul>
+<li>attach 直接进入容器启动命令的终端，不会启动新的进程</li>
+<li>exec 是在容器中打开新的终端，并且可以启动新的进程</li>
+</ul>
+</li>
+<li>
+<p>从容器内拷贝文件到主机上</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker cp  容器ID:容器内路径 目的主机路径
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/22.png" alt=""></p>
+<h2 id="4小总结">4、<strong>小总结</strong></h2>
+<ul>
+<li>常用命令</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/docker/23.png" alt=""></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">attach    Attach to a running container                 <span class="c1"># 当前 shell 下 attach 连接指定运行镜像 </span>
+</span></span><span class="line"><span class="cl">build     Build an image from a Dockerfile              <span class="c1"># 通过 Dockerfile 定制镜像 </span>
+</span></span><span class="line"><span class="cl">commit    Create a new image from a container changes   <span class="c1"># 提交当前容器为新的镜像 </span>
+</span></span><span class="line"><span class="cl">cp        Copy files/folders from the containers filesystem to the host path   <span class="c1">#从容器中拷贝指定文件或者目录到宿主机中 </span>
+</span></span><span class="line"><span class="cl">create    Create a new container                        <span class="c1"># 创建一个新的容器，同 run，但不启动容器 </span>
+</span></span><span class="line"><span class="cl">diff      Inspect changes on a container<span class="err">&#39;</span>s filesystem   <span class="c1"># 查看 docker 容器变化 </span>
+</span></span><span class="line"><span class="cl">events    Get real <span class="nb">time</span> events from the server          <span class="c1"># 从 docker 服务获取容器实时事件 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">exec</span>      Run a <span class="nb">command</span> in an existing container        <span class="c1"># 在已存在的容器上运行命令 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span>    Stream the contents of a container as a tar archive   <span class="c1"># 导出容器的内容流作为一个 tar 归档文件[对应 import ] </span>
+</span></span><span class="line"><span class="cl"><span class="nb">history</span>   Show the <span class="nb">history</span> of an image                  <span class="c1"># 展示一个镜像形成历史 </span>
+</span></span><span class="line"><span class="cl">images    List images                                   <span class="c1"># 列出系统当前镜像 </span>
+</span></span><span class="line"><span class="cl">import    Create a new filesystem image from the contents of a tarball <span class="c1"># 从tar包中的内容创建一个新的文件系统映像[对应export] </span>
+</span></span><span class="line"><span class="cl">info      Display system-wide information               <span class="c1"># 显示系统相关信息 </span>
+</span></span><span class="line"><span class="cl">inspect   Return low-level information on a container   <span class="c1"># 查看容器详细信息 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">kill</span>      Kill a running container                      <span class="c1"># kill 指定 docker 容器 </span>
+</span></span><span class="line"><span class="cl">load      Load an image from a tar archive              <span class="c1"># 从一个 tar 包中加载一个镜像[对应 save] </span>
+</span></span><span class="line"><span class="cl">login     Register or Login to the docker registry server    <span class="c1"># 注册或者登陆一个 docker 源服务器 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">logout</span>    Log out from a Docker registry server          <span class="c1"># 从当前 Docker registry 退出 </span>
+</span></span><span class="line"><span class="cl">logs      Fetch the logs of a container                 <span class="c1"># 输出当前容器日志信息 </span>
+</span></span><span class="line"><span class="cl">port      Lookup the public-facing port which is NAT-ed to PRIVATE_PORT    <span class="c1"># 查看映射端口对应的容器内部源端口 </span>
+</span></span><span class="line"><span class="cl">pause     Pause all processes within a container        <span class="c1"># 暂停容器 </span>
+</span></span><span class="line"><span class="cl">ps        List containers                               <span class="c1"># 列出容器列表 </span>
+</span></span><span class="line"><span class="cl">pull      Pull an image or a repository from the docker registry server   <span class="c1"># 从docker镜像源服务器拉取指定镜像或者库镜像 </span>
+</span></span><span class="line"><span class="cl">push      Push an image or a repository to the docker registry server    <span class="c1"># 推送指定镜像或者库镜像至docker源服务器 </span>
+</span></span><span class="line"><span class="cl">restart   Restart a running container                   <span class="c1"># 重启运行的容器 </span>
+</span></span><span class="line"><span class="cl">rm        Remove one or more containers                 <span class="c1"># 移除一个或者多个容器 </span>
+</span></span><span class="line"><span class="cl">rmi       Remove one or more images             <span class="c1"># 移除一个或多个镜像[无容器使用该镜像才可删除，否则需删除相关容器才可继续或 -f 强制删除] </span>
+</span></span><span class="line"><span class="cl">run       Run a <span class="nb">command</span> in a new container              <span class="c1"># 创建一个新的容器并运行一个命令 </span>
+</span></span><span class="line"><span class="cl">save      Save an image to a tar archive                <span class="c1"># 保存一个镜像为一个 tar 包[对应 load] </span>
+</span></span><span class="line"><span class="cl">search    Search <span class="k">for</span> an image on the Docker Hub         <span class="c1"># 在 docker hub 中搜索镜像 </span>
+</span></span><span class="line"><span class="cl">start     Start a stopped containers                    <span class="c1"># 启动容器 </span>
+</span></span><span class="line"><span class="cl">stop      Stop a running containers                     <span class="c1"># 停止容器 </span>
+</span></span><span class="line"><span class="cl">tag       Tag an image into a repository                <span class="c1"># 给源中镜像打标签 </span>
+</span></span><span class="line"><span class="cl">top       Lookup the running processes of a container   <span class="c1"># 查看容器中运行的进程信息 </span>
+</span></span><span class="line"><span class="cl">unpause   Unpause a paused container                    <span class="c1"># 取消暂停容器 </span>
+</span></span><span class="line"><span class="cl">version   Show the docker version information           <span class="c1"># 查看 docker 版本号 </span>
+</span></span><span class="line"><span class="cl"><span class="nb">wait</span>      Block <span class="k">until</span> a container stops, <span class="k">then</span> print its <span class="nb">exit</span> code   <span class="c1"># 截取容器停止时的退出状态值 </span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/docker/">docker</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%AE%89%E8%A3%85-docker%E4%B9%8B%E5%B8%B8%E7%94%A8%E5%AE%89%E8%A3%85/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Docker之常用安装</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/docker%E4%B9%8B%E7%AE%80%E4%BB%8B-docker%E4%B9%8B%E7%AE%80%E4%BB%8B/">
+            <span class="next-text nav-default">Docker之简介</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

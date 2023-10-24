@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Redis之复制 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Redis之复制" />
+<meta property="og:description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Redis之复制">
+<meta itemprop="description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主">
+
+<meta itemprop="wordCount" content="1210">
+<meta itemprop="keywords" content="数据库,Redis," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之复制"/>
+<meta name="twitter:description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Redis之复制</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 1210 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1是什么"><strong>1、是什么</strong></a></li>
+        <li><a href="#2能干嘛">2、<strong>能干嘛</strong></a></li>
+        <li><a href="#3怎么玩">3、<strong>怎么玩</strong></a>
+          <ul>
+            <li><a href="#31配从库不配主库">3.1、配从(库)不配主(库)</a></li>
+            <li><a href="#32从库配置slaveof-主库ip-主库端口">3.2、从库配置：slaveof 主库IP 主库端口</a></li>
+            <li><a href="#33修改配置文件细节操作">3.3、修改配置文件细节操作</a></li>
+            <li><a href="#34常用3招">3.4、常用3招</a></li>
+          </ul>
+        </li>
+        <li><a href="#4复制原理">4、<strong>复制原理</strong></a></li>
+        <li><a href="#5哨兵模式sentinel">5、<strong>哨兵模式</strong>(sentinel)</a>
+          <ul>
+            <li><a href="#51是什么">5.1、是什么</a></li>
+            <li><a href="#52怎么玩使用步骤">5.2、怎么玩(使用步骤)</a></li>
+            <li><a href="#523配置哨兵填写内容">5.2.3、配置哨兵,填写内容</a></li>
+            <li><a href="#524启动哨兵">5.2.4、启动哨兵</a></li>
+            <li><a href="#525原有的master挂了">5.2.5、原有的master挂了</a></li>
+            <li><a href="#526投票新选">5.2.6、投票新选</a></li>
+            <li><a href="#527重新主从继续开工info-replication查查看">5.2.7、重新主从继续开工,info replication查查看</a></li>
+            <li><a href="#528问题如果之前的master重启回来会不会双master冲突">5.2.8、问题：如果之前的master重启回来，会不会双master冲突？</a></li>
+          </ul>
+        </li>
+        <li><a href="#53一组sentinel能同时监控多个master">5.3、一组sentinel能同时监控多个Master</a></li>
+        <li><a href="#6复制的缺点">6、复制的缺点</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h2 id="1是什么"><strong>1、是什么</strong></h2>
+<p>行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主，Slave以读为主</p>
+<h2 id="2能干嘛">2、<strong>能干嘛</strong></h2>
+<p>读写分离</p>
+<p>容灾恢复</p>
+<h2 id="3怎么玩">3、<strong>怎么玩</strong></h2>
+<h3 id="31配从库不配主库">3.1、配从(库)不配主(库)</h3>
+<h3 id="32从库配置slaveof-主库ip-主库端口">3.2、从库配置：slaveof 主库IP 主库端口</h3>
+<ul>
+<li>
+<p>每次与master断开之后，都需要重新连接，除非你配置进redis.conf文件</p>
+</li>
+<li>
+<p>Info replication</p>
+</li>
+</ul>
+<h3 id="33修改配置文件细节操作">3.3、修改配置文件细节操作</h3>
+<ul>
+<li>拷贝多个redis.conf文件</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png" alt=""></p>
+<ul>
+<li>开启daemonize yes</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png" alt=""></p>
+<ul>
+<li>Pid文件名字</li>
+<li>指定端口</li>
+<li>Log文件名字</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png" alt=""></p>
+<ul>
+<li>Dump.rdb名字</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png" alt=""></p>
+<h3 id="34常用3招">3.4、常用3招</h3>
+<h4 id="341一主二仆">3.4.1、一主二仆</h4>
+<ul>
+<li>Init</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png" alt=""></p>
+<ul>
+<li>一个Master两个Slave</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png" alt=""></p>
+<ul>
+<li>日志查看</li>
+</ul>
+<p>主机日志</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png" alt=""></p>
+<p>备机日志</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png" alt=""></p>
+<p>info replication</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png" alt=""></p>
+<h4 id="342薪火相传">3.4.2、薪火相传</h4>
+<ul>
+<li>
+<p>上一个Slave可以是下一个slave的Master，Slave同样可以接收其他Slaves的连接和同步请求，那么该slave作为了链条中下一个的master,可以有效减轻master的写压力</p>
+</li>
+<li>
+<p>中途变更转向:会清除之前的数据，重新建立拷贝最新的</p>
+</li>
+<li>
+<p>Slaveof 新主库IP 新主库端口</p>
+</li>
+</ul>
+<h4 id="343反客为主">3.4.3、反客为主</h4>
+<p>SLAVEOF no one：使当前数据库停止与其他数据库的同步，转成主数据库</p>
+<h2 id="4复制原理">4、<strong>复制原理</strong></h2>
+<ul>
+<li>Slave启动成功连接到master后会发送一个sync命令</li>
+<li>Master接到命令启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令，在后台进程执行完毕之后，master将传送整个数据文件到slave,以完成一次完全同步</li>
+<li>全量复制：而slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。</li>
+<li>增量复制：Master继续将新的所有收集到的修改命令依次传给slave,完成同步</li>
+<li>但是只要是重新连接master,一次完全同步（全量复制)将被自动执行</li>
+</ul>
+<h2 id="5哨兵模式sentinel">5、<strong>哨兵模式</strong>(sentinel)</h2>
+<h3 id="51是什么">5.1、是什么</h3>
+<p>反客为主的自动版，能够后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库</p>
+<h3 id="52怎么玩使用步骤">5.2、怎么玩(使用步骤)</h3>
+<h4 id="521调整结构6379带着8081">5.2.1、调整结构，6379带着80、81</h4>
+<h4 id="522自定义的myredis目录下新建sentinelconf文件名字绝不能错">5.2.2、自定义的/myredis目录下新建sentinel.conf文件，名字绝不能错</h4>
+<h3 id="523配置哨兵填写内容">5.2.3、配置哨兵,填写内容</h3>
+<ul>
+<li>sentinel monitor 被监控数据库名字(自己起名字) 127.0.0.1 6379 1</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png" alt=""></p>
+<ul>
+<li>上面最后一个数字1，表示主机挂掉后salve投票看让谁接替成为主机，得票数多少后成为主机</li>
+</ul>
+<h3 id="524启动哨兵">5.2.4、启动哨兵</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png" alt=""></p>
+<ul>
+<li>Redis-sentinel /myredis/sentinel.conf</li>
+<li>上述目录依照各自的实际情况配置，可能目录不同</li>
+</ul>
+<h3 id="525原有的master挂了">5.2.5、原有的master挂了</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png" alt=""></p>
+<h3 id="526投票新选">5.2.6、投票新选</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png" alt=""></p>
+<h3 id="527重新主从继续开工info-replication查查看">5.2.7、重新主从继续开工,info replication查查看</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png" alt=""></p>
+<h3 id="528问题如果之前的master重启回来会不会双master冲突">5.2.8、问题：如果之前的master重启回来，会不会双master冲突？</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png" alt=""></p>
+<h2 id="53一组sentinel能同时监控多个master">5.3、一组sentinel能同时监控多个Master</h2>
+<h2 id="6复制的缺点">6、复制的缺点</h2>
+<ul>
+<li>复制延时</li>
+</ul>
+<p>由于所有的写操作都是先在Master上操作，然后同步更新到Slave上，所以从Master同步到Slave机器有一定的延迟，当系统很繁忙的时候，延迟问题会更加严重，Slave机器数量的增加也会使这个问题更加严重。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+          <a href="/yuanshuai1122.github.io/tags/redis/">Redis</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Redis之发布订阅</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">
+            <span class="next-text nav-default">Redis之解析配置文件</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

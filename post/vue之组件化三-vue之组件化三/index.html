@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Vue之组件化（三） - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="一、父子组件的通信&amp;ndash;父传子 一.回顾父子组件 子组件在父组件中注册并使用，在html中使用的是父组件的标签，子组件也会被展示。 1.不" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Vue之组件化（三）" />
+<meta property="og:description" content="一、父子组件的通信&ndash;父传子 一.回顾父子组件 子组件在父组件中注册并使用，在html中使用的是父组件的标签，子组件也会被展示。 1.不" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Vue之组件化（三）">
+<meta itemprop="description" content="一、父子组件的通信&ndash;父传子 一.回顾父子组件 子组件在父组件中注册并使用，在html中使用的是父组件的标签，子组件也会被展示。 1.不">
+
+<meta itemprop="wordCount" content="3338">
+<meta itemprop="keywords" content="Vue," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之组件化（三）"/>
+<meta name="twitter:description" content="一、父子组件的通信&ndash;父传子 一.回顾父子组件 子组件在父组件中注册并使用，在html中使用的是父组件的标签，子组件也会被展示。 1.不"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Vue之组件化（三）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 3338 字 </span>
+          <span class="more-meta"> 预计阅读 7 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一父子组件的通信--父传子">一、父子组件的通信&ndash;父传子</a>
+      <ul>
+        <li><a href="#一回顾父子组件">一.回顾父子组件</a>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#13父子组件通信的方式">1.3、父子组件通信的方式</a></li>
+        <li><a href="#14父组件向子组件通信的方式">1.4、父组件向子组件通信的方式</a></li>
+        <li><a href="#15子组件props的不同写法">1.5、子组件props的不同写法</a></li>
+      </ul>
+    </li>
+    <li><a href="#二父子组件的通信--子传父emit">二、父子组件的通信&ndash;子传父$emit()</a>
+      <ul>
+        <li>
+          <ul>
+            <li></li>
+          </ul>
+        </li>
+        <li><a href="#二子组件如何向父组件传递自定义事件">二、子组件如何向父组件传递自定义事件</a></li>
+      </ul>
+    </li>
+    <li><a href="#三父组件访问子组件的方式children">三、父组件访问子组件的方式$children</a>
+      <ul>
+        <li><a href="#31父访子的方式-children">3.1、父访子的方式 $children</a></li>
+        <li><a href="#32children的缺点">3.2、$children的缺点</a></li>
+        <li><a href="#33直接父访子的缺点">3.3、直接父访子的缺点</a></li>
+      </ul>
+    </li>
+    <li><a href="#四父组件访问子组件的方式refs">四、父组件访问子组件的方式$refs</a>
+      <ul>
+        <li><a href="#41refs的使用">4.1、$refs的使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#五子组件访问父组件的方式-parent">五、子组件访问父组件的方式 $parent</a>
+      <ul>
+        <li><a href="#51parent的使用">5.1、$parent的使用</a></li>
+        <li><a href="#52注意事项">5.2、注意事项</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="一父子组件的通信--父传子">一、父子组件的通信&ndash;父传子</h1>
+<h2 id="一回顾父子组件">一.回顾父子组件</h2>
+<p>子组件在父组件中注册并使用，在html中使用的是父组件的标签，子组件也会被展示。</p>
+<p>1.不用语法糖的方式先创建父子组件的构造器</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn2&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>父组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*子组件构造器*/
+</span></span><span class="line"><span class="cl">            const cpnC1 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template:&#39;#cpn1&#39;,
+</span></span><span class="line"><span class="cl">            })
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            /*父组件构造器*/
+</span></span><span class="line"><span class="cl">            const cpnC2 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template:&#39;#cpn2&#39;
+</span></span><span class="line"><span class="cl">            })
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>2.在父组件中注册并使用子组件
+注册：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*父组件构造器*/
+</span></span><span class="line"><span class="cl">            const cpnC2 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template:&#39;#cpn2&#39;,
+</span></span><span class="line"><span class="cl">                /*注册子组件*/
+</span></span><span class="line"><span class="cl">                components:{
+</span></span><span class="line"><span class="cl">                    cpn1:cpnC1
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>使用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn2&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>父组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!--使用子组件--&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>3.在Vue实例中注册父组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*根组件*/
+</span></span><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el:&#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                components:{
+</span></span><span class="line"><span class="cl">                    cpn2:cpnC2
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>4.在html中使用父组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn2</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/183.png" alt=""></p>
+<h4 id="12为何需要父子组件的通信">1.2、为何需要父子组件的通信</h4>
+<p>每个组件的数据都存放在自己的data函数中，不可以直接使用其他组件或Vue实例（根组件）中的data数据。
+在开发时，页面中展示的数据都是通过网络请求获取而来的动态数据。因为每个组件都是独立存在，即每个组件中的数据都是独立存储的，那每个组件所需要的动态数据都是通过各自发送网络请求而获取来的吗？
+由于组件化的思想，一个完整的页面可以根据功能划分成若干个组件，而这些组件也可以根据逻辑功能再次细分。所以一个页面是由许多个组件集成的。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/184.png" alt=""></p>
+<p>那每一个组件中的数据都通过发送网络请求获取，甚至连蓝色框的用来显示物品详情的小组件也要发送网络请求获取动态数据，这会让网络请求的压力巨增，所以这种获取数据的方式显然是不可能的。</p>
+<p>所以这时候可以让大组件（父组件）传送数据给小组件（子组件）。</p>
+<h2 id="13父子组件通信的方式">1.3、父子组件通信的方式</h2>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/185.png" alt=""></p>
+<p>1.父组件通过props属性向子组件传送数据
+2.子组件通过事件向父组件发送消息</p>
+<h2 id="14父组件向子组件通信的方式">1.4、父组件向子组件通信的方式</h2>
+<p>组件构造器cpnC2和Vue实例（根组件）也是父子组件关系。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/186.png" alt=""></p>
+<p>若子组件需要获取父组件data中的message数据，可通过props属性获取。
+props属性有很多种写法。
+1.props</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/187.png" alt=""></p>
+<p>2.通过v-bind：动态绑定cmessage属性</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/188.png" alt=""></p>
+<p>3.在子组件的template中使用数据</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/189.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/190.png" alt=""></p>
+<p>通过props，子组件可以使用父组件传送过来的数据</p>
+<h2 id="15子组件props的不同写法">1.5、子组件props的不同写法</h2>
+<p>props是对象类型</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/191.png" alt=""></p>
+<p>cmessage可以是个对象，对象中的属性可以限制父组件传递过来的数据
+1.type：验证传递数据的类型
+支持验证以下类型
+String
+Number
+Boolean
+Array
+Object
+Date
+Function
+Symbol</p>
+<p>2.requierd：提示cmessage必须被传入</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/192.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/193.png" alt=""></p>
+<p>3.default：没有绑定cmessage，也就是父组件没有传递数据时，使用{{cmessage}}默认显示的数据</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/194.png" alt=""></p>
+<p>可参考以下写法：</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/195.png" alt=""></p>
+<p>props也可以是数组类型
+绑定和使用过程和上述相同，只是当props是数组时，就缺少了验证以及一些默认的选项，所以数组类型的props不常用。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/196.png" alt=""></p>
+<h1 id="二父子组件的通信--子传父emit">二、父子组件的通信&ndash;子传父$emit()</h1>
+<p>父组件通过子组件的props属性可以将父组件的数据传送给子组件
+子组件可以通过$emit()，将自定义事件传递给父组件</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/197.png" alt=""></p>
+<h4 id="一子组件需要传递自定义事件的场景">一.子组件需要传递自定义事件的场景</h4>
+<p>在红色大组件中进行网络请求获取数据，通过子组件中props，将红色组件中的数据传递给各个蓝色组件。但是，当我点击左侧边蓝色组件中的手机数码时，该蓝色组件要将点击手机数码的事件发送给红色组件，红色组件根据发送过来的事件再次发送网络请求获取手机数码的数据，右侧边的组件又通过props获取手机数码的数据并展示。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/198.png" alt=""></p>
+<h2 id="二子组件如何向父组件传递自定义事件">二、子组件如何向父组件传递自定义事件</h2>
+<p>首先展示按钮组件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="c">&lt;!--在button中展示目录的名字--&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="na">v-for</span><span class="o">=</span><span class="s">&#34;item in categories&#34;</span><span class="p">&gt;</span>{{item.name}}<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>       
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/*子组件构造器*/</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cpnC1</span> <span class="o">=</span> <span class="nx">Vue</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;#cpn1&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">categories</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s1">&#39;001&#39;</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;手机数码&#39;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s1">&#39;002&#39;</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;电脑办公&#39;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s1">&#39;003&#39;</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;家用电器&#39;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="s1">&#39;004&#39;</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;美妆护肤&#39;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="cm">/*根组件*/</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn1</span><span class="o">:</span><span class="nx">cpnC1</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/199.png" alt=""></p>
+<p>1.当点击按钮时触发点击事件，在事件处理函数中向父组件发送自定义事件</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/200.png" alt=""></p>
+<p>2.在事件处理函数btnclick(item)中发送自定事件
+$emit(自定义事件，参数)</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/201.png" alt=""></p>
+<p>3.父组件监听子组件传递的自定义事件</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/202.png" alt=""></p>
+<p>4.在父组件的methods中设置监听到自定义事件的事件处理函数</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/203.png" alt=""></p>
+<p>全部过程：
+点击子组件的button触发点击事件，在点击事件中发送自定事件，父组件对自定义事件进行监听，并在methods中处理自定义事件，最后打印出当前button的对象。</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/204.png" alt=""></p>
+<h1 id="三父组件访问子组件的方式children">三、父组件访问子组件的方式$children</h1>
+<h2 id="31父访子的方式-children">3.1、父访子的方式 $children</h2>
+<p>当父组件想要直接访问子组件时，可以通过父组件的$children方法直接获取子组件对象。
+举例：
+父组件通过$children的方法直接获取两个子组件对象</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn</span><span class="p">&gt;&lt;/</span><span class="nt">cpn</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">cpn2</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;showChildCpn&#34;</span><span class="p">&gt;</span>显示所有子组件信息<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件1<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn2&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件2<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            const cpn = Vue.extend({
+</span></span><span class="line"><span class="cl">                template: &#39;#cpn&#39;,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    /*子组件1*/
+</span></span><span class="line"><span class="cl">                    cpn1:{
+</span></span><span class="line"><span class="cl">                        template: &#39;#cpn1&#39;,
+</span></span><span class="line"><span class="cl">                        data() {
+</span></span><span class="line"><span class="cl">                            return{
+</span></span><span class="line"><span class="cl">                                name:&#39;one&#39;
+</span></span><span class="line"><span class="cl">                            }
+</span></span><span class="line"><span class="cl">                        }
+</span></span><span class="line"><span class="cl">                    },
+</span></span><span class="line"><span class="cl">                    /*子组件2*/
+</span></span><span class="line"><span class="cl">                    cpn2:{
+</span></span><span class="line"><span class="cl">                        template: &#39;#cpn2&#39;,
+</span></span><span class="line"><span class="cl">                        data(){
+</span></span><span class="line"><span class="cl">                            return{
+</span></span><span class="line"><span class="cl">                                name:&#39;two&#39;
+</span></span><span class="line"><span class="cl">                            }
+</span></span><span class="line"><span class="cl">                        }
+</span></span><span class="line"><span class="cl">                    }
+</span></span><span class="line"><span class="cl">                },
+</span></span><span class="line"><span class="cl">                methods: {
+</span></span><span class="line"><span class="cl">                    /*打印子组件对象*/
+</span></span><span class="line"><span class="cl">                    showChildCpn() {
+</span></span><span class="line"><span class="cl">                        const children = this.$children
+</span></span><span class="line"><span class="cl">                        for(let i in children) {
+</span></span><span class="line"><span class="cl">                            console.log(children[i]);
+</span></span><span class="line"><span class="cl">                        }
+</span></span><span class="line"><span class="cl">                    }
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            })
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el: &#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                /*注册父组件*/
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn: cpn
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>打印出两个子组件对象</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/205.png" alt=""></p>
+<h2 id="32children的缺点">3.2、$children的缺点</h2>
+<p>利用$children获取到的数组类型，访问其中的组件必须通过索引值。
+当子组件过多时，往往不能确定他的索引值，所以引进了新的父访子的方式$refs</p>
+<h2 id="33直接父访子的缺点">3.3、直接父访子的缺点</h2>
+<p>虽然可以通过$children的方式直接获取子组件对象，进而获取子组件中的方法和数据，但是在一个组件中直接获取另一个组件去操作数据和方法的方式，会让两个组件的耦合度变高，组件的独立性下降，后期维护困难。</p>
+<h1 id="四父组件访问子组件的方式refs">四、父组件访问子组件的方式$refs</h1>
+<h2 id="41refs的使用">4.1、$refs的使用</h2>
+<p>$refs和ref是一起使用的，
+通过ref给子组件绑定一个id，
+使用this.$refs.id就能获取到特定的子组件</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/206.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/207.png" alt=""></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn</span><span class="p">&gt;&lt;/</span><span class="nt">cpn</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">cpn2</span> <span class="na">ref</span><span class="o">=</span><span class="s">&#34;cpn2&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;showChildCpn&#34;</span><span class="p">&gt;</span>显示所有子组件信息<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件1<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn2&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件2<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cpn</span> <span class="o">=</span> <span class="nx">Vue</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#cpn&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/*子组件1*/</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn1</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#cpn1&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;one&#39;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/*子组件2*/</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn2</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#cpn2&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">return</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;two&#39;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/*打印子组件对象*/</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">showChildCpn</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$refs</span><span class="p">.</span><span class="nx">cpn2</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="cm">/*注册父组件*/</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn</span><span class="o">:</span> <span class="nx">cpn</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/208.png" alt=""></p>
+<p>获取cpn2子组件的name</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/209.png" alt=""></p>
+<h1 id="五子组件访问父组件的方式-parent">五、子组件访问父组件的方式 $parent</h1>
+<h2 id="51parent的使用">5.1、$parent的使用</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn</span><span class="p">&gt;&lt;/</span><span class="nt">cpn</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>子组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;btnClick&#34;</span><span class="p">&gt;</span>获取父组件对象<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;father&#39;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;#cpn&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">methods</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="nx">btnClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$parent</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/210.png" alt=""></p>
+<p>获取父组件的name</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/211.png" alt=""></p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/212.png" alt=""></p>
+<h2 id="52注意事项">5.2、注意事项</h2>
+<p>尽管在Vue开发中，我们允许通过$parent来访问父组件，但是在真实开发中尽量不要这样做。
+子组件应该尽量避免直接访问父组件的数据，因为这样耦合度太高了。
+如果我们将子组件放在另外一个组件之内，很可能该父组件没有对应的属性，往往会引起问题。
+另外，更不好做的是通过$parent直接修改父组件的状态，那么父组件中的状态将变得飘忽不定，很不利于我的调试和维护。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/vue/">Vue</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Vue之组件化（二）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%80-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%80/">
+            <span class="next-text nav-default">Vue之组件化（一）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

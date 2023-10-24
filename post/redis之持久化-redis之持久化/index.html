@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Redis之持久化 - 🧀 - 你好</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="yuanshuai" /><meta name="description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它" /><meta name="keywords" content="blog, yuanshuai, yyss" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.119.0 with theme even" />
+
+
+<link rel="canonical" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/yuanshuai1122.github.io/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/yuanshuai1122.github.io/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/yuanshuai1122.github.io/favicon-16x16.png">
+<link rel="manifest" href="/yuanshuai1122.github.io/manifest.json">
+<link rel="mask-icon" href="/yuanshuai1122.github.io/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/yuanshuai1122.github.io/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Redis之持久化" />
+<meta property="og:description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="yuanshuai1122.github.io/post/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" /><meta property="article:section" content="post" />
+
+
+<meta itemprop="name" content="Redis之持久化">
+<meta itemprop="description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它">
+
+<meta itemprop="wordCount" content="2546">
+<meta itemprop="keywords" content="数据库,Redis," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之持久化"/>
+<meta name="twitter:description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">CNshuaiyuan</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="yuanshuai1122.github.io/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="yuanshuai1122.github.io/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="yuanshuai1122.github.io/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="yuanshuai1122.github.io/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">CNshuaiyuan</a>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="yuanshuai1122.github.io/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Redis之持久化</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+          <span class="more-meta"> 约 2546 字 </span>
+          <span class="more-meta"> 预计阅读 6 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1rdbredis-database">1、RDB（Redis DataBase）</a>
+      <ul>
+        <li><a href="#11是什么">1.1、是什么</a></li>
+        <li><a href="#12fork">1.2、Fork</a></li>
+        <li><a href="#13rdb-保存的是dumprdb文件">1.3、Rdb 保存的是dump.rdb文件</a></li>
+        <li><a href="#14配置位置">1.4、配置位置</a></li>
+        <li><a href="#15如何触发rdb快照">1.5、如何触发RDB快照</a>
+          <ul>
+            <li><a href="#151配置文件中默认的快照配置">1.5.1、配置文件中默认的快照配置</a></li>
+            <li><a href="#152命令save或者是bgsave">1.5.2、命令save或者是bgsave</a></li>
+            <li><a href="#153执行flushall命令也会产生dumprdb文件但里面是空的无意义">1.5.3、执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义</a></li>
+          </ul>
+        </li>
+        <li><a href="#16如何恢复">1.6、如何恢复</a></li>
+        <li><a href="#17优势">1.7、优势</a></li>
+        <li><a href="#18劣势">1.8、劣势</a></li>
+        <li><a href="#19如何停止">1.9、如何停止</a></li>
+        <li><a href="#110小总结">1.10、小总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#2aofappend-only-file">2、<strong>AOF</strong>（Append Only File）</a>
+      <ul>
+        <li><a href="#21是什么">2.1、是什么</a></li>
+        <li><a href="#22aof保存的是appendonlyaof文件">2.2、Aof保存的是appendonly.aof文件</a></li>
+        <li><a href="#23配置位置">2.3、配置位置</a></li>
+        <li><a href="#24aof启动修复恢复">2.4、AOF启动/修复/恢复</a>
+          <ul>
+            <li><a href="#241正常恢复">2.4.1、正常恢复</a></li>
+            <li><a href="#242异常恢复">2.4.2、异常恢复</a></li>
+          </ul>
+        </li>
+        <li><a href="#25rewrite">2.5、Rewrite</a>
+          <ul>
+            <li><a href="#251是什么">2.5.1、是什么</a></li>
+            <li><a href="#252重写原理">2.5.2、重写原理</a></li>
+            <li><a href="#253触发机制">2.5.3、触发机制</a></li>
+          </ul>
+        </li>
+        <li><a href="#26优势">2.6、优势</a></li>
+        <li><a href="#27劣势">2.7、劣势</a></li>
+        <li><a href="#28小总结">2.8、小总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#3总结which-one">3、<strong>总结</strong>(Which one)</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="warn">
+      <p>【注意】最后更新于 <span class="timeago" datetime="0001-01-01T00:00:00" title="January 1, 0001">January 1, 0001</span>，文中内容可能已过时，请谨慎使用。</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <h1 id="1rdbredis-database">1、RDB（Redis DataBase）</h1>
+<h2 id="11是什么">1.1、是什么</h2>
+<ul>
+<li>
+<p>在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它恢复时是将快照文件直接读到内存里</p>
+</li>
+<li>
+<p>Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失。</p>
+</li>
+</ul>
+<h2 id="12fork">1.2、Fork</h2>
+<p>Fork的作用是复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等）数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程</p>
+<h2 id="13rdb-保存的是dumprdb文件">1.3、Rdb 保存的是dump.rdb文件</h2>
+<h2 id="14配置位置">1.4、配置位置</h2>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png" alt=""></p>
+<h2 id="15如何触发rdb快照">1.5、如何触发RDB快照</h2>
+<h3 id="151配置文件中默认的快照配置">1.5.1、配置文件中默认的快照配置</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png" alt=""></p>
+<p>冷拷贝后重新使用</p>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png" alt=""></p>
+<p>可以cp dump.rdb dump_new.rdb</p>
+<h3 id="152命令save或者是bgsave">1.5.2、命令save或者是bgsave</h3>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png" alt=""></p>
+<p>Save：save时只管保存，其它不管，全部阻塞</p>
+<p>BGSAVE：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间</p>
+<h3 id="153执行flushall命令也会产生dumprdb文件但里面是空的无意义">1.5.3、执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义</h3>
+<h2 id="16如何恢复">1.6、如何恢复</h2>
+<ul>
+<li>
+<p>将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务即可</p>
+</li>
+<li>
+<p>CONFIG GET dir获取目录</p>
+</li>
+</ul>
+<h2 id="17优势">1.7、优势</h2>
+<ul>
+<li>
+<p>适合大规模的数据恢复</p>
+</li>
+<li>
+<p>对数据完整性和一致性要求不高</p>
+</li>
+</ul>
+<h2 id="18劣势">1.8、劣势</h2>
+<ul>
+<li>
+<p>在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照后的所有修改</p>
+</li>
+<li>
+<p>Fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑</p>
+</li>
+</ul>
+<h2 id="19如何停止">1.9、如何停止</h2>
+<p>动态所有停止RDB保存规则的方法：redis-cli config set save &quot;&quot;</p>
+<h2 id="110小总结">1.10、小总结</h2>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png" alt=""></p>
+<h1 id="2aofappend-only-file">2、<strong>AOF</strong>（Append Only File）</h1>
+<h2 id="21是什么">2.1、是什么</h2>
+<p>以日志的形式来记录每个写操作，将Redis执行过的所有写指令记录下来(读操作不记录)，只许追加文件但不可以改写文件，redis启动之初会读取该文件重新构建数据，换言之，redis重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</p>
+<h2 id="22aof保存的是appendonlyaof文件">2.2、Aof保存的是appendonly.aof文件</h2>
+<h2 id="23配置位置">2.3、配置位置</h2>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png" alt=""></p>
+<h2 id="24aof启动修复恢复">2.4、AOF启动/修复/恢复</h2>
+<h3 id="241正常恢复">2.4.1、正常恢复</h3>
+<ul>
+<li>启动：设置Yes
+<ul>
+<li>修改默认的appendonly no，改为yes</li>
+</ul>
+</li>
+<li>将有数据的aof文件复制一份保存到对应目录(config get dir)</li>
+<li>恢复：重启redis然后重新加载</li>
+</ul>
+<h3 id="242异常恢复">2.4.2、异常恢复</h3>
+<ul>
+<li>启动：设置Yes
+<ul>
+<li>修改默认的appendonly no，改为yes</li>
+</ul>
+</li>
+<li>备份被写坏的AOF文件
+<ul>
+<li>修复：Redis-check-aof &ndash;fix进行修复</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png" alt=""></p>
+<ul>
+<li></li>
+<li>恢复：重启redis然后重新加载</li>
+</ul>
+<h2 id="25rewrite">2.5、Rewrite</h2>
+<h3 id="251是什么">2.5.1、是什么</h3>
+<p>AOF采用文件追加方式，文件会越来越大为避免出现此种情况，新增了重写机制,当AOF文件的大小超过所设定的阈值时，Redis就会启动AOF文件的内容压缩，只保留可以恢复数据的最小指令集.可以使用命令bgrewriteaof</p>
+<h3 id="252重写原理">2.5.2、重写原理</h3>
+<p>AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(也是先写临时文件最后再rename)，遍历新进程的内存中数据，每条记录有一条的Set语句。重写aof文件的操作，并没有读取旧的aof文件，而是将整个内存中的数据库内容用命令的方式重写了一个新的aof文件，这点和快照有点类似</p>
+<h3 id="253触发机制">2.5.3、触发机制</h3>
+<p>Redis会记录上次重写时的AOF大小，默认配置是当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发</p>
+<h2 id="26优势">2.6、优势</h2>
+<ul>
+<li>
+<p>每修改同步：appendfsync always  同步持久化 每次发生数据变更会被立即记录到磁盘 性能较差但数据完整性比较好</p>
+</li>
+<li>
+<p>每秒同步：appendfsync everysec  异步操作，每秒记录  如果一秒内宕机，有数据丢失</p>
+</li>
+<li>
+<p>不同步：appendfsync no  从不同步</p>
+</li>
+</ul>
+<h2 id="27劣势">2.7、劣势</h2>
+<ul>
+<li>
+<p>相同数据集的数据而言aof文件要远大于rdb文件，恢复速度慢于rdb</p>
+</li>
+<li>
+<p>Aof运行效率要慢于rdb,每秒同步策略效率较好，不同步效率和rdb相同</p>
+</li>
+</ul>
+<h2 id="28小总结">2.8、小总结</h2>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png" alt=""></p>
+<h1 id="3总结which-one">3、<strong>总结</strong>(Which one)</h1>
+<ul>
+<li>官网建议</li>
+</ul>
+<p><img src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png" alt=""></p>
+<ul>
+<li>
+<p>RDB持久化方式能够在指定的时间间隔能对你的数据进行快照存储</p>
+</li>
+<li>
+<p>AOF持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据,AOF命令以redis协议追加保存每次写的操作到文件末尾，Redis还能对AOF文件进行后台重写,使得AOF文件的体积不至于过大</p>
+</li>
+<li>
+<p>只做缓存：如果你只希望你的数据在服务器运行的时候存在,你也可以不使用任何持久化方式.</p>
+</li>
+<li>
+<p>同时开启两种持久化方式</p>
+<ul>
+<li>在这种情况下,当redis重启的时候会优先载入AOF文件来恢复原始的数据,因为在通常情况下AOF文件保存的数据集要比RDB文件保存的数据集要完整.</li>
+<li>RDB的数据不实时，同时使用两者时服务器重启也只会找AOF文件。那要不要只使用AOF呢？作者建议不要，因为RDB更适合用于备份数据库(AOF在不断变化不好备份)，快速重启，而且不会有AOF可能潜在的bug，留着作为一个万一的手段。</li>
+</ul>
+</li>
+<li>
+<p>性能建议</p>
+<ul>
+<li>因为RDB文件只用作后备用途，建议只在Slave上持久化RDB文件，而且只要15分钟备份一次就够了，只保留save 900 1这条规则。</li>
+<li>如果Enalbe AOF，好处是在最恶劣情况下也只会丢失不超过两秒数据，启动脚本较简单只load自己的AOF文件就可以了。代价一是带来了持续的IO，二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。只要硬盘许可，应该尽量减少AOF rewrite的频率，AOF重写的基础大小默认值64M太小了，可以设到5G以上。默认超过原大小100%大小时重写可以改到适当的数值。</li>
+<li>如果不Enable AOF ，仅靠Master-Slave Replication 实现高可用性也可以。能省掉一大笔IO也减少了rewrite时带来的系统波动。代价是如果Master/Slave同时倒掉，会丢失十几分钟的数据，启动脚本也要比较两个Master/Slave中的RDB文件，载入较新的那个。新浪微博就选用了这种架构</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">yuanshuai</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/yuanshuai1122.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+          <a href="/yuanshuai1122.github.io/tags/redis/">Redis</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="yuanshuai1122.github.io/post/redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0-redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Redis之NoSql入门和概述</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="yuanshuai1122.github.io/post/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/">
+            <span class="next-text nav-default">Redis之发布订阅</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="yuanshuai1122.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>yuanshuai</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script>
+    var languageCode = "zh-cn".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+
+
+
+<script type="text/javascript" src="/yuanshuai1122.github.io/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
