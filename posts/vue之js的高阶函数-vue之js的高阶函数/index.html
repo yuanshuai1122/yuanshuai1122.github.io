@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之js的高阶函数 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="js的高阶函数（ filter()、map()、reduce() ） arr = [20,40,12,232,23,232]; 需求1：找出数组中数值低于100的元素，组成新数组并返回 需求2：对返回" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之js的高阶函数">
+<meta itemprop="description" content="js的高阶函数（ filter()、map()、reduce() ） arr = [20,40,12,232,23,232]; 需求1：找出数组中数值低于100的元素，组成新数组并返回 需求2：对返回">
+
+<meta itemprop="wordCount" content="1192">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之js的高阶函数" />
+<meta property="og:description" content="js的高阶函数（ filter()、map()、reduce() ） arr = [20,40,12,232,23,232]; 需求1：找出数组中数值低于100的元素，组成新数组并返回 需求2：对返回" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之js的高阶函数"/>
+<meta name="twitter:description" content="js的高阶函数（ filter()、map()、reduce() ） arr = [20,40,12,232,23,232]; 需求1：找出数组中数值低于100的元素，组成新数组并返回 需求2：对返回"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bpromise-vue%E4%B9%8Bpromise/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bes6%E5%AF%B9%E8%B1%A1%E5%AD%97%E9%9D%A2%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%86%99%E6%B3%95-vue%E4%B9%8Bes6%E5%AF%B9%E8%B1%A1%E5%AD%97%E9%9D%A2%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%86%99%E6%B3%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之js的高阶函数",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  1192 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之js的高阶函数</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1192 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一找出数组中数值低于100的元素组成新数组并返回">一.找出数组中数值低于100的元素，组成新数组并返回</a>
+      <ul>
+        <li><a href="#1for循环遍历">1.for循环遍历</a></li>
+        <li><a href="#2for-in">2.for in</a></li>
+        <li><a href="#3for-of">3.for of</a></li>
+        <li><a href="#4filtercallbackn">4.filter(callback(n))</a></li>
+      </ul>
+    </li>
+    <li><a href="#二对返回的数组中的每个元素都乘2">二、对返回的数组中的每个元素都乘2</a>
+      <ul>
+        <li><a href="#1for">1.for</a></li>
+        <li><a href="#2for-in-1">2.for in</a></li>
+        <li><a href="#3for-of-1">3.for of</a></li>
+        <li><a href="#4mapcallbackn">4.map(callback(n))</a></li>
+      </ul>
+    </li>
+    <li><a href="#三汇总元素将每一个元素相加并返回新数组">三、汇总元素，将每一个元素相加并返回新数组。</a>
+      <ul>
+        <li><a href="#1for-1">1.for</a></li>
+        <li><a href="#2for-in-2">2.for in</a></li>
+        <li><a href="#3for-of-2">3.for of</a></li>
+        <li><a href="#4reducecallbackpreviousvaluenvalue">4.reduce(callback(previousValue,n),value)</a></li>
+      </ul>
+    </li>
+    <li><a href="#四利用高阶函数综合实现全部需求">四、利用高阶函数综合实现全部需求</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="js的高阶函数-filtermapreduce-">js的高阶函数（ filter()、map()、reduce() ）</h1>
+<p>arr = [20,40,12,232,23,232];
+需求1：找出数组中数值低于100的元素，组成新数组并返回
+需求2：对返回的数组中的每个元素都乘2
+需求3：汇总元素，将每一个元素相加并返回新数组。</p>
+<h2 id="一找出数组中数值低于100的元素组成新数组并返回">一.找出数组中数值低于100的元素，组成新数组并返回</h2>
+<h3 id="1for循环遍历">1.for循环遍历</h3>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const arr = [20,40,12,232,23,232];
+</span></span><span class="line"><span class="cl">        const newArr = [];
+</span></span><span class="line"><span class="cl">        for(let i = 0; i <span class="p">&lt;</span> <span class="nt">arr.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">            <span class="na">if</span><span class="err">(</span><span class="na">arr</span><span class="err">[</span><span class="na">i</span><span class="err">]</span> <span class="err">&lt;</span> <span class="na">100</span><span class="err">)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="na">newArr</span><span class="err">.</span><span class="na">push</span><span class="err">(</span><span class="na">arr</span><span class="err">[</span><span class="na">i</span><span class="err">]);</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/99.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2for-in">2.for in</h3>
+<p>i是arr的下标</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let i in arr) {
+</span></span><span class="line"><span class="cl">            if(arr[i] <span class="p">&lt;</span> <span class="nt">100</span><span class="err">)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="na">newArr</span><span class="err">.</span><span class="na">push</span><span class="err">(</span><span class="na">arr</span><span class="err">[</span><span class="na">i</span><span class="err">]);</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><h3 id="3for-of">3.for of</h3>
+<p>item是循环到当前的arr[i]</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let item of arr) {
+</span></span><span class="line"><span class="cl">            if(item <span class="p">&lt;</span> <span class="nt">100</span><span class="err">)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">                <span class="na">newArr</span><span class="err">.</span><span class="na">push</span><span class="err">(</span><span class="na">item</span><span class="err">);</span>
+</span></span><span class="line"><span class="cl">            <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><p>虽然利用for in、for of对for循环的代码进行改进，但仍然需要手动遍历数组</p>
+<h3 id="4filtercallbackn">4.filter(callback(n))</h3>
+<p>filter()的第一个参数是个函数</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/100.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>查看参数函数中的参数n是啥</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr = arr.filter(function(n){
+</span></span><span class="line"><span class="cl">            console.log(n);
+</span></span><span class="line"><span class="cl">        })
+</span></span><span class="line"><span class="cl">        console.log(newArr);</span></span></code></pre></div><p>n是arr中的每个元素，就和for(item of arr)中的item意义相同</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/101.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>规则：
+1.若函数内返回的是true，就将当前的n添加到隐式的数组中，
+2.若函数内返回的是false，就将当前的n过滤掉，系统自动遍历下一个n
+最后，用一个常量接收返回的数组。
+所以filter函数是根据表达式的布尔值，判断是否要过滤掉该元素</p>
+<p>验证：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/102.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>因为表达式都为ture,所以数组中的每个一元素都不会被过滤，都被添加到隐式的数组中，最后返回给newArr</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/103.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>实现第一个需求：</p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr = arr.filter(function(n){
+</span></span><span class="line"><span class="cl">            return n <span class="p">&lt;</span> <span class="nt">100</span><span class="err">;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">})</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/104.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="二对返回的数组中的每个元素都乘2">二、对返回的数组中的每个元素都乘2</h2>
+<p>以1为例，同样通三种for循环引出高阶函数map()，感受高阶函数的便利</p>
+<h3 id="1for">1.for</h3>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let i = 0; i <span class="p">&lt;</span> <span class="nt">newArr.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">            <span class="na">newArr</span><span class="err">[</span><span class="na">i</span><span class="err">]</span> <span class="err">=</span> <span class="na">newArr</span><span class="err">[</span><span class="na">i</span><span class="err">]</span> <span class="err">*</span> <span class="na">2</span><span class="err">;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/105.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2for-in-1">2.for in</h3>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let i in newArr) {
+</span></span><span class="line"><span class="cl">            newArr[i] = newArr[i] * 2;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        console.log(newArr);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/106.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="3for-of-1">3.for of</h3>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr2 = [];
+</span></span><span class="line"><span class="cl">        for(let item of newArr) {
+</span></span><span class="line"><span class="cl">            item = item * 2;
+</span></span><span class="line"><span class="cl">            newArr2.push(item);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        console.log(newArr2);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/107.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="4mapcallbackn">4.map(callback(n))</h3>
+<p>高阶函数中的参数也是函数</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/108.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>参数函数中的参数n和filter相同，都是遍历到当前位置的数组的值</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/109.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/110.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>规则：
+给数组中的每一个元素做统一的操作，并把操作后的元素添加到隐式的数组中，最后用一个常量接收。</p>
+<p>实现需求2;</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr2 = newArr.map(function(n){
+</span></span><span class="line"><span class="cl">            return n * 2;
+</span></span><span class="line"><span class="cl">        })
+</span></span><span class="line"><span class="cl">        console.log(newArr2);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/111.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="三汇总元素将每一个元素相加并返回新数组">三、汇总元素，将每一个元素相加并返回新数组。</h2>
+<h3 id="1for-1">1.for</h3>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        let result = 0;
+</span></span><span class="line"><span class="cl">        for(let i = 0; i <span class="p">&lt;</span> <span class="nt">newArr2.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+</span></span><span class="line"><span class="cl">            <span class="na">result</span> <span class="err">+=</span> <span class="na">newArr2</span><span class="err">[</span><span class="na">i</span><span class="err">];</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">result</span><span class="err">);</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/112.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2for-in-2">2.for in</h3>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let i in newArr2) {
+</span></span><span class="line"><span class="cl">            result += newArr2[i]
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        console.log(result);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/113.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="3for-of-2">3.for of</h3>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        for(let item of newArr2) {
+</span></span><span class="line"><span class="cl">            result += item;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        console.log(result);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/114.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="4reducecallbackpreviousvaluenvalue">4.reduce(callback(previousValue,n),value)</h3>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr3 = newArr2.reduce(function(){},0)</span></span></code></pre></div><p>reduce()有两个参数，第一个参数是函数，第二个参数是初始值。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/115.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr3 = newArr2.reduce(function(preValue,n){
+</span></span><span class="line"><span class="cl">            console.log(preValue)
+</span></span><span class="line"><span class="cl">            return 100;
+</span></span><span class="line"><span class="cl">        },0)</span></span></code></pre></div><p>数组中有4个元素，一共遍历4次</p>
+<p>第一次：
+0作为preValue的初始值，第一次的preValue=0；</p>
+<p>第二次：
+第一次return的100会作为第二次的preVule，第二次的preValue=0;</p>
+<p>第三次：
+第二次return的100会作为第三次的preVule，第三次的preValue=0;</p>
+<p>第四次：
+第三次return的100会作为第四次的preVule，第四次的preValue=0;</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/116.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>所以preVlue存储的就是上一次的返回结果。</p>
+<p>实现需求3：</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const newArr3 = newArr2.reduce(function(preValue,n){
+</span></span><span class="line"><span class="cl">            return preValue += n;
+</span></span><span class="line"><span class="cl">        },0)
+</span></span><span class="line"><span class="cl">        console.log(newArr3);</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/117.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="四利用高阶函数综合实现全部需求">四、利用高阶函数综合实现全部需求</h2>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        const arr = [20,40,12,232,23,232];
+</span></span><span class="line"><span class="cl">        const newArr = arr.filter(function(n){
+</span></span><span class="line"><span class="cl">            return n <span class="p">&lt;</span> <span class="nt">100</span><span class="err">;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}).</span><span class="na">map</span><span class="err">(</span><span class="na">function</span><span class="err">(</span><span class="na">n</span><span class="err">){</span>
+</span></span><span class="line"><span class="cl">            <span class="na">return</span> <span class="na">n</span> <span class="err">*</span> <span class="na">2</span><span class="err">;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">}).</span><span class="na">reduce</span><span class="err">(</span><span class="na">function</span><span class="err">(</span><span class="na">preValue</span><span class="err">,</span><span class="na">n</span><span class="err">){</span>
+</span></span><span class="line"><span class="cl">            <span class="na">return</span> <span class="na">preValue</span> <span class="err">+=</span> <span class="na">n</span><span class="err">;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">},</span><span class="na">0</span><span class="err">);</span>
+</span></span><span class="line"><span class="cl">        <span class="na">console</span><span class="err">.</span><span class="na">log</span><span class="err">(</span><span class="na">newArr</span><span class="err">);</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/118.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" data-title="Vue之js的高阶函数" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0-vue%E4%B9%8Bjs%E7%9A%84%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0/" data-title="Vue之js的高阶函数"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8Bpromise-vue%E4%B9%8Bpromise/" class="post-nav-item" rel="prev" title="Vue之Promise"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之Promise</a>
+      <a href="/posts/vue%E4%B9%8Bes6%E5%AF%B9%E8%B1%A1%E5%AD%97%E9%9D%A2%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%86%99%E6%B3%95-vue%E4%B9%8Bes6%E5%AF%B9%E8%B1%A1%E5%AD%97%E9%9D%A2%E9%87%8F%E5%A2%9E%E5%BC%BA%E5%86%99%E6%B3%95/" class="post-nav-item" rel="next" title="Vue之ES6对象字面量增强写法">Vue之ES6对象字面量增强写法<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

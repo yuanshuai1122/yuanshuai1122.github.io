@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之Vuex（三） - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Vuex的action 一、action 1.产生原因 当在mutations中进行异步操作时，Devtool不能够实时跟踪，导致最终在Devto" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之Vuex（三）">
+<meta itemprop="description" content="Vuex的action 一、action 1.产生原因 当在mutations中进行异步操作时，Devtool不能够实时跟踪，导致最终在Devto">
+
+<meta itemprop="wordCount" content="5358">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之Vuex（三）" />
+<meta property="og:description" content="Vuex的action 一、action 1.产生原因 当在mutations中进行异步操作时，Devtool不能够实时跟踪，导致最终在Devto" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之Vuex（三）"/>
+<meta name="twitter:description" content="Vuex的action 一、action 1.产生原因 当在mutations中进行异步操作时，Devtool不能够实时跟踪，导致最终在Devto"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%80-vue%E4%B9%8Bvuex%E4%B8%80/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之Vuex（三）",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  5358 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之Vuex（三）</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="5358 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 5400 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 11 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一action">一、action</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1定义">1.定义</a></li>
+        <li><a href="#2状态管理">2.状态管理</a></li>
+        <li><a href="#3使用方式-1">3.使用方式</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1state--单一状态树">1.state&ndash;单一状态树</a></li>
+        <li><a href="#2getters">2.getters</a></li>
+        <li><a href="#3mutations">3.mutations</a></li>
+        <li><a href="#4actions">4.actions</a></li>
+        <li><a href="#5module">5.module</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="vuex的action">Vuex的action</h1>
+<h2 id="一action">一、action</h2>
+<h5 id="1产生原因">1.产生原因</h5>
+<p>  当<strong>在mutations中进行异步操作时，Devtool不能够实时跟踪，导致最终在Devtool中记录的是错误的信息</strong>。比如：</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span> 
+</span></span><span class="line"><span class="cl">    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">info</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;haha&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">age</span><span class="o">:</span><span class="mi">13</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mf">1.45</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">changeInfo</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 异步操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">setTimeout</span><span class="p">(()=&gt;{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">state</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="s1">&#39;哈哈&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><p>上述代码主要是同异步操作来将“haha”修改成“哈哈”。结果如图所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/419.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="img/420.png" srcset="img/420.png, img/420.png 1.5x, img/420.png 2x" sizes="auto" data-title="420" data-alt="420" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>当在mutations使用异步操作时，虽然页面中的数据修改了，但是在Vuex总state记录的仍旧是以前的数据。
+  其实数据是修改成功了，但是mutations中的Devtool在跟踪时没有记录，就导致记录的的错误的信息。
+  所以不能再mutations中进行一步操作，这时我们就需要action帮我们进行一步操作。</p>
+<h5 id="2定义">2.定义</h5>
+<p>Action类似于Mutation, 但是是<strong>用来代替Mutation进行异步操作的</strong>。</p>
+<h5 id="3使用方式">3.使用方式</h5>
+<p>使用方式和mutations类似，但是有两点不同:
+<strong>① 参数</strong>：传入的参数是<strong>context</strong>。该参数相当于store对象
+<strong>② 调用方式</strong>：使用<strong>dispatch</strong>调用，而不是使用commit
+具体见下面的代码：</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span> 
+</span></span><span class="line"><span class="cl">   <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">state</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="s1">&#39;哈哈&#39;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">actions</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">achangeInfo</span><span class="p">(</span><span class="nx">context</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">setTimeout</span><span class="p">(()=&gt;{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">context</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">&#39;../store/index.js&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">changeInfo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;achangeInfo&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/421.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/422.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以发现mutations中的Devtool记录的数据也跟着发生了改变。</p>
+<h5 id="4传递参数">4.传递参数</h5>
+<p>传递参数的方式和mutations类似，下面进行简单的传递字符串参数，具体代码如下：</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span> 
+</span></span><span class="line"><span class="cl">   <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">state</span><span class="p">.</span><span class="nx">info</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="s1">&#39;哈哈&#39;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">actions</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">achangeInfo</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span><span class="nx">payload</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">setTimeout</span><span class="p">(()=&gt;{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">context</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">store</span> <span class="nx">from</span> <span class="s1">&#39;../store/index.js&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">changeInfo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;achangeInfo&#39;</span><span class="p">,</span><span class="s1">&#39;我是payload&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p>发现传递参数也是可以的，并且成功在控制台中显示了。</p>
+<h5 id="5action内部使用promise">5.action内部使用Promise</h5>
+<p>  当数据commit之后就意味着修改成功了，此时<strong>想要告诉外界，数据已经修改成功了并且除了修改数据之外我们还可以做别的操作</strong>。该需求可以用Promise实现，具体先看下面代码：</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl">   <span class="nx">actions</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">achangeInfo</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span><span class="nx">payload</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span><span class="nx">reject</span><span class="p">)</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">setTimeout</span><span class="p">(()=&gt;{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">context</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;1111&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">},</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">})</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span></span></span></code></pre></div><div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">changeInfo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span>
+</span></span><span class="line"><span class="cl">      <span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;achangeInfo&#39;</span><span class="p">,</span><span class="s1">&#39;我是payload&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p>上述代码的主要作用是当数据修改成功之后，就在控制台上打印“1111”。具体思路是当action运行到commit方法时，就会执行changeInfo函数，然后在回调changeInfo函数。
+  本案例中，当执行achangeInfo函数时，就返回 Promise，而achangeInfo是通过dispatch调用的，其上述的代码可以等价为下面的代码：</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">changeInfo</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">//this.$store
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="c1">//.dispatch(&#39;achangeInfo&#39;,&#39;我是payload&#39;)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>     <span class="k">new</span> <span class="nb">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span><span class="nx">reject</span><span class="p">)</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">setTimeout</span><span class="p">(()=&gt;{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">context</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">resolve</span><span class="p">(</span><span class="s1">&#39;1111&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="p">},</span><span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p>以上就是action相关的知识，总结起来就是两点：<strong>处理异步操作和在内部使用Promise。</strong></p>
+<h1 id="vuex的module">Vuex的module</h1>
+<h1 id="一module">一、module</h1>
+<h5 id="1产生原因-1">1.产生原因</h5>
+<p>Module是模块的意思, 为什么在Vuex中我们要使用模块呢?
+  Vue使用单一状态树,那么也意味着很多状态都会交给Vuex来管理，当应用变得非常复杂时,store对象就有可能变得相当臃肿.
+  为了解决这个问题, <strong>Vuex允许我们将store分割成模块(Module), 而每个模块拥有自己的state、mutation、action、getters等。</strong></p>
+<h5 id="2使用方式">2.使用方式</h5>
+<p>  正如上面所提到的，我们可以在module中声明多个模块，然后在每个模块中书写自己模块的state、mutation、action、getters。下面进行逐步的展示。</p>
+<h6 id="-module中的state">① module中的state</h6>
+<p><strong>1-1 module中state的定义</strong>
+定义的方式和store中定义state的方式一样，具体见下面的代码：</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//单独模块的书写const moduleA = {  state:{    name:&#39;我是moduleA的name&#39;  }}//在store对象声明模块Aconst store = new Vuex.Store({    modules:{        a:moduleA    }})
+</span></span></span></code></pre></div><p>在store对象的module中声明了moduleA，并且moduleA自己的state中有一个name变量。
+<strong>1-2 module中state的使用</strong></p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-----</span><span class="nx">Vuex中module的测试</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/423.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>如果要使用moduleA中的name值时，通过<strong>state获取而不是module，因为在module定义的a模块最终会被渲染到state中。</strong></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/424.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="-模块中的mutations">② 模块中的mutations</h6>
+<p><strong>2-1 module中mutations的定义</strong>
+定义的方式和store中的mutations定义的方式一样，具体见下面的代码：</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//单独模块的书写const moduleA = {  state:{    name:&#39;我是moduleA的name&#39;  }，  mutations:{    updataName(state,payload){      state.name = payload    }  }}//在store对象声明模块Aconst store = new Vuex.Store({    modules:{        a:moduleA    }})
+</span></span></span></code></pre></div><p>声明了 根据用户传递的参数修改姓名的updataName方法
+<strong>2-2 module中mutations的使用</strong>
+使用方式和store对象中的mutations一样，<strong>通过commit方法提交</strong>，具体代码如下：</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-----</span><span class="nx">Vuex中module的测试</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;updateName&#34;</span><span class="p">&gt;</span><span class="na">修改名字</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">updateName</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;updataName&#39;</span><span class="p">,</span><span class="s1">&#39;李四&#39;</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>点击按钮，将修改成“李四”。效果如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/425.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这里要注意两点：
+  第一，<strong>命名不重复</strong>。模块内的mutations和store对象的mutations命名不要重复，否则浏览器不知道提交谁的mutations
+  第二，<strong>查找顺序</strong>。使用commit方法提交时，首先会查找store对象的mutations，看看是否有该方法，如果没有就是去模块内的mutations查找。</p>
+<h6 id="-模块中的getters">③ 模块中的getters</h6>
+<p><strong>3-1 模块中getters的定义</strong>
+  定义的方式和在store中定义的方式类似。不同的是，如果在模块中想要<strong>使用store中state内的变量，需要通过rootState参数进行获取</strong>，具体代码如下：</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//单独模块的书写const moduleA = {  state:{    name:&#39;我是moduleA的name&#39;  }，  getters:{    //1.普通应用    fullname(state){      return state.name +&#39;1111&#39;    },    //2.应用本模块的getters    fullname2(state,getters){      return getters.fullname +&#39;2222&#39;    },    fullname3(state,getters,rootState){      return getters.fullname2 + rootState.counter    }  }}//在store对象声明模块Aconst store = new Vuex.Store({    modules:{        a:moduleA    }})
+</span></span></span></code></pre></div><p>用法1是<strong>简单的getters应用</strong>，将name的值后面追加上“1111”；
+用法2是<strong>获取本模块中的getters</strong>，然后对获取到的结果再追加上“2222”；
+用法3是<strong>获取store中的counter</strong>，通过rootState获取，然后再追加到到fullname2的结果中。
+<strong>3-2 模块中getters的使用</strong>
+使用方式和store中的类似，具体代码如下：</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-----</span><span class="nx">Vuex中module的测试</span><span class="o">-----</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">fullname</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">fullname2</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">fullname3</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>其效果如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/426.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="-module的action">④ module的action</h6>
+<p><strong>4-1 定义的方式</strong></p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="err">//单独模块的书写const moduleA = {  state:{    name:&#39;我是moduleA的name&#39;  }，  mutations:{    updataName(state,payload){      state.name = payload    }  },  actions:{    aupdateName(context){      setTimeout(()=&gt;{        context.commit(&#39;updataName&#39;,&#39;王五&#39;)      },10)    }  }}//在store对象声明模块Aconst store = new Vuex.Store({    modules:{        a:moduleA    }})</span></span></span></code></pre></div><p>通过setTimeout来模拟异步操作，修改name的值为“王五”
+<strong>4-2 使用方式</strong></p>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-----</span><span class="nx">Vuex中module的测试</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">a</span><span class="p">.</span><span class="nx">name</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;asycnUpdateName&#34;</span><span class="p">&gt;</span><span class="na">异步修改名字</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">asycnUpdateName</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">(</span><span class="s1">&#39;aupdateName&#39;</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/427.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这里需要注意的是，在模块中，<strong>context.commit()仅仅提交自己模块的方法而不包括store中的方法。</strong>
+  以上就是今天Vuex中module的介绍，主要详细的介绍了<strong>在模块内如如何定义和使用state、mutations、getters、action。</strong></p>
+<h1 id="vuex总结篇">Vuex总结篇</h1>
+<h1 id="一store的目录结构">一、store的目录结构</h1>
+<p>  在前面，我们都将 state、mutations、getters、actions、module 放在index.js文件中，当代码量多的时候，就不利于管理，所以我们一般都将 mutations、getters、actions、module 抽离出去。具体的抽离结构如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/428.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>分别将getters、actions、module、mutations抽离成单独的文件，如果在store中的module中又包含了很多的小模块，就将小模块放到modules文件夹下面，然后每个单独是小模块又是单独的文件。
+  我们一般不将state抽离出去，而是放在index.js文件中便于查看当前有哪些状态是被共享的。抽离后的index.js代码如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/429.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>下面进行Vuex的知识总结。</p>
+<h1 id="二vuex基本概念">二、Vuex基本概念</h1>
+<h3 id="1定义">1.定义</h3>
+<p>Vuex是一个管理共享状态的管家，并且该状态是响应式的</p>
+<h3 id="2状态管理">2.状态管理</h3>
+<p>主要分成单界面管理和多界面管理</p>
+<h5 id="-单界面管理">① 单界面管理</h5>
+<p>  首先明白三个概念：State：状态；View：视图层；Actions：主要是用户的各种操作：点击、输入等等，会导致状态的改变。
+  而所谓的单界面就是指State、View、Action都是在同一个页面中的，所以叫做单页面状态管理。具体运作方式如下图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/430.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h5 id="-多界面状态管理">② 多界面状态管理</h5>
+<p>  多界面状态管理就是指当某个状态被多个界面同时共享时，我们需要一个管家来管理这个被多界面共享的状态。具体的运作过程见下图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/431.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="3使用方式-1">3.使用方式</h3>
+<p>首先在终端安装Vuex，然后创建Vuex实例，最后书写相关的代码。具体使用如下图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/432.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="三核心概念">三、核心概念</h1>
+<p>Vuex中包含了5个核心概念，分别是：<strong>state、actions、getters、module、mutations。</strong></p>
+<h3 id="1state--单一状态树">1.state&ndash;单一状态树</h3>
+<p>  为了<strong>不让状态信息保存到多个Store对象中的</strong>，Vuex使用了单一状态树来管理应用层级的全部状态。
+  也就是在<strong>项目中最好只new 一个store对象</strong>，然后所有状态有关的东西都放在一个store中的state进行统一的管理。</p>
+<h3 id="2getters">2.getters</h3>
+<h5 id="-定义">① 定义</h5>
+<p>  getters 相当于计算属性。<strong>当数据要经过一系列变化时，将这一系列的变化写在getters内部。</strong></p>
+<h5 id="-使用">② 使用</h5>
+<p>  在getters中声明一个方法，该方法的<strong>默认参数是state</strong>，然后返回相应的结果即可。具体代码如下:</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.jsgetters:{      powerCounter(state){        return state.counter * state.counter      }    }
+</span></span></span></code></pre></div><div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">App</span><span class="p">.</span><span class="nx">vue</span> <span class="nx">文件</span><span class="o">--&gt;</span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">powerCounter</span><span class="p">}}</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/template</span></span></span></code></pre></div><h5 id="-参数">③ 参数</h5>
+<p>  getters中出了默认的state之外，还可以传递<strong>getters参数</strong>，用来获取当前getters中的方法。比如：</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">student</span><span class="o">:</span><span class="p">[</span>        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">21</span><span class="p">},</span>        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">200</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;lisi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">18</span><span class="p">},</span>        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">300</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;wangwu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">22</span><span class="p">},</span>        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">400</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhaoliu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">19</span><span class="p">}</span>      <span class="p">]</span>    <span class="p">},</span>    <span class="nx">getters</span><span class="o">:</span><span class="p">{</span>      <span class="nx">morestu</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>        <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">s</span> <span class="p">=&gt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">age</span><span class="o">&gt;</span><span class="mi">20</span><span class="p">)</span>      <span class="p">},</span>      <span class="nx">morestuLength</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="nx">getters</span><span class="p">){</span>        <span class="k">return</span> <span class="nx">getters</span><span class="p">.</span><span class="nx">morestu</span><span class="p">.</span><span class="nx">length</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>在morestuLength方法中通过参数getters获取了morestu方法的结果</p>
+<h5 id="-返回值">④ 返回值</h5>
+<p>返回值可以返回<strong>变量</strong>，还可以返回<strong>函数</strong>。比如：</p>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="err">//返回变量getters:{      powerCounter(state){        return state.counter * state.counter      }    }//返回函数    getters:{      moreAgeStu(state){        return function(age){          return state.student.filter(s =&gt; s.age&gt;age)        }      }    }</span></span></span></code></pre></div><h3 id="3mutations">3.mutations</h3>
+<h5 id="-作用">① 作用</h5>
+<p>  <strong>Vuex的store状态的更新唯一方式：提交Mutation</strong>。也就是我们前面提到过的，必须经过 state &ndash;&gt; Vuex &ndash;&gt; Action &ndash;&gt; Mutations 这个路径修改state的状态。</p>
+<h5 id="-组成">② 组成</h5>
+<p>主要由<strong>事件类型</strong>和<strong>回调函数</strong>组成。比如：</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>    <span class="nx">increase</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>      <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span>      <span class="p">}</span></span></span></code></pre></div><p>increase时间类型，(state){ state.counter++}是回调函数</p>
+<h5 id="-定义方式">③ 定义方式</h5>
+<p>主要是<strong>事件类型+回调函数</strong>，具体代码如上所示，这里不再展示</p>
+<h5 id="-参数-1">④ 参数</h5>
+<p>传递的参数主要有默认的<strong>state、变量和函数</strong></p>
+<h5 id="-提交风格">⑤ 提交风格</h5>
+<p>主要有两种方式，一种是<strong>commit</strong>，一种是<strong>type</strong>。</p>
+<h5 id="-响应规则">⑥ 响应规则</h5>
+<p>  相应的原理是<strong>预先在store对象定义的属性会被加入到响应式系统中</strong>，而没有预先在store对象定义的属性不会被加入到响应式系统中，但是可以通过<strong>set方法</strong>使新增加的属性具有响应式。</p>
+<h5 id="-常量类型">⑦ 常量类型</h5>
+<p>  <strong>使用常量替代Mutation事件的类型</strong>。将这些常量放在一个单独的文件中, 方便管理以及让整个app所有的事件类型一目了然。</p>
+<h3 id="4actions">4.actions</h3>
+<h5 id="-定义-1">① 定义</h5>
+<p>Action类似于Mutation, 但是是<strong>用来代替Mutation进行异步操作的</strong>。</p>
+<h5 id="-使用-1">② 使用</h5>
+<p>使用方式和mutations类似，只是默认的参数是<strong>context</strong>，而且调用时是用<strong>dispatch</strong>调用的。</p>
+<h5 id="-参数-2">③ 参数</h5>
+<p>传递的参数很简单，这里不叙述</p>
+<h5 id="-在内容使用promise">④ 在内容使用Promise</h5>
+<p>  使用Promise的目的是，<strong>除了修改数据之外还可以进行别的操作</strong>。一般将修改的数据写在Promie内部，然后别的操作写在then函数内</p>
+<h3 id="5module">5.module</h3>
+<p>  Vuex允许我们将store分割成模块(Module), 而每个模块拥有自己的state、mutation、action、getters等。
+  mudole中的state、mutation、action、getters方式的书写和在store中书写是一样的，这里就不再叙述，不过要注意的是：在模块中，<strong>context.commit()仅仅提交自己模块的方法而不包括store中的方法。</strong></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" data-title="Vue之Vuex（三）" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" data-title="Vue之Vuex（三）"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8Bvuex%E4%B8%80-vue%E4%B9%8Bvuex%E4%B8%80/" class="post-nav-item" rel="prev" title="Vue之Vuex（一）"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之Vuex（一）</a>
+      <a href="/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" class="post-nav-item" rel="next" title="Vue之Vuex（二）">Vue之Vuex（二）<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

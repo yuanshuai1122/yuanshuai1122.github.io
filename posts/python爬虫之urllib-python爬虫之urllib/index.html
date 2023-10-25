@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Python爬虫之urllib - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="（编码encode()） pat=r&quot;(.*?)&quot; data=re.findall(pat,reponse) print(data[0]) ```python #创建自定义opener from urllib import request #构建HTTP处理器对象（专门处理HTTP请求的对象） http_hander=request.HTTPHandler() #创建自定义open" /><meta name="keywords" content='Python, 爬虫' /><meta itemprop="name" content="Python爬虫之urllib">
+<meta itemprop="description" content="（编码encode()） pat=r&quot;(.*?)&quot; data=re.findall(pat,reponse) print(data[0]) ```python #创建自定义opener from urllib import request #构建HTTP处理器对象（专门处理HTTP请求的对象） http_hander=request.HTTPHandler() #创建自定义open">
+
+<meta itemprop="wordCount" content="1226">
+<meta itemprop="keywords" content="Python,爬虫," /><meta property="og:title" content="Python爬虫之urllib" />
+<meta property="og:description" content="（编码encode()） pat=r&quot;(.*?)&quot; data=re.findall(pat,reponse) print(data[0]) ```python #创建自定义opener from urllib import request #构建HTTP处理器对象（专门处理HTTP请求的对象） http_hander=request.HTTPHandler() #创建自定义open" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python爬虫之urllib"/>
+<meta name="twitter:description" content="（编码encode()） pat=r&quot;(.*?)&quot; data=re.findall(pat,reponse) print(data[0]) ```python #创建自定义opener from urllib import request #构建HTTP处理器对象（专门处理HTTP请求的对象） http_hander=request.HTTPHandler() #创建自定义open"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B-python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Python爬虫之urllib",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib\/"
+    },"genre": "posts","keywords": "Python, 爬虫","wordcount":  1226 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Python爬虫之urllib</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1226 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1300 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;</div>
+    </div><div class="content" id="content"><p>（编码encode()）</p>
+<p>pat=r&quot;<!-- raw HTML omitted -->(.*?)<!-- raw HTML omitted -->&quot;</p>
+<p>data=re.findall(pat,reponse)</p>
+<p>print(data[0])</p>
+<pre tabindex="0"><code>
+```python
+#创建自定义opener
+
+from urllib import request
+
+#构建HTTP处理器对象（专门处理HTTP请求的对象）
+http_hander=request.HTTPHandler()
+
+#创建自定义opener
+opener=request.build_opener(http_hander)
+
+#创建自定义请求对象
+req=request.Request(&#34;http://www.baidu.com&#34;)
+
+#发送请求，获取响应
+#reponse=opener.open(req).read()
+
+#把自定义opener设置为全局，这样用urlopen发送的请求也会使用自定义的opener;
+request.install_opener(opener)
+
+reponse=request.urlopen(req).read()
+
+
+print(reponse)</code></pre><div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#反爬虫2：判断请求来源的ip地址</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#措施：使用代理IP</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">proxylist</span><span class="o">=</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span><span class="s2">&#34;http&#34;</span><span class="p">:</span><span class="s2">&#34;101.248.64.82:80&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">proxy</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">proxylist</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#构建代理处理器对象</span>
+</span></span><span class="line"><span class="cl"><span class="n">proxyHandler</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">ProxyHandler</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#创建自定义opener</span>
+</span></span><span class="line"><span class="cl"><span class="n">opener</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">build_opener</span><span class="p">(</span><span class="n">proxyHandler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#创建请求对象</span>
+</span></span><span class="line"><span class="cl"><span class="n">req</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s2">&#34;http://www.baidu.com&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">res</span><span class="o">=</span><span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></span></span></code></pre></div><div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#处理get请求</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">urllib</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#http://www.baidu.com/s?wd=%E5%8C%97%E4%BA%AC #url编码</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">wd</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;wd&#34;</span><span class="p">:</span><span class="s2">&#34;北京&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">url</span><span class="o">=</span><span class="s2">&#34;http://www.baidu.com/s?&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#构造url编码</span>
+</span></span><span class="line"><span class="cl"><span class="n">wdd</span><span class="o">=</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">wd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="o">+</span><span class="n">wdd</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">req</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">reponse</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">reponse</span><span class="p">)</span></span></span></code></pre></div><div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 实战：贴吧爬虫</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">urllib</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#构造请求头信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">header</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span><span class="s2">&#34;Mozilla/5.0 (Linux; U; An</span><span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="s2">droid 8.1.0; zh-cn; BLA-AL00 Build/HUAW</span><span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="s2">EIBLA-AL00) AppleWebKit/537.36 (KHTML, l</span><span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="s2">ike Gecko) Version/4.0 Chrome/57.0.2987.13</span><span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="s2">2 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#url规律</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=0  #第一页 （1-1）*50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=50 #第二页 （2-1）*50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=100 #第三页 （3-1）*50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=150 #第四页（4-1）*50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># for i in range(1,4):</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	print(&#34;http://tieba.baidu.com/f?kw=python&amp;ie=utf-8&amp;pn=&#34;+str((i-1)*50))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">loadpage</span><span class="p">(</span><span class="n">fullurl</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;正在下载：&#34;</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">req</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">fullurl</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">resp</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">resp</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">writepage</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">	<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;正在保存：&#34;</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s2">&#34;wb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;---------------------------&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#构造url</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">tiebaSpider</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">		<span class="n">pn</span><span class="o">=</span><span class="p">(</span><span class="n">page</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">50</span>
+</span></span><span class="line"><span class="cl">		<span class="n">fullurl</span><span class="o">=</span><span class="n">url</span><span class="o">+</span><span class="s2">&#34;&amp;pn=&#34;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">pn</span><span class="p">)</span> <span class="c1">#每次请求的完整url</span>
+</span></span><span class="line"><span class="cl">		<span class="n">filename</span><span class="o">=</span><span class="s2">&#34;c:/第&#34;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">+</span><span class="s2">&#34;页.html&#34;</span> <span class="c1">#每次请求后保存的文件名</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">html</span><span class="o">=</span><span class="n">loadpage</span><span class="p">(</span><span class="n">fullurl</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span> <span class="c1">#调用爬虫，爬取网页</span>
+</span></span><span class="line"><span class="cl">		<span class="n">writepage</span><span class="p">(</span><span class="n">html</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span> <span class="c1">#把获取到的网页信息写入本地</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">kw</span><span class="o">=</span><span class="nb">input</span><span class="p">(</span><span class="s2">&#34;请输入贴吧名：&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">begin</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&#34;请输入起始页：&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="n">end</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&#34;请输入结束页：&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">url</span><span class="o">=</span><span class="s2">&#34;http://tieba.baidu.com/f?&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">key</span><span class="o">=</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">({</span><span class="s2">&#34;kw&#34;</span><span class="p">:</span><span class="n">kw</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="o">+</span><span class="n">key</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">tiebaSpider</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span></span></span></code></pre></div><div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 实战：贴吧爬虫(完善)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">urllib</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#反爬虫1 ： 伪装浏览器的爬虫</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#构造请求头信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">agent1</span><span class="o">=</span><span class="s2">&#34;Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">agent2</span><span class="o">=</span><span class="s2">&#34;Mozilla/5.0 (Linux; Android 8.1; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.143 Crosswalk/24.53.595.0 XWEB/358 MMWEBSDK/23 Mobile Safari/537.36 MicroMessenger/6.7.2.1340(0x2607023A) NetType/4G Language/zh_CN&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">agent3</span><span class="o">=</span><span class="s2">&#34;Mozilla/5.0 (Linux; U; Android 8.0.0; zh-CN; MHA-AL00 Build/HUAWEIMHA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/12.1.4.994 Mobile Safari/537.36&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">agent4</span><span class="o">=</span><span class="s2">&#34;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">agent5</span><span class="o">=</span><span class="s2">&#34;Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">list1</span><span class="o">=</span><span class="p">[</span><span class="n">agent1</span><span class="p">,</span><span class="n">agent2</span><span class="p">,</span><span class="n">agent3</span><span class="p">,</span><span class="n">agent4</span><span class="p">,</span><span class="n">agent5</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">agent</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">agent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 反爬虫2：判断请求来源的ip地址</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 措施：使用代理IP</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># proxylist = [</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	#{&#34;http&#34;: &#34;101.248.64.82:80&#34;}</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	#{&#34;http&#34;: &#34;49.89.87.40:3000&#34;},</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	#{&#34;http&#34;: &#34;36.249.109.42:9999&#34;},</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	#{&#34;http&#34;: &#34;58.254.220.116:53579&#34;},</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 	#{&#34;http&#34;: &#34;183.166.136.49:8888&#34;}</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ]</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># proxy = random.choice(proxylist)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># print(proxy)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># # 构建代理处理器对象</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># proxyHandler = request.ProxyHandler(proxy)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># # 创建自定义opener</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># opener = request.build_opener(proxyHandler)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># #把自定义opener设置为全局，这样用urlopen发送的请求也会使用自定义的opener;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># request.install_opener(opener)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">header</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span><span class="n">agent</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">url</span><span class="o">=</span><span class="s2">&#34;http://fanyi.youdao.com/translate?smartresult=dict&amp;smartresult=rule&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#key=&#34;自学&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">key</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&#34;请输入要翻译的文字：&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#post请求需要提交的参数</span>
+</span></span><span class="line"><span class="cl"><span class="n">formdata</span><span class="o">=</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;i&#34;</span><span class="p">:</span><span class="n">key</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;from&#34;</span><span class="p">:</span><span class="s2">&#34;AUTO&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;to&#34;</span><span class="p">:</span><span class="s2">&#34;AUTO&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;smartresult&#34;</span><span class="p">:</span><span class="s2">&#34;dict&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;client&#34;</span><span class="p">:</span><span class="s2">&#34;fanyideskweb&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;salt&#34;</span><span class="p">:</span><span class="s2">&#34;15503049709404&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;sign&#34;</span><span class="p">:</span><span class="s2">&#34;3da914b136a37f75501f7f31b11e75fb&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;ts&#34;</span><span class="p">:</span><span class="s2">&#34;1550304970940&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;bv&#34;</span><span class="p">:</span><span class="s2">&#34;ab57a166e6a56368c9f95952de6192b5&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;doctype&#34;</span><span class="p">:</span><span class="s2">&#34;json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;version&#34;</span><span class="p">:</span><span class="s2">&#34;2.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;keyfrom&#34;</span><span class="p">:</span><span class="s2">&#34;fanyi.web&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;action&#34;</span><span class="p">:</span><span class="s2">&#34;FY_BY_REALTIME&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="s2">&#34;typoResult&#34;</span><span class="p">:</span><span class="s2">&#34;false&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#转码</span>
+</span></span><span class="line"><span class="cl"><span class="n">data</span><span class="o">=</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">formdata</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">req</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">resp</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#正则表达式 提取&#34;tgt&#34;:&#34;和&#34;}]]中间的任意内容</span>
+</span></span><span class="line"><span class="cl"><span class="n">pat</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;&#34;tgt&#34;:&#34;(.*?)&#34;}]]&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">result</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span><span class="n">resp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></span></span></code></pre></div><div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1">#异常处理</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">list1</span><span class="o">=</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;http://www.baidu.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;http://www.baidu.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;http://www.jiswiswissnduehduehd.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;http://www.baidu.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;http://www.baidu.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">list1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">print</span><span class="p">(</span><span class="s2">&#34;第&#34;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s2">&#34;次请求完成&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></span></span></code></pre></div><div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Cookie</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">request</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">url</span> <span class="o">=</span> <span class="s2">&#34;http://i.baidu.com/&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;User-Agent&#34;</span> <span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) App</span><span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span><span class="s2">    leWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Cookie&#34;</span><span class="p">:</span><span class="s2">&#34;BAIDUID=F1676F6D91D12CF987A81C35B5683EF5:FG=1; PSTM=1543068715; BIDUPSID=F1676F6D91D12CF987A81C35B5683EF5; BDUSS=k4VllQdW9-ZDR6fmo1LWxIeEo5LWd1OTMxLUhCQkY5eUZlZXY0OEtKSzdVSEZjQVFBQUFBJCQAAAAAAAAAAAEAAABATb2F1~OwttK76ti0s8zs0cQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALvDSVy7w0lca3; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; PHPSESSID=e1sso19h9qnjugdq974cpofk50; __guid=62687476.678578182179940700.1550386788528.5847; Hm_lvt_4010fd5075fcfe46a16ec4cb65e02f04=1550386790; monitor_count=4; Hm_lpvt_4010fd5075fcfe46a16ec4cb65e02f04=1550387997&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">req</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span></span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" data-title="Python爬虫之urllib" data-hashtags="Python,爬虫"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" data-hashtag="Python"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" data-title="Python爬虫之urllib"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/python/' class="post-tag">Python</a><a href='/tags/%E7%88%AC%E8%99%AB/' class="post-tag">爬虫</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B-python%E7%88%AC%E8%99%AB%E4%B9%8B%E5%A4%9A%E7%BA%BF%E7%A8%8B/" class="post-nav-item" rel="prev" title="Python爬虫之多线程"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Python爬虫之多线程</a>
+      <a href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" class="post-nav-item" rel="next" title="Python爬虫之scrapy框架">Python爬虫之scrapy框架<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

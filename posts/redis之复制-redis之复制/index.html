@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Redis之复制 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主" /><meta name="keywords" content='数据库, Redis' /><meta itemprop="name" content="Redis之复制">
+<meta itemprop="description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主">
+
+<meta itemprop="wordCount" content="1210">
+<meta itemprop="keywords" content="数据库,Redis," /><meta property="og:title" content="Redis之复制" />
+<meta property="og:description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之复制"/>
+<meta name="twitter:description" content="1、是什么 行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Redis之复制",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6\/"
+    },"genre": "posts","keywords": "数据库, Redis","wordcount":  1210 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Redis之复制</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1210 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1300 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1是什么"><strong>1、是什么</strong></a></li>
+    <li><a href="#2能干嘛">2、<strong>能干嘛</strong></a></li>
+    <li><a href="#3怎么玩">3、<strong>怎么玩</strong></a>
+      <ul>
+        <li><a href="#31配从库不配主库">3.1、配从(库)不配主(库)</a></li>
+        <li><a href="#32从库配置slaveof-主库ip-主库端口">3.2、从库配置：slaveof 主库IP 主库端口</a></li>
+        <li><a href="#33修改配置文件细节操作">3.3、修改配置文件细节操作</a></li>
+        <li><a href="#34常用3招">3.4、常用3招</a></li>
+      </ul>
+    </li>
+    <li><a href="#4复制原理">4、<strong>复制原理</strong></a></li>
+    <li><a href="#5哨兵模式sentinel">5、<strong>哨兵模式</strong>(sentinel)</a>
+      <ul>
+        <li><a href="#51是什么">5.1、是什么</a></li>
+        <li><a href="#52怎么玩使用步骤">5.2、怎么玩(使用步骤)</a></li>
+        <li><a href="#523配置哨兵填写内容">5.2.3、配置哨兵,填写内容</a></li>
+        <li><a href="#524启动哨兵">5.2.4、启动哨兵</a></li>
+        <li><a href="#525原有的master挂了">5.2.5、原有的master挂了</a></li>
+        <li><a href="#526投票新选">5.2.6、投票新选</a></li>
+        <li><a href="#527重新主从继续开工info-replication查查看">5.2.7、重新主从继续开工,info replication查查看</a></li>
+        <li><a href="#528问题如果之前的master重启回来会不会双master冲突">5.2.8、问题：如果之前的master重启回来，会不会双master冲突？</a></li>
+      </ul>
+    </li>
+    <li><a href="#53一组sentinel能同时监控多个master">5.3、一组sentinel能同时监控多个Master</a></li>
+    <li><a href="#6复制的缺点">6、复制的缺点</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="1是什么"><strong>1、是什么</strong></h2>
+<p>行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主，Slave以读为主</p>
+<h2 id="2能干嘛">2、<strong>能干嘛</strong></h2>
+<p>读写分离</p>
+<p>容灾恢复</p>
+<h2 id="3怎么玩">3、<strong>怎么玩</strong></h2>
+<h3 id="31配从库不配主库">3.1、配从(库)不配主(库)</h3>
+<h3 id="32从库配置slaveof-主库ip-主库端口">3.2、从库配置：slaveof 主库IP 主库端口</h3>
+<ul>
+<li>
+<p>每次与master断开之后，都需要重新连接，除非你配置进redis.conf文件</p>
+</li>
+<li>
+<p>Info replication</p>
+</li>
+</ul>
+<h3 id="33修改配置文件细节操作">3.3、修改配置文件细节操作</h3>
+<ul>
+<li>拷贝多个redis.conf文件</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/107.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>开启daemonize yes</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/108.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>Pid文件名字</li>
+<li>指定端口</li>
+<li>Log文件名字</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/109.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>Dump.rdb名字</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/200.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="34常用3招">3.4、常用3招</h3>
+<h4 id="341一主二仆">3.4.1、一主二仆</h4>
+<ul>
+<li>Init</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/201.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>一个Master两个Slave</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/202.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>日志查看</li>
+</ul>
+<p>主机日志</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/203.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>备机日志</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/204.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>info replication</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/205.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h4 id="342薪火相传">3.4.2、薪火相传</h4>
+<ul>
+<li>
+<p>上一个Slave可以是下一个slave的Master，Slave同样可以接收其他Slaves的连接和同步请求，那么该slave作为了链条中下一个的master,可以有效减轻master的写压力</p>
+</li>
+<li>
+<p>中途变更转向:会清除之前的数据，重新建立拷贝最新的</p>
+</li>
+<li>
+<p>Slaveof 新主库IP 新主库端口</p>
+</li>
+</ul>
+<h4 id="343反客为主">3.4.3、反客为主</h4>
+<p>SLAVEOF no one：使当前数据库停止与其他数据库的同步，转成主数据库</p>
+<h2 id="4复制原理">4、<strong>复制原理</strong></h2>
+<ul>
+<li>Slave启动成功连接到master后会发送一个sync命令</li>
+<li>Master接到命令启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令，在后台进程执行完毕之后，master将传送整个数据文件到slave,以完成一次完全同步</li>
+<li>全量复制：而slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。</li>
+<li>增量复制：Master继续将新的所有收集到的修改命令依次传给slave,完成同步</li>
+<li>但是只要是重新连接master,一次完全同步（全量复制)将被自动执行</li>
+</ul>
+<h2 id="5哨兵模式sentinel">5、<strong>哨兵模式</strong>(sentinel)</h2>
+<h3 id="51是什么">5.1、是什么</h3>
+<p>反客为主的自动版，能够后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库</p>
+<h3 id="52怎么玩使用步骤">5.2、怎么玩(使用步骤)</h3>
+<h4 id="521调整结构6379带着8081">5.2.1、调整结构，6379带着80、81</h4>
+<h4 id="522自定义的myredis目录下新建sentinelconf文件名字绝不能错">5.2.2、自定义的/myredis目录下新建sentinel.conf文件，名字绝不能错</h4>
+<h3 id="523配置哨兵填写内容">5.2.3、配置哨兵,填写内容</h3>
+<ul>
+<li>sentinel monitor 被监控数据库名字(自己起名字) 127.0.0.1 6379 1</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/206.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>上面最后一个数字1，表示主机挂掉后salve投票看让谁接替成为主机，得票数多少后成为主机</li>
+</ul>
+<h3 id="524启动哨兵">5.2.4、启动哨兵</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/207.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>Redis-sentinel /myredis/sentinel.conf</li>
+<li>上述目录依照各自的实际情况配置，可能目录不同</li>
+</ul>
+<h3 id="525原有的master挂了">5.2.5、原有的master挂了</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/208.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="526投票新选">5.2.6、投票新选</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/209.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="527重新主从继续开工info-replication查查看">5.2.7、重新主从继续开工,info replication查查看</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/210.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="528问题如果之前的master重启回来会不会双master冲突">5.2.8、问题：如果之前的master重启回来，会不会双master冲突？</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/211.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="53一组sentinel能同时监控多个master">5.3、一组sentinel能同时监控多个Master</h2>
+<h2 id="6复制的缺点">6、复制的缺点</h2>
+<ul>
+<li>复制延时</li>
+</ul>
+<p>由于所有的写操作都是先在Master上操作，然后同步更新到Slave上，所以从Master同步到Slave机器有一定的延迟，当系统很繁忙的时候，延迟问题会更加严重，Slave机器数量的增加也会使这个问题更加严重。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" data-title="Redis之复制" data-hashtags="数据库,Redis"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" data-hashtag="数据库"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" data-title="Redis之复制"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/' class="post-tag">数据库</a><a href='/tags/redis/' class="post-tag">Redis</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" class="post-nav-item" rel="prev" title="Redis之解析配置文件"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Redis之解析配置文件</a>
+      <a href="/posts/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="post-nav-item" rel="next" title="Redis之发布订阅">Redis之发布订阅<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

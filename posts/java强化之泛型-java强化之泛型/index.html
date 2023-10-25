@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Java强化之泛型 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Java强化之泛型 一、什么是泛型 1.背景： JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型" /><meta name="keywords" content='Java' /><meta itemprop="name" content="Java强化之泛型">
+<meta itemprop="description" content="Java强化之泛型 一、什么是泛型 1.背景： JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型"><meta itemprop="datePublished" content="2021-12-03T18:17:37+00:00" />
+<meta itemprop="dateModified" content="2021-12-03T18:17:37+00:00" />
+<meta itemprop="wordCount" content="2190">
+<meta itemprop="keywords" content="Java," /><meta property="og:title" content="Java强化之泛型" />
+<meta property="og:description" content="Java强化之泛型 一、什么是泛型 1.背景： JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-03T18:17:37+00:00" />
+<meta property="article:modified_time" content="2021-12-03T18:17:37+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java强化之泛型"/>
+<meta name="twitter:description" content="Java强化之泛型 一、什么是泛型 1.背景： JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/btc-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8E%9F%E7%90%86-btc--mi-ma-xue-yuan-li/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Java强化之泛型",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B\/"
+    },"genre": "posts","keywords": "Java","wordcount":  2190 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B\/","datePublished": "2021-12-03T18:17:37+00:00","dateModified": "2021-12-03T18:17:37+00:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Java强化之泛型</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 2021-12-03 18:17:37"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2021-12-03">2021-12-03</time></span>&nbsp;<span title="更新于 2021-12-03 18:17:37"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2021-12-03">2021-12-03</time></span>&nbsp;<span title="2190 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一什么是泛型">一、什么是泛型</a>
+      <ul>
+        <li><a href="#1背景">1.背景：</a></li>
+        <li><a href="#2概念">2.概念：</a></li>
+        <li><a href="#3好处">3.好处：</a></li>
+        <li><a href="#4类型">4.类型：</a></li>
+      </ul>
+    </li>
+    <li><a href="#二泛型类接口">二、泛型类、接口</a>
+      <ul>
+        <li><a href="#1泛型类">1.泛型类</a></li>
+        <li><a href="#2泛型类注意事项">2.泛型类注意事项：</a></li>
+        <li><a href="#3从泛型类派生子类">3.从泛型类派生子类</a></li>
+        <li><a href="#4泛型接口">4.泛型接口</a></li>
+        <li><a href="#5泛型接口的使用">5.泛型接口的使用</a></li>
+      </ul>
+    </li>
+    <li><a href="#三泛型方法">三、泛型方法</a>
+      <ul>
+        <li><a href="#1用法">1.用法</a></li>
+        <li><a href="#2语法">2.语法:</a></li>
+        <li><a href="#3说明">3.说明：</a></li>
+        <li><a href="#5泛型方法总结">5.泛型方法总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#四类型通配符">四、类型通配符</a>
+      <ul>
+        <li><a href="#1什么是类型通配符">1.什么是类型通配符</a></li>
+        <li><a href="#2类型通配符的上限">2.类型通配符的上限</a></li>
+        <li><a href="#3类型通配符的下限">3.类型通配符的下限</a></li>
+      </ul>
+    </li>
+    <li><a href="#五类型擦除">五、类型擦除</a>
+      <ul>
+        <li><a href="#1概念">1.概念</a></li>
+        <li><a href="#2分类">2.分类：</a></li>
+      </ul>
+    </li>
+    <li><a href="#六泛型与数组">六、泛型与数组</a></li>
+    <li><a href="#七泛型和反射">七、泛型和反射</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="java强化之泛型">Java强化之泛型</h1>
+<h2 id="一什么是泛型">一、什么是泛型</h2>
+<h3 id="1背景">1.背景：</h3>
+<p>JAVA推出泛型以前，程序员可以构建一个元素类型为Object的集合，该集合能够存储任意的数据类型对象，而在使用该集合的过程中，需要程序员明确知道存储每个元素的数据类型，否则很容易引发ClassCastException异常。</p>
+<h3 id="2概念">2.概念：</h3>
+<p>Java泛型（generics）是JDK5中引入的一个新特性，泛型提供了编译时类型安全监测机制，该机制允许我们在编译时检测到非法的类型数据结构。泛型的本质就是参数化类型，也就是所操作的数据类型被指定为一个参数。</p>
+<h3 id="3好处">3.好处：</h3>
+<p>类型安全</p>
+<p>消除了强制类型的转换</p>
+<h3 id="4类型">4.类型：</h3>
+<p>E - Element (在集合中使用，因为集合中存放的是元素)
+T - Type（表示Java 类，包括基本的类和我们自定义的类）
+K - Key（表示键，比如Map中的key）
+V - Value（表示值）
+N - Number（表示数值类型）
+？ - （表示不确定的java类型）
+S、U、V - 2nd、3rd、4th types</p>
+<h2 id="二泛型类接口">二、泛型类、接口</h2>
+<h3 id="1泛型类">1.泛型类</h3>
+<p>（1）使用语法
+类名&lt;具体的数据类型&gt; 对象名 = new 类名&lt;具体的数据类型&gt;();</p>
+<p>（2）Java1.7以后，后面的&lt;&gt;中的具体的数据类型可以省略不写
+类名&lt;具体的数据类型&gt; 对象名 = new 类名&lt;&gt;(); 菱形语法</p>
+<h3 id="2泛型类注意事项">2.泛型类注意事项：</h3>
+<p>泛型类，如果没有指定具体的数据类型，此时，操作类型是Object
+泛型的类型参数只能是类类型，不能是基本数据类型
+泛型类型在逻辑上可以看成是多个不同的类型，但实际上都是相同类型</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">有Generic</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="n">这个类</span>
+</span></span><span class="line"><span class="cl">		 <span class="n">Generic</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">strGeneric</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Generic</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;,</span>
+</span></span><span class="line"><span class="cl">		 <span class="n">Generic</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">intGeneric</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Generic</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">		 <span class="n">intGeneric</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span> <span class="o">==</span> <span class="n">strGeneric</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span><span class="err">，</span>
+</span></span><span class="line"><span class="cl">		 <span class="n">结果是true</span></span></span></code></pre></div><p>可以结合后面的泛型擦除理解，泛型擦除之后 Generic &lt; String &gt; 和Generic&lt; Integer &gt;都是Generic类。</p>
+<h3 id="3从泛型类派生子类">3.从泛型类派生子类</h3>
+<p>子类也是泛型类，子类和父类的泛型类型要一致
+<code>class ChildGeneric&lt;T&gt; extends Generic&lt;T&gt;</code></p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//父类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Parent</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">E</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">E</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">E</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 泛型类派生子类，子类也是泛型类，那么子类的泛型标识要和父类一致。
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param &lt;T&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChildFirst</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">Parent</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><ul>
+<li>子类不是泛型类，父类要明确泛型的数据类型
+<code>class ChildGeneric extends Generic&lt;String&gt;</code></li>
+</ul>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 泛型类派生子类，如果子类不是泛型类，那么父类要明确数据类型
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChildSecond</span> <span class="kd">extends</span> <span class="n">Parent</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">Integer</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kd">super</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="4泛型接口">4.泛型接口</h3>
+<p><strong>泛型接口的定义语法：</strong></p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">interface</span> <span class="nc">接口名称</span> <span class="o">&lt;</span><span class="n">泛型标识</span><span class="err">，</span><span class="n">泛型标识</span><span class="err">，…</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">泛型标识</span> <span class="nf">方法名</span><span class="o">();</span> 
+</span></span><span class="line"><span class="cl">	<span class="o">.....</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="5泛型接口的使用">5.泛型接口的使用</h3>
+<ul>
+<li>实现类也是泛型类，实现类和接口的泛型类型要一致</li>
+</ul>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 泛型接口
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param &lt;T&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Generator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">T</span> <span class="nf">getKey</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 泛型接口的实现类，是一个泛型类，
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 那么要保证实现接口的泛型类泛型标识包含泛型接口的泛型标识
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param &lt;T&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param &lt;E&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pair</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">E</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Generator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">T</span> <span class="n">key</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">E</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Pair</span><span class="o">(</span><span class="n">T</span> <span class="n">key</span><span class="o">,</span> <span class="n">E</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">T</span> <span class="nf">getKey</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">key</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">E</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><ul>
+<li>实现类不是泛型类，接口要明确数据类型</li>
+</ul>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 实现泛型接口的类，不是泛型类，需要明确实现泛型接口的数据类型。
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Apple</span> <span class="kd">implements</span> <span class="n">Generator</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getKey</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;hello generic&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h2 id="三泛型方法">三、泛型方法</h2>
+<h3 id="1用法">1.用法</h3>
+<p>泛型方法是在调用方法的时候指明泛型的具体类型。</p>
+<h3 id="2语法">2.语法:</h3>
+<p>修饰符 &lt;T，E, &hellip;&gt; 返回值类型 方法名(形参列表) { 方法体&hellip; }</p>
+<h3 id="3说明">3.说明：</h3>
+<p>public与返回值中间非常重要，可以理解为声明此方法为泛型方法。
+只有声明了的方法才是泛型方法，泛型类中的使用了泛型的成员方法并不是泛型方法。
+&lt; T &gt;表明该方法将使用泛型类型T，此时才可以在方法中使用泛型类型T。
+与泛型类的定义一样，此处T可以随便写为任意标识，常见的如T、E、K、V等形式的参数常用于表示泛型。
+4.泛型方法与可变参数</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">E</span><span class="o">...</span> <span class="n">e</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="o">(</span><span class="n">E</span> <span class="n">e1</span> <span class="o">:</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="5泛型方法总结">5.泛型方法总结</h3>
+<ul>
+<li>泛型方法能使方法独立于类而产生变化</li>
+<li>如果static方法要使用泛型能力，就必须使其成为泛型方法</li>
+</ul>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"> <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 静态的泛型方法，采用多个泛型类型
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param t
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param e
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param k
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param &lt;T&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param &lt;E&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param &lt;K&gt;
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">,</span><span class="n">E</span><span class="o">,</span><span class="n">K</span><span class="o">&gt;</span> <span class="kt">void</span> <span class="nf">printType</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">,</span> <span class="n">E</span> <span class="n">e</span><span class="o">,</span> <span class="n">K</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">t</span> <span class="o">+</span> <span class="s">&#34;\t&#34;</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSimpleName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span> <span class="o">+</span> <span class="s">&#34;\t&#34;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSimpleName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">k</span> <span class="o">+</span> <span class="s">&#34;\t&#34;</span> <span class="o">+</span> <span class="n">k</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSimpleName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span></span></span></code></pre></div><h2 id="四类型通配符">四、类型通配符</h2>
+<h3 id="1什么是类型通配符">1.什么是类型通配符</h3>
+<p>类型通配符一般是使用&quot;?&ldquo;代替具体的类型实参。
+所以，类型通配符是类型实参，而不是类型形参。</p>
+<h3 id="2类型通配符的上限">2.类型通配符的上限</h3>
+<p>语法：
+类/接口&lt;? extends 实参类型&gt;
+要求该泛型的类型，只能是实参类型，或实参类型的子类类型。</p>
+<h3 id="3类型通配符的下限">3.类型通配符的下限</h3>
+<p>语法：
+类/接口&lt;? super 实参类型&gt;
+要求该泛型的类型，只能是实参类型，或实参类型的父类类型。</p>
+<h2 id="五类型擦除">五、类型擦除</h2>
+<h3 id="1概念">1.概念</h3>
+<p>泛型是Java 1.5版本才引进的概念，在这之前是没有泛型的，但是泛型代码能够很好地和之前版本的代码兼容。那是因为，泛型信息只存在于代码编译阶段，在进入JVM之前，与泛型相关的信息会被擦除掉，我们称之为–类型擦除。</p>
+<h3 id="2分类">2.分类：</h3>
+<p>无限制类型擦除</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/1.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>有限制类型擦除</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/2.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>桥接方法</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/bjc/3.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="六泛型与数组">六、泛型与数组</h2>
+<p><strong>泛型数组的创建</strong></p>
+<ul>
+<li>可以声明带泛型的数组引用，但是不能直接创建带泛型的数组对象</li>
+</ul>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;[]</span> <span class="n">listArr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;();</span> <span class="c1">//会报错
+</span></span></span></code></pre></div><p>会报错</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ArrayList</span><span class="o">[]</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;[]</span> <span class="n">listArr</span> <span class="o">=</span> <span class="n">list</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">或者</span>
+</span></span><span class="line"><span class="cl"><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;[]</span> <span class="n">listArr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span></span></span></code></pre></div><p>不会报错</p>
+<ul>
+<li>可以通过java.lang.reflect.Array的newInstance(Class,int)创建T[]数组</li>
+</ul>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Fruit</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">T</span><span class="o">[]</span> <span class="n">array</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">Fruit</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">clz</span><span class="o">,</span> <span class="kt">int</span> <span class="n">length</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//通过Array.newInstance创建泛型数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">array</span> <span class="o">=</span> <span class="o">(</span><span class="n">T</span><span class="o">[])</span><span class="n">Array</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">clz</span><span class="o">,</span> <span class="n">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h2 id="七泛型和反射">七、泛型和反射</h2>
+<ul>
+<li>反射常用的泛型类
+Class
+Constructor</li>
+</ul>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 泛型与反射
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test11</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	     <span class="n">Class</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">personClass</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	     <span class="n">Constructor</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">constructor</span> <span class="o">=</span> <span class="n">personClass</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	     <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">	 <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 2021-12-03 18:17:37">更新于 2021-12-03&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" data-title="Java强化之泛型" data-hashtags="Java"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" data-hashtag="Java"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E6%B3%9B%E5%9E%8B/" data-title="Java强化之泛型"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">Java</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/btc-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%8E%9F%E7%90%86-btc--mi-ma-xue-yuan-li/" class="post-nav-item" rel="prev" title="BTC-密码学原理"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>BTC-密码学原理</a>
+      <a href="/posts/java%E5%BC%BA%E5%8C%96%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0-java%E5%BC%BA%E5%8C%96%E4%B9%8B%E7%BA%BF%E7%A8%8B%E6%B1%A0/" class="post-nav-item" rel="next" title="Java强化之线程池">Java强化之线程池<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Kubernetes-安全认证 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、访问控制概述 Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubern" /><meta name="keywords" content='docker, k8s, 容器' /><meta itemprop="name" content="Kubernetes-安全认证">
+<meta itemprop="description" content="一、访问控制概述 Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubern"><meta itemprop="datePublished" content="2023-07-19T18:12:20+00:00" />
+<meta itemprop="dateModified" content="2023-07-19T18:12:20+00:00" />
+<meta itemprop="wordCount" content="4268">
+<meta itemprop="keywords" content="docker,k8s,容器," /><meta property="og:title" content="Kubernetes-安全认证" />
+<meta property="og:description" content="一、访问控制概述 Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubern" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-19T18:12:20+00:00" />
+<meta property="article:modified_time" content="2023-07-19T18:12:20+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes-安全认证"/>
+<meta name="twitter:description" content="一、访问控制概述 Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubern"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/kubernetes-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/kubernetes-service%E8%AF%A6%E8%A7%A3/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Kubernetes-安全认证",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81\/"
+    },"genre": "posts","keywords": "docker, k8s, 容器","wordcount":  4268 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81\/","datePublished": "2023-07-19T18:12:20+00:00","dateModified": "2023-07-19T18:12:20+00:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Kubernetes-安全认证</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 2023-07-19 18:12:20"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2023-07-19">2023-07-19</time></span>&nbsp;<span title="更新于 2023-07-19 18:12:20"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2023-07-19">2023-07-19</time></span>&nbsp;<span title="4268 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 4300 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 9 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一访问控制概述">一、访问控制概述</a></li>
+    <li><a href="#二认证管理">二、认证管理</a></li>
+    <li><a href="#三授权管理">三、授权管理</a>
+      <ul>
+        <li><a href="#四准入控制">四、准入控制</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="一访问控制概述">一、访问控制概述</h2>
+<p>Kubernetes作为一个分布式集群的管理工具，保证集群的安全性是其一个重要的任务。所谓的安全性其实就是保证对Kubernetes的各种客户端进行认证和鉴权操作。</p>
+<p><strong>客户端</strong></p>
+<p>在Kubernetes集群中，客户端通常有两类：</p>
+<ul>
+<li>User Account：一般是独立于kubernetes之外的其他服务管理的用户账号。</li>
+<li>Service Account：kubernetes管理的账号，用于为Pod中的服务进程在访问Kubernetes时提供身份标识。</li>
+</ul>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300606.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>认证、授权与准入控制</p>
+<p>ApiServer是访问及管理资源对象的唯一入口。任何一个请求访问ApiServer，都要经过下面三个流程：</p>
+<ul>
+<li>Authentication（认证）：身份鉴别，只有正确的账号才能够通过认证</li>
+<li>Authorization（授权）： 判断用户是否有权限对访问的资源执行特定的动作</li>
+<li>Admission Control（准入控制）：用于补充授权机制以实现更加精细的访问控制功能。</li>
+</ul>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300738.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="二认证管理">二、认证管理</h2>
+<p>Kubernetes集群安全的最关键点在于如何识别并认证客户端身份，它提供了3种客户端身份认证方式：</p>
+<ul>
+<li>HTTP Base认证：通过用户名+密码的方式认证</li>
+</ul>
+<blockquote>
+<p>​    这种认证方式是把“用户名:密码”用BASE64算法进行编码后的字符串放在HTTP请求中的Header Authorization域里发送给服务端。服务端收到后进行解码，获取用户名及密码，然后进行用户身份认证的过程。</p>
+</blockquote>
+<ul>
+<li>HTTP Token认证：通过一个Token来识别合法用户</li>
+</ul>
+<blockquote>
+<p>​    这种认证方式是用一个很长的难以被模仿的字符串&ndash;Token来表明客户身份的一种方式。每个Token对应一个用户名，当客户端发起API调用请求时，需要在HTTP Header里放入Token，API Server接到Token后会跟服务器中保存的token进行比对，然后进行用户身份认证的过程。</p>
+</blockquote>
+<ul>
+<li>HTTPS证书认证：基于CA根证书签名的双向数字证书认证方式</li>
+</ul>
+<blockquote>
+<p>​    这种认证方式是安全性最高的一种方式，但是同时也是操作起来最麻烦的一种方式。</p>
+</blockquote>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300676.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>HTTPS认证大体分为3个过程：</p>
+<ol>
+<li>证书申请和下发</li>
+</ol>
+<blockquote>
+<p>HTTPS通信双方的服务器向CA机构申请证书，CA机构下发根证书、服务端证书及私钥给申请者</p>
+</blockquote>
+<ol start="2">
+<li>客户端和服务端的双向认证</li>
+</ol>
+<blockquote>
+<p>1&gt; 客户端向服务器端发起请求，服务端下发自己的证书给客户端，
+客户端接收到证书后，通过私钥解密证书，在证书中获得服务端的公钥，
+客户端利用服务器端的公钥认证证书中的信息，如果一致，则认可这个服务器
+2&gt; 客户端发送自己的证书给服务器端，服务端接收到证书后，通过私钥解密证书，
+在证书中获得客户端的公钥，并用该公钥认证证书信息，确认客户端是否合法</p>
+</blockquote>
+<ol start="3">
+<li>服务器端和客户端进行通信</li>
+</ol>
+<blockquote>
+<p>服务器端和客户端协商好加密方案后，客户端会产生一个随机的秘钥并加密，然后发送到服务器端。
+服务器端接收这个秘钥后，双方接下来通信的所有内容都通过该随机秘钥加密</p>
+</blockquote>
+<p><code>注意: Kubernetes允许同时配置多种认证方式，只要其中任意一个方式认证通过即可</code></p>
+<h2 id="三授权管理">三、授权管理</h2>
+<p>授权发生在认证成功之后，通过认证就可以知道请求用户是谁， 然后Kubernetes会根据事先定义的授权策略来决定用户是否有权限访问，这个过程就称为授权。</p>
+<p>每个发送到ApiServer的请求都带上了用户和资源的信息：比如发送请求的用户、请求的路径、请求的动作等，授权就是根据这些信息和授权策略进行比较，如果符合策略，则认为授权通过，否则会返回错误。</p>
+<p>API Server目前支持以下几种授权策略：</p>
+<ul>
+<li>AlwaysDeny：表示拒绝所有请求，一般用于测试</li>
+<li>AlwaysAllow：允许接收所有请求，相当于集群不需要授权流程（Kubernetes默认的策略）</li>
+<li>ABAC：基于属性的访问控制，表示使用用户配置的授权规则对用户请求进行匹配和控制</li>
+<li>Webhook：通过调用外部REST服务对用户进行授权</li>
+<li>Node：是一种专用模式，用于对kubelet发出的请求进行访问控制</li>
+<li>RBAC：基于角色的访问控制（kubeadm安装方式下的默认选项）</li>
+<li>RBAC(Role-Based Access Control) 基于角色的访问控制，主要是在描述一件事情：给哪些对象授予了哪些权限</li>
+</ul>
+<p>其中涉及到了下面几个概念：</p>
+<ul>
+<li>对象：User、Groups、ServiceAccount</li>
+<li>角色：代表着一组定义在资源上的可操作动作(权限)的集合</li>
+<li>绑定：将定义好的角色跟用户绑定在一起</li>
+</ul>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/202308212300439.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>RBAC引入了4个顶级资源对象：</p>
+<ul>
+<li>Role、ClusterRole：角色，用于指定一组权限</li>
+<li>RoleBinding、ClusterRoleBinding：角色绑定，用于将角色（权限）赋予给对象</li>
+</ul>
+<p>Role、ClusterRole</p>
+<p>一个角色就是一组权限的集合，这里的权限都是许可形式的（白名单）。</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Role只能对命名空间内的资源进行授权，需要指定nameapce</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Role</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">dev</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-role</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">  </span><span class="c"># 支持的API组列表,&#34;&#34; 空字符串，表示核心API群</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;pods&#34;</span><span class="p">]</span><span class="w"> </span><span class="c"># 支持的资源对象列表</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">verbs</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">]</span><span class="w"> </span><span class="c"># 允许的对资源对象的操作方法列表</span></span></span></code></pre></div><div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># ClusterRole可以对集群范围内资源、跨namespaces的范围资源、非资源类型进行授权</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-clusterrole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">apiGroups</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;pods&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">verbs</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;get&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;watch&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;list&#34;</span><span class="p">]</span></span></span></code></pre></div><p>需要详细说明的是，rules中的参数：</p>
+<ul>
+<li>apiGroups: 支持的API组列表</li>
+</ul>
+<blockquote>
+<p>&ldquo;&rdquo;,&ldquo;apps&rdquo;, &ldquo;autoscaling&rdquo;, &ldquo;batch&rdquo;</p>
+</blockquote>
+<ul>
+<li>resources：支持的资源对象列表</li>
+</ul>
+<blockquote>
+<p>&ldquo;services&rdquo;, &ldquo;endpoints&rdquo;, &ldquo;pods&rdquo;,&ldquo;secrets&rdquo;,&ldquo;configmaps&rdquo;,&ldquo;crontabs&rdquo;,&ldquo;deployments&rdquo;,&ldquo;jobs&rdquo;,
+&ldquo;nodes&rdquo;,&ldquo;rolebindings&rdquo;,&ldquo;clusterroles&rdquo;,&ldquo;daemonsets&rdquo;,&ldquo;replicasets&rdquo;,&ldquo;statefulsets&rdquo;,
+&ldquo;horizontalpodautoscalers&rdquo;,&ldquo;replicationcontrollers&rdquo;,&ldquo;cronjobs&rdquo;</p>
+</blockquote>
+<ul>
+<li>verbs：对资源对象的操作方法列表</li>
+</ul>
+<blockquote>
+<p>&ldquo;get&rdquo;, &ldquo;list&rdquo;, &ldquo;watch&rdquo;, &ldquo;create&rdquo;, &ldquo;update&rdquo;, &ldquo;patch&rdquo;, &ldquo;delete&rdquo;, &ldquo;exec&rdquo;</p>
+</blockquote>
+<p>RoleBinding、ClusterRoleBinding</p>
+<p>角色绑定用来把一个角色绑定到一个目标对象上，绑定目标可以是User、Group或者ServiceAccount。</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># RoleBinding可以将同一namespace中的subject绑定到某个Role下，则此subject即具有该Role定义的权限</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">RoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-role-binding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">dev</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">User</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">heima</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Role</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-role</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span></span></span></code></pre></div><div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># ClusterRoleBinding在整个集群级别和所有namespaces将特定的subject与ClusterRole绑定，授予权限</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-clusterrole-binding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">User</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">heima</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-clusterrole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span></span></span></code></pre></div><p>RoleBinding引用ClusterRole进行授权</p>
+<p>RoleBinding可以引用ClusterRole，对属于同一命名空间内ClusterRole定义的资源主体进行授权。</p>
+<blockquote>
+<p>​    一种很常用的做法就是，集群管理员为集群范围预定义好一组角色（ClusterRole），然后在多个命名空间中重复使用这些ClusterRole。这样可以大幅提高授权管理工作效率，也使得各个命名空间下的基础性授权规则与使用体验保持一致。</p>
+</blockquote>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># 虽然authorization-clusterrole是一个集群角色，但是因为使用了RoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 所以heima只能读取dev命名空间中的资源</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">RoleBinding</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-role-binding-ns</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">dev</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">subjects</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">User</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">heima</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">roleRef</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterRole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">authorization-clusterrole</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">apiGroup</span><span class="p">:</span><span class="w"> </span><span class="l">rbac.authorization.k8s.io</span></span></span></code></pre></div><p>实战：创建一个只能管理dev空间下Pods资源的账号</p>
+<ol>
+<li>创建账号</li>
+</ol>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 1) 创建证书</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># cd /etc/kubernetes/pki/</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># (umask 077;openssl genrsa -out devman.key 2048)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2) 用apiserver的证书去签署</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 2-1) 签名申请，申请的用户是devman,组是devgroup</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># openssl req -new -key devman.key -out devman.csr -subj &#34;/CN=devman/O=devgroup&#34;     </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 2-2) 签署证书</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># openssl x509 -req -in devman.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out devman.crt -days 3650</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3) 设置集群、用户、上下文信息</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config set-cluster kubernetes --embed-certs=true --certificate-authority=/etc/kubernetes/pki/ca.crt --server=https://192.168.109.100:6443</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config set-credentials devman --embed-certs=true --client-certificate=/etc/kubernetes/pki/devman.crt --client-key=/etc/kubernetes/pki/devman.key</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config set-context devman@kubernetes --cluster=kubernetes --user=devman</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 切换账户到devman</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config use-context devman@kubernetes</span>
+</span></span><span class="line"><span class="cl">Switched to context <span class="s2">&#34;devman@kubernetes&#34;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看dev下pod，发现没有权限</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl get pods -n dev</span>
+</span></span><span class="line"><span class="cl">Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: pods is forbidden: User <span class="s2">&#34;devman&#34;</span> cannot list resource <span class="s2">&#34;pods&#34;</span> in API group <span class="s2">&#34;&#34;</span> in the namespace <span class="s2">&#34;dev&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 切换到admin账户</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config use-context kubernetes-admin@kubernetes</span>
+</span></span><span class="line"><span class="cl">Switched to context <span class="s2">&#34;kubernetes-admin@kubernetes&#34;</span>.</span></span></code></pre></div><ol start="2">
+<li>创建Role和RoleBinding，为devman用户授权</li>
+</ol>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kind: Role
+</span></span><span class="line"><span class="cl">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  namespace: dev
+</span></span><span class="line"><span class="cl">  name: dev-role
+</span></span><span class="line"><span class="cl">rules:
+</span></span><span class="line"><span class="cl">- apiGroups: <span class="o">[</span><span class="s2">&#34;&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">  resources: <span class="o">[</span><span class="s2">&#34;pods&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">  verbs: <span class="o">[</span><span class="s2">&#34;get&#34;</span>, <span class="s2">&#34;watch&#34;</span>, <span class="s2">&#34;list&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kind: RoleBinding
+</span></span><span class="line"><span class="cl">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: authorization-role-binding
+</span></span><span class="line"><span class="cl">  namespace: dev
+</span></span><span class="line"><span class="cl">subjects:
+</span></span><span class="line"><span class="cl">- kind: User
+</span></span><span class="line"><span class="cl">  name: devman
+</span></span><span class="line"><span class="cl">  apiGroup: rbac.authorization.k8s.io
+</span></span><span class="line"><span class="cl">roleRef:
+</span></span><span class="line"><span class="cl">  kind: Role
+</span></span><span class="line"><span class="cl">  name: dev-role
+</span></span><span class="line"><span class="cl">  apiGroup: rbac.authorization.k8s.io</span></span></code></pre></div><div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl create -f dev-role.yaml</span>
+</span></span><span class="line"><span class="cl">role.rbac.authorization.k8s.io/dev-role created
+</span></span><span class="line"><span class="cl">rolebinding.rbac.authorization.k8s.io/authorization-role-binding created</span></span></code></pre></div><ol start="3">
+<li>切换账户，再次验证</li>
+</ol>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 切换账户到devman</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config use-context devman@kubernetes</span>
+</span></span><span class="line"><span class="cl">Switched to context <span class="s2">&#34;devman@kubernetes&#34;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 再次查看</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl get pods -n dev</span>
+</span></span><span class="line"><span class="cl">NAME                                 READY   STATUS             RESTARTS   AGE
+</span></span><span class="line"><span class="cl">nginx-deployment-66cb59b984-8wp2k    1/1     Running            <span class="m">0</span>          4d1h
+</span></span><span class="line"><span class="cl">nginx-deployment-66cb59b984-dc46j    1/1     Running            <span class="m">0</span>          4d1h
+</span></span><span class="line"><span class="cl">nginx-deployment-66cb59b984-thfck    1/1     Running            <span class="m">0</span>          4d1h
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 为了不影响后面的学习,切回admin账户</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@k8s-master01 pki<span class="o">]</span><span class="c1"># kubectl config use-context kubernetes-admin@kubernetes</span>
+</span></span><span class="line"><span class="cl">Switched to context <span class="s2">&#34;kubernetes-admin@kubernetes&#34;</span>.</span></span></code></pre></div><h3 id="四准入控制">四、准入控制</h3>
+<p>通过了前面的认证和授权之后，还需要经过准入控制处理通过之后，apiserver才会处理这个请求。</p>
+<p>准入控制是一个可配置的控制器列表，可以通过在Api-Server上通过命令行设置选择执行哪些准入控制器：</p>
+<blockquote>
+<p>&ndash;admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,
+DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds</p>
+</blockquote>
+<p>只有当所有的准入控制器都检查通过之后，apiserver才执行该请求，否则返回拒绝。</p>
+<p>当前可配置的Admission Control准入控制如下：</p>
+<ul>
+<li>AlwaysAdmit：允许所有请求</li>
+<li>AlwaysDeny：禁止所有请求，一般用于测试</li>
+<li>AlwaysPullImages：在启动容器之前总去下载镜像</li>
+<li>DenyExecOnPrivileged：它会拦截所有想在Privileged Container上执行命令的请求</li>
+<li>ImagePolicyWebhook：这个插件将允许后端的一个Webhook程序来完成admission controller的功能。</li>
+<li>Service Account：实现ServiceAccount实现了自动化</li>
+<li>SecurityContextDeny：这个插件将使用SecurityContext的Pod中的定义全部失效</li>
+<li>ResourceQuota：用于资源配额管理目的，观察所有请求，确保在namespace上的配额不会超标</li>
+<li>LimitRanger：用于资源限制管理，作用于namespace上，确保对Pod进行资源限制</li>
+<li>InitialResources：为未设置资源请求与限制的Pod，根据其镜像的历史资源的使用情况进行设置</li>
+<li>NamespaceLifecycle：如果尝试在一个不存在的namespace中创建资源对象，则该创建请求将被拒绝。当删除一个namespace时系统将会删除该namespace中所有对象。</li>
+<li>DefaultStorageClass：为了实现共享存储的动态供应，为未指定StorageClass或PV的PVC尝试匹配默认的StorageClass，尽可能减少用户在申请PVC时所需了解的后端存储细节</li>
+<li>DefaultTolerationSeconds：这个插件为那些没有设置forgiveness tolerations并具有notready:NoExecute和unreachable:NoExecute两种taints的Pod设置默认的“容忍”时间，为5min</li>
+<li>PodSecurityPolicy：这个插件用于在创建或修改Pod时决定是否根据Pod的security context和可用的PodSecurityPolicy对Pod的安全策略进行控制</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 2023-07-19 18:12:20">更新于 2023-07-19&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" data-title="Kubernetes-安全认证" data-hashtags="docker,k8s,容器"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" data-hashtag="docker"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/kubernetes-%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/" data-title="Kubernetes-安全认证"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/docker/' class="post-tag">docker</a><a href='/tags/k8s/' class="post-tag">k8s</a><a href='/tags/%E5%AE%B9%E5%99%A8/' class="post-tag">容器</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/kubernetes-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" class="post-nav-item" rel="prev" title="Kubernetes-数据存储"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Kubernetes-数据存储</a>
+      <a href="/posts/kubernetes-service%E8%AF%A6%E8%A7%A3/" class="post-nav-item" rel="next" title="Kubernetes-Service详解">Kubernetes-Service详解<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

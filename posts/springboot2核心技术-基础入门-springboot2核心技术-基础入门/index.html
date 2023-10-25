@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>SpringBoot2核心技术-基础入门 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="组件 &mdash;&gt;** xxxxProperties里面拿值 &mdash;-&gt; application.properties 3.4、最佳实践 引入场景依赖 https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter 查看自动配置了哪些（选做） 自己分析，引入场景对应的自动配置一般都" /><meta name="keywords" content='Java, SpringBoot' /><meta itemprop="name" content="SpringBoot2核心技术-基础入门">
+<meta itemprop="description" content="组件 &mdash;&gt;** xxxxProperties里面拿值 &mdash;-&gt; application.properties 3.4、最佳实践 引入场景依赖 https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter 查看自动配置了哪些（选做） 自己分析，引入场景对应的自动配置一般都">
+
+<meta itemprop="wordCount" content="1307">
+<meta itemprop="keywords" content="Java,SpringBoot," /><meta property="og:title" content="SpringBoot2核心技术-基础入门" />
+<meta property="og:description" content="组件 &mdash;&gt;** xxxxProperties里面拿值 &mdash;-&gt; application.properties 3.4、最佳实践 引入场景依赖 https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter 查看自动配置了哪些（选做） 自己分析，引入场景对应的自动配置一般都" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SpringBoot2核心技术-基础入门"/>
+<meta name="twitter:description" content="组件 &mdash;&gt;** xxxxProperties里面拿值 &mdash;-&gt; application.properties 3.4、最佳实践 引入场景依赖 https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter 查看自动配置了哪些（选做） 自己分析，引入场景对应的自动配置一般都"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "SpringBoot2核心技术-基础入门",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8\/"
+    },"genre": "posts","keywords": "Java, SpringBoot","wordcount":  1307 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>SpringBoot2核心技术-基础入门</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1307 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1400 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#34最佳实践">3.4、最佳实践</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#41lombok">4.1、Lombok</a></li>
+    <li><a href="#42dev-tools">4.2、dev-tools</a></li>
+    <li><a href="#43spring-initailizr项目初始化向导">4.3、Spring Initailizr（项目初始化向导）</a>
+      <ul>
+        <li><a href="#0选择我们需要的开发场景">0、选择我们需要的开发场景</a></li>
+        <li><a href="#1自动依赖引入">1、自动依赖引入</a></li>
+        <li><a href="#2自动创建项目结构">2、自动创建项目结构</a></li>
+        <li><a href="#3自动编写好主配置类">3、自动编写好主配置类</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#11properties">1.1、properties</a></li>
+    <li><a href="#12yaml">1.2、yaml</a>
+      <ul>
+        <li><a href="#121简介">1.2.1、简介</a></li>
+        <li><a href="#122基本语法">1.2.2、基本语法</a></li>
+        <li><a href="#123数据类型">1.2.3、数据类型</a></li>
+        <li><a href="#124示例">1.2.4、示例</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><blockquote>
+<p>组件  &mdash;&gt;** <strong>xxxxProperties里面拿值  &mdash;-&gt; application.properties</strong></p>
+</blockquote>
+<h2 id="34最佳实践">3.4、最佳实践</h2>
+<ul>
+<li>
+<p>引入场景依赖</p>
+</li>
+<li>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter"target="_blank" rel="external nofollow noopener noreferrer">https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter</a></li>
+</ul>
+</li>
+<li>
+<p>查看自动配置了哪些（选做）</p>
+</li>
+<li>
+<ul>
+<li>自己分析，引入场景对应的自动配置一般都生效了</li>
+<li>配置文件中debug=true开启自动配置报告。Negative（不生效）\Positive（生效）</li>
+</ul>
+</li>
+<li>
+<p>是否需要修改</p>
+</li>
+<li>
+<ul>
+<li>参照文档修改配置项</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties"target="_blank" rel="external nofollow noopener noreferrer">https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties</a></li>
+<li>自己分析。xxxxProperties绑定了配置文件的哪些。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>自定义加入或者替换组件</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>@Bean、@Component。。。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>自定义器  <strong>XXXXXCustomizer</strong>；</li>
+<li>&hellip;&hellip;</li>
+</ul>
+</li>
+</ul>
+<h1 id="4开发小技巧">4、开发小技巧</h1>
+<h2 id="41lombok">4.1、Lombok</h2>
+<p>简化JavaBean开发</p>
+<pre tabindex="0"><code>        &lt;dependency&gt;
+            &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+            &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+
+
+idea中搜索安装lombok插件
+===============================简化JavaBean开发===================================
+@NoArgsConstructor
+//@AllArgsConstructor
+@Data
+@ToString
+@EqualsAndHashCode
+public class User {
+
+    private String name;
+    private Integer age;
+
+    private Pet pet;
+
+    public User(String name,Integer age){
+        this.name = name;
+        this.age = age;
+    }
+
+
+}
+
+
+
+================================简化日志开发===================================
+@Slf4j
+@RestController
+public class HelloController {
+    @RequestMapping(&#34;/hello&#34;)
+    public String handle01(@RequestParam(&#34;name&#34;) String name){
+        
+        log.info(&#34;请求进来了....&#34;);
+        
+        return &#34;Hello, Spring Boot 2!&#34;+&#34;你好：&#34;+name;
+    }
+}</code></pre><h2 id="42dev-tools">4.2、dev-tools</h2>
+<pre tabindex="0"><code>        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;
+            &lt;optional&gt;true&lt;/optional&gt;
+        &lt;/dependency&gt;</code></pre><p>项目或者页面修改以后：Ctrl+F9；</p>
+<h2 id="43spring-initailizr项目初始化向导">4.3、Spring Initailizr（项目初始化向导）</h2>
+<h3 id="0选择我们需要的开发场景">0、选择我们需要的开发场景</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/11.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="1自动依赖引入">1、自动依赖引入</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/12.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2自动创建项目结构">2、自动创建项目结构</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/13.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="3自动编写好主配置类">3、自动编写好主配置类</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/14.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="04配置文件">04、配置文件</h1>
+<h1 id="1文件类型">1、文件类型</h1>
+<h2 id="11properties">1.1、properties</h2>
+<p>同以前的properties用法</p>
+<h2 id="12yaml">1.2、yaml</h2>
+<h3 id="121简介">1.2.1、简介</h3>
+<p>YAML 是 &ldquo;YAML Ain&rsquo;t Markup Language&rdquo;（YAML 不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是：&ldquo;Yet Another Markup Language&rdquo;（仍是一种标记语言）。</p>
+<p>非常适合用来做以数据为中心的配置文件</p>
+<h3 id="122基本语法">1.2.2、基本语法</h3>
+<ul>
+<li>key: value；kv之间有空格</li>
+<li>大小写敏感</li>
+<li>使用缩进表示层级关系</li>
+<li>缩进不允许使用tab，只允许空格</li>
+<li>缩进的空格数不重要，只要相同层级的元素左对齐即可</li>
+<li>&lsquo;#&lsquo;表示注释</li>
+<li>字符串无需加引号，如果要加，&lsquo;&lsquo;与&quot;&ldquo;表示字符串内容 会被 转义/不转义</li>
+</ul>
+<h3 id="123数据类型">1.2.3、数据类型</h3>
+<ul>
+<li>字面量：单个的、不可再分的值。date、boolean、string、number、null</li>
+</ul>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">k</span><span class="p">:</span><span class="w"> </span><span class="l">v</span></span></span></code></pre></div><ul>
+<li>对象：键值对的集合。map、hash、set、object</li>
+</ul>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">行内写法：  k</span><span class="p">:</span><span class="w"> </span>{<span class="l">k1:v1,k2:v2,k3:v3}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#或</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">k</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">k1</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">k2</span><span class="p">:</span><span class="w"> </span><span class="l">v2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">k3</span><span class="p">:</span><span class="w"> </span><span class="l">v3</span></span></span></code></pre></div><ul>
+<li>数组：一组按次序排列的值。array、list、queue</li>
+</ul>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">行内写法：  k</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">v1,v2,v3]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#或者</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">k</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span>- <span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span>- <span class="l">v2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span>- <span class="l">v3</span></span></span></code></pre></div><h3 id="124示例">1.2.4、示例</h3>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Data</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">userName</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Boolean</span> <span class="n">boss</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Date</span> <span class="n">birth</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Pet</span> <span class="n">pet</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span><span class="o">[]</span> <span class="n">interests</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">animal</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">score</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Double</span><span class="o">&gt;</span> <span class="n">salarys</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Pet</span><span class="o">&gt;&gt;</span> <span class="n">allPets</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@Data</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pet</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Double</span> <span class="n">weight</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="c"># yaml表示以上对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">person</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">userName</span><span class="p">:</span><span class="w"> </span><span class="l">zhangsan</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">boss</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">birth</span><span class="p">:</span><span class="w"> </span><span class="m">2019</span><span class="l">/12/12 20:12:33</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">age</span><span class="p">:</span><span class="w"> </span><span class="m">18</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">pet</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tomcat</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">23.4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">interests</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="l">篮球,游泳]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">animal</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">jerry</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">mario</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">score</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">english</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">first</span><span class="p">:</span><span class="w"> </span><span class="m">30</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">second</span><span class="p">:</span><span class="w"> </span><span class="m">40</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">third</span><span class="p">:</span><span class="w"> </span><span class="m">50</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">math</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">131</span><span class="p">,</span><span class="m">140</span><span class="p">,</span><span class="m">148</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">chinese</span><span class="p">:</span><span class="w"> </span>{<span class="nt">first: 128,second</span><span class="p">:</span><span class="w"> </span><span class="m">136</span>}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">salarys</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="m">3999</span><span class="p">,</span><span class="m">4999.98</span><span class="p">,</span><span class="m">5999.99</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">allPets</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">sick</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- {<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tom}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- {<span class="nt">name: jerry,weight</span><span class="p">:</span><span class="w"> </span><span class="m">47</span>}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">health</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>{<span class="nt">name: mario,weight</span><span class="p">:</span><span class="w"> </span><span class="m">47</span>}<span class="p">]</span></span></span></code></pre></div><h1 id="2配置提示">2、配置提示</h1>
+<p>自定义的类和配置文件绑定一般没有提示。</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>spring-boot-configuration-processor<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nt">&lt;build&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;plugins&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;plugin&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;configuration&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;excludes&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;exclude&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="nt">&lt;artifactId&gt;</span>spring-boot-configuration-processor<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="nt">&lt;/exclude&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="nt">&lt;/excludes&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="nt">&lt;/configuration&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/plugin&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/plugins&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/build&gt;</span></span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" data-title="SpringBoot2核心技术-基础入门" data-hashtags="Java,SpringBoot"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" data-hashtag="Java"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" data-title="SpringBoot2核心技术-基础入门"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">Java</a><a href='/tags/springboot/' class="post-tag">SpringBoot</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" class="post-nav-item" rel="prev" title="SpringBoot2核心技术-数据访问"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>SpringBoot2核心技术-数据访问</a>
+      <a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="post-nav-item" rel="next" title="SpringBoot2核心技术-单元测试">SpringBoot2核心技术-单元测试<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

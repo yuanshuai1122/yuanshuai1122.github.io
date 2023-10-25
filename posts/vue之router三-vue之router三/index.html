@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之Router（三） - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、router和route的本质 1.router 前面说过，当你使用 this.$router 获取的时候其实就是获取了 router 实例。 首先在 user 页面添加一个按钮，然后通过点击这个按钮来打印" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之Router（三）">
+<meta itemprop="description" content="一、router和route的本质 1.router 前面说过，当你使用 this.$router 获取的时候其实就是获取了 router 实例。 首先在 user 页面添加一个按钮，然后通过点击这个按钮来打印">
+
+<meta itemprop="wordCount" content="6159">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之Router（三）" />
+<meta property="og:description" content="一、router和route的本质 1.router 前面说过，当你使用 this.$router 获取的时候其实就是获取了 router 实例。 首先在 user 页面添加一个按钮，然后通过点击这个按钮来打印" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之Router（三）"/>
+<meta name="twitter:description" content="一、router和route的本质 1.router 前面说过，当你使用 this.$router 获取的时候其实就是获取了 router 实例。 首先在 user 页面添加一个按钮，然后通过点击这个按钮来打印"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%80-vue%E4%B9%8Brouter%E4%B8%80/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%BA%8C-vue%E4%B9%8Brouter%E4%BA%8C/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之Router（三）",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  6159 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之Router（三）</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="6159 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 6200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 13 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1router">1.router</a></li>
+    <li><a href="#2-route">2. route</a></li>
+    <li><a href="#3-源码下的-router-和-route">3. 源码下的 router 和 route</a></li>
+    <li><a href="#4vueuse">4.Vue.use</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1什么是导航守卫">1.什么是导航守卫？</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#2导航守卫使用">2.导航守卫使用</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#1产生原因">1.产生原因</a></li>
+    <li><a href="#2基本原理">2.基本原理</a></li>
+    <li><a href="#3使用步骤">3.使用步骤</a></li>
+    <li><a href="#4activated--deactivated-生命函数">4.activated / deactivated 生命函数</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#一定义">一、定义</a></li>
+    <li><a href="#二产生原因">二、产生原因</a></li>
+    <li><a href="#三使用步骤">三、使用步骤</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="一router和route的本质">一、router和route的本质</h1>
+<h2 id="1router">1.router</h2>
+<p>  前面说过，当你使用 this.$router 获取的时候其实就是获取了 router 实例。</p>
+<p>首先在 user 页面添加一个按钮，然后通过点击这个按钮来打印。
+比如：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/340.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>然后在 main.js 文件中打印 router 。
+比如：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/341.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在看结果之前，小编有必要为大家说明一下在 main.js 文件打印的 router 就是在index.js 文件中 new 出来的 VueRouter。他们之间的来龙去脉见下图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/342.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>下面小编分别对比在 user.vue 和 main.js 打印的结果：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/343.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>此外小编来带大家伙看看源码，对 router 更加深入的了解：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/344.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>首先看到第一点： <strong>class VueRouter</strong>，说明 <strong>VueRouter 是一个类</strong>。所以我们可以通过 new 来实例化。
+  其次看到第二点：这个类当中包含了很多的方法，有push、replace。这也就是为什么我们能够在某些页面使用this.router.push 方法来操作。比如：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/345.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="2-route">2. route</h2>
+<p>还是在刚刚的 user.vue 页面中，我们打印 this.$route 看看</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/346.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以很明显的看到它们两个是不同的东西。而且 <strong>route 获取的是当前处于活跃状态的路由</strong>，怎么看？看 fullPath：“/user/李四” 就可以知道。因为小编是在user 页面操作的吖，而 user 页面对应的路由就是 /user/:userID 。</p>
+<h2 id="3-源码下的-router-和-route">3. 源码下的 router 和 route</h2>
+<p>  上面呢，小编仅仅是很简单的说明了他们之间的区别，接下来小编带大家去源码看看他们的本质。
+  首先要记住一句话： <strong>所有的组件都是继承 Vue 的原型</strong>。也就是说，Vue的原型有什么，在组件中也有什么。
+比如：
+我们先在 main.js 文件中使用 Vue原型中的 test 方法：</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">Vue</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">test</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;test&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>然后在 user 页面中调用该方法。</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//当点击按钮的时候调用原型中的test方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">btnClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">test</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/347.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到，尽管我们没有在 user 页面中定义test 方法，但是却依旧可以调用，因为所有的组件都是继承 Vue 的原型。为什么要说这个呢，因为接下来就是见证奇迹的时刻！
+  这里提一下，就是<strong>对象定义属性</strong>的另外一个方式，我们平常定义属性是这样子的：</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">add</span> <span class="o">=</span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">name</span><span class="o">:</span><span class="s2">&#34;zhangsan&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>但是还有一个你可能不知道的方法：</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">add</span><span class="p">,</span><span class="s2">&#34;name&#34;</span><span class="p">,</span><span class="s2">&#34;zhangsan&#34;</span><span class="p">)</span></span></span></code></pre></div><p>Object.defineProperty 该方法就是针对 add 对象增加一个 name 属性，该属性的值是 zhangsan。
+  好了，所有的前期工作已经准备好了。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/348.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p> 你看到了什么？！没错，就是你所想的，我们为 Vue 的原型增加了 router 和 route 的属性，具体的属性值是怎么操作的我们可以适当忽略。这就是为什么我们可以直接在组件【比如user、home、about 这些页面】中使用 this.$router 的原因，因为所有的组件都是继承 Vue 原型的，Vue原型用的属性，在组件中也可以使用。
+  综上所述。因为所有的组件都是继承 Vue 的原型，当在Vue原型添加了router和route的属性之后，意味着所有的组件也可以直接使用 router 和 route 。这就是它们的本质。</p>
+<h2 id="4vueuse">4.Vue.use</h2>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">Vue</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">VueRouter</span><span class="p">)</span></span></span></code></pre></div><p>就是最开始安装路由的时候，要通过 Vue.use（）才可以使用。
+至于为什么，等你看完下面的内容应该就会知晓
+① 原理
+  <strong>执行 Vue.use(VueRouter) 的实质就是在执行 Vuerouter 内部的install方法</strong>。不信咱们走去瞧瞧它的源码</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/349.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这里好像看不出 install 的什么名堂，因为它的箭头函数是空的，但是，我们再往下看：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/350.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这里主要是为 VueRouter 的 install 重新赋值为 install，而这个 install 是从 install.js 文件导入的，所以我们再去看看 install.js 里面到底有什么猫腻</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/351.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/352.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在这里，声明了全局组件，也就是为什么我们能直接使用 router-link 和 router-Link 的原因。</p>
+<h1 id="二全局导航守卫">二、全局导航守卫</h1>
+<h2 id="1什么是导航守卫">1.什么是导航守卫？</h2>
+<p>  我们日常生活中的导航相信大家都用过吧O(∩_∩)O哈哈~。就是有指导你从A地到B地的路线。
+  而导航守卫也是同样的道理。主要是<strong>监听路由跳转的过程</strong>。如果不太明白就提出一个需求。比如：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/353.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>我们都知道HTML中有上图这么一个标题。需求是当用户点击“首页”，标题就变成“首页”；当用户点击“关于”，标题就变成“关于”。目前有两种实现的办法，下面我们分别来看看这两种办法是如何实现的。</p>
+<h4 id="-生命函数">① 生命函数</h4>
+<p>  目前我们常用的生命函数主要有三大类，分别是：<strong>created、mounted、updated</strong>。
+<strong>created</strong>：是在<strong>组件被创建</strong>的时候会回调的函数，然后执行该函数内的内容；
+<strong>mounted</strong>：当<strong>组件的模板被挂载到DOM</strong>上时就会回调该函数，执行函数内相关的操作；
+<strong>updated</strong>：只要<strong>页面发生刷新</strong>的时候就会回调该函数从而执行函数内的代码块。
+对于上面的需求，可以使用 created 函数来实现。具体代码见下：</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">created</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&#34;首页&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p>在 home.vue 页面中添加 created 函数，当组件 home 创建的时候就将标题修改成 “首页”。其余的 “用户” 页面、“关于”页面、“档案”页面也是以此类推，小编就不一一展示出来啦，下面让我们一起来看看效果：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/354.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>但是该方法不足的地方就是：太繁琐了！我只是想根据导航栏然后修改标题，你就在四个页面都添加了 created 函数，如果有一百个页面你也这么修改的话，那你就得添加一百个。那一千个&hellip;一万个&hellip;</p>
+<h2 id="2导航守卫使用">2.导航守卫使用</h2>
+<p>  在文章的开头小编就说过，导航守卫就是监听路由的跳转。所以使用的使用分成以下两步：
+第一：<strong>使用 beforeEach 确定跳转变化</strong>
+第二：<strong>使用 meta 确定路由跳转变化时要修改的内容</strong>
+下面就告诉大家导航守卫究竟怎么个导航法</p>
+<h5 id="-使用-beforeeach-确定跳转变化">① 使用 beforeEach 确定跳转变化</h5>
+<p>  首先在 router 中有个叫 <strong>beforeEach</strong> 的函数，当我们查看源码时会发现它需要传入一个叫 guard 的 <strong>NavigationGuard 参数</strong></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/355.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>NavigationGuard? 是啥？不懂，接下来我们再进一步看看 NavigationGuard是什么东西</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/356.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到 <strong>NavigationGuard 是</strong>一个名字叫做 any 的<strong>箭头函数</strong>，箭头函数内部传入了三个参数：<strong>to、from、next</strong>。to代表路由即将要跳转的地方，from代表从那个地方跳转，next 代表下一步。
+  简单的说，from是从哪里来，to是要到哪里去，next是下一步要怎么走。是不是通俗易懂了好多嘞~
+因此根据上面的知识，我们的代码可以编写成如下：</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">router</span><span class="p">.</span><span class="nx">beforeEach</span><span class="p">((</span><span class="nx">to</span><span class="p">,</span><span class="nx">from</span><span class="p">,</span><span class="nx">next</span><span class="p">)</span> <span class="p">=&gt;{})</span></span></span></code></pre></div><p>这里，将 beforeEach 的参数写成箭头函数的形式，接下来就是添加函数内部的代码。
+  传入的参数肯定是要用起来的，就像别人给你的零食要尽早吃，否则就过期来一样。所以我们要在箭头函数中使用 上面传入的参数，具体如下：</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">router</span><span class="p">.</span><span class="nx">beforeEach</span><span class="p">((</span><span class="nx">to</span><span class="p">,</span><span class="nx">from</span><span class="p">,</span><span class="nx">next</span><span class="p">)</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="nx">to</span><span class="p">.</span><span class="nx">title</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">next</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><p>next()参数一定要记得调用，很简单的道理，如果你不知道下一步，那你怎么继续走下去呢， 紧接着是to。回顾上面的提出的需求，我们要根据跳转到的页面修改标题，所以通过 to.title 来获取要跳转的页面的标题，将标题赋值给document.title。
+  上面呢，就是使用 beforeEach 确定跳转变化的具体代码。但是我们还有个地方不知道具体的数值，你猜是谁？没错，我听到了，就是 to.title  这就是要讲的第二个步骤。</p>
+<h5 id="-使用-meta-确定跳转变化的内容">② 使用 meta 确定跳转变化的内容</h5>
+<p>其实meta 很简单，就在路由的配置中添加上下面的代码就可以了，</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/profile&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Profile</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;档案&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span></span></span></code></pre></div><p>在配置“档案”页面的路由中添加了meta，当用户点击 “档案”跳转到档案页面时，该页面的标题就会变成“档案”。于是乎，一口气在“首页”、“关于”、“用户”页面的路由配置中都添加了meta属性，接下来让我们一起看看效果吧~</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/357.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>好啦，我知道出现bug了  因为首页的标题显示的是“undefined”  这到底为啥呢
+  后来知道了，因为在首页中有路由的嵌套。嵌套是啥？</p>
+<p>于是乎打印了一下 to 是个啥玩意儿，不打不知道，一打下一跳：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/358.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>发现 meta 并没有任何东西，但是在<strong>matched 中的 meta 却有</strong>，说明我们获取title的时候不应该用 to.title 而应该用 to.matched[0].mate.title 。所以结合上面两步给出的完整代码应该是这样子的：</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">routes</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">redirect</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//使用 meta 确定路由跳转时要修改的值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;首页&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">},</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">children</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">redirect</span><span class="o">:</span><span class="s2">&#34;new&#34;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;new&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeNews</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">component</span><span class="o">:</span><span class="nx">HomeMessage</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/about&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">About</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;关于&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/user/:userID&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">User</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;用户&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/profile&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">Profile</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;档案&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//使用 beforeEach 函数确定转换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">router</span><span class="p">.</span><span class="nx">beforeEach</span><span class="p">((</span><span class="nx">to</span><span class="p">,</span><span class="nx">from</span><span class="p">,</span><span class="nx">next</span><span class="p">)</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="nx">to</span><span class="p">.</span><span class="nx">matched</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">meta</span><span class="p">.</span><span class="nx">title</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">to</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">next</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/359.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="三keep-alive">三、keep-alive</h1>
+<h2 id="1产生原因">1.产生原因</h2>
+<p>  我们还是拿以前的例子。假设张三在 home 页面中点击了“消息”子内容；当张三点击别的页面后再重新回到 home 页面，就会发现原本在home 中点击的“消息”页面又回到了“新闻”页面。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/360.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>那张三想要保留走之前的样子，要怎么做呢？</p>
+<p>很简单，通过 keep-alive 就可以做到了。</p>
+<h2 id="2基本原理">2.基本原理</h2>
+<p>  首先得很负责的告诉你，组件的创建和销毁是一个不断循环的过程，这点可以通过两个生命函数来验证 create 和 destroyed。</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//在 home.vue 页面添加两个生命函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 声生命函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">created</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// document.title=&#34;首页&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被创建啦 ^_^&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">destroyed</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被销毁了 o(╥﹏╥)o&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/script&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/361.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这也就是为什么张三离开首页之后，首页的子内容就由“消息”变成了“新闻”。每当张三离开的时候，将相当于重新创建了 home 页面，而 home 页面中默认的就是显示“新闻” 的内容。
+  于是乎就有了下面的结论：只要组件不是新创建的，就能保持离开时的模样，而kepp-alive 就可以做到这一点。</p>
+<h2 id="3使用步骤">3.使用步骤</h2>
+<p>其实 keep-alive 的使用很简单。只需要将 router-view 包起来</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl">    <span class="c">&lt;!--</span> <span class="nx">index</span><span class="p">.</span><span class="nx">js</span> <span class="nx">页面</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>   
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;HomeClick&#34;</span><span class="p">&gt;</span><span class="na">首页</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;AboutClick&#34;</span><span class="p">&gt;</span><span class="na">关于</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;UserClick&#34;</span><span class="p">&gt;</span><span class="na">用户</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;ProfileClick&#34;</span><span class="p">&gt;</span><span class="na">档案</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>       
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">keep-alive</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="err">/keep-alive&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>![<img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/362.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>
+实现：使用了keep-alive后，组件从始至终只创建了一次，而且没有被销毁。
+Bug：当张三第二次进去 home 页面时，home 页面显示的依旧是“新闻”的内容</p>
+<p>这里后面改&hellip;</p>
+<h2 id="4activated--deactivated-生命函数">4.activated / deactivated 生命函数</h2>
+<h5 id="-定义">① 定义</h5>
+<p>  这两个函数是为了解决上面的bug。activated，译为“活跃”的，也就是当组件处于活跃状态时将会回调的生命函数。相反，deactivated就是组件处于不活跃的状态。</p>
+<h5 id="-使用场景">② 使用场景</h5>
+<p>  但是这两个生命函数并不是所有的场景都使用的。只有<strong>使用了 keep-alive 时才可以使用。</strong></p>
+<h5 id="-应用场景">③ 应用场景</h5>
+<p>  这里主要用 activated 函数解决上面的bug，此外我们还需要另外一个工具：beforeRouteLeave。beforeRouteLeave 是导航守卫之一，意思就是在监听离开路由时的事情。
+因此，对付上面那种胡搅蛮缠的bug，解决思路如下：
+<strong>第一：删除嵌套路由</strong>
+  bug 的产生是因为一开始在 home 的地址中就有嵌套的路由，即 URL 的地址不仅仅是 /home 而是/home/news 或者 /home/message 。所以我们要先对嵌套的路由进行处理。打开 index.js 在路由映射关系中有关嵌套路由的代码 children 内部删除注释掉的代码：</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/h ome&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">meta</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">title</span><span class="o">:</span><span class="s1">&#39;首页&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">children</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// {
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">//  path:&#34;&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">//  redirect:&#34;new&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// },
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;new&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">HomeNews</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">         <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">component</span><span class="o">:</span><span class="nx">HomeMessage</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>   
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">},</span></span></span></code></pre></div><p><strong>第二：获取相关路径</strong>
+  既然我们不能在嵌套路由中使用类似“/home/new” 的路径，我们就先<strong>定义一个变量path 来存放在嵌套路由中的路径“/home/new”；</strong>
+  然后使用 <strong>activated</strong> 生命函数，当 home 页面被激活的时候获取当前激活状态下的路径；
+  最后使用 <strong>beforeRouteLeave</strong> 导航守卫，记录用户离开页面时的路径，并将该路径赋值给变量path，这样当用户再次进入到该页面时，就会使用离开后的路径。具体代码如下所示：</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// home.vue 文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home/new&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">created</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&#34;首页&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被创建啦 ^_^&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">destroyed</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被销毁了 o(╥﹏╥)o&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">activated</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">beforeRouteLeave</span><span class="p">(</span><span class="nx">to</span><span class="p">,</span><span class="nx">from</span><span class="p">,</span><span class="nx">next</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="nx">path</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">path</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">next</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>看结果：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/363.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h4 id="总结">总结：</h4>
+<h4 id="1keepl-alive">1.keepl-alive</h4>
+<p>  当用户离开某个组件的时候，不要让该组件频繁的被创建和频繁的被销毁</p>
+<h4 id="2activeted-和-dectivated">2.activeted 和 dectivated</h4>
+<p>  译为“活跃的/不活跃的”这两个生命函数只有在使用了keep-alive 才可以使用</p>
+<h1 id="四keep-alive属性">四、keep-alive属性</h1>
+<p>前期回顾：
+<strong>1.keep-alive</strong>
+  ① 是Vue提供的一个<strong>抽象组件</strong>，用来对组件进行<strong>缓存</strong>，避免组件重复渲染。简单的说就是不让组件不断的被创建和被销毁；
+  ② 被包裹在keep-alive中的<strong>组件状态将会被保留</strong>，即你离开是什么状态，回来也是什么状态。
+<strong>2.activated、deactivated</strong>
+  两个生命函数只有<strong>在使用了 keep-alive 组件才可以使用</strong>，代表的意义是组件被<strong>创建</strong>、组件被<strong>销毁</strong>。
+  今天小编为大家补充有关 keep-alive 的另外知识&ndash;<strong>include和exclude</strong> 属性</p>
+<h2 id="一定义">一、定义</h2>
+<p><strong>1.include</strong>
+  译为包含，代表<strong>只有被包含的组件才会被缓存</strong>。也就是说被 include 包含的组件不能够被频繁的创建和被频繁的销毁。
+<strong>2.exclude</strong>
+  顾名思义，译为不包含，代表<strong>被exclude包含的组件不会被缓存</strong>。也就是说，exclude包含的组件能够被频繁的创建和频繁的销毁。</p>
+<h2 id="二产生原因">二、产生原因</h2>
+<p>  我们知道，所有的子组件最终都会通过 router-view 渲染的，当我们将 keep-alive 包裹住 router-view 时，就意味着所有的组件都被缓存了。演示一遍。
+  首先有 home、about、user、profile 四个组件，分别往四个组件中添加 create 函数 和 destoryed函数。再往 home 组件中增加 activated。最后用 keep-alive 包裹 router-view 。具体代码如下：</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// home.vue 组件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 生命函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;home&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">path</span><span class="o">:</span><span class="s1">&#39;/home/new&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">created</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&#34;首页&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被创建啦 ^_^&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">activated</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&#34;首页&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34; home 被激活了&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">destroyed</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;home 被销毁了 o(╥﹏╥)o&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">beforeRouteLeave</span><span class="p">(</span><span class="nx">to</span><span class="p">,</span><span class="nx">from</span><span class="p">,</span><span class="nx">next</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">this</span><span class="p">.</span><span class="nx">path</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">path</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">next</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">about</span> <span class="nx">组件</span>  <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span><span class="nx">关于</span><span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">span</span><span class="p">&gt;</span><span class="nx">在这里你可以问到任何你想问的问题</span><span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 生命函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kr">export</span> <span class="k">default</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;about&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">created</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="s2">&#34;关于&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;about 被创建了 (*^▽^*)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">destroyed</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;about 被销毁了 o(╥﹏╥)o&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>其余 user 和 profile 组件和 about 组件的内容一样，在这就不一一展示出来了</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">App</span><span class="p">.</span><span class="nx">vue组件</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;HomeClick&#34;</span><span class="p">&gt;</span><span class="na">首页</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;AboutClick&#34;</span><span class="p">&gt;</span><span class="na">关于</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;UserClick&#34;</span><span class="p">&gt;</span><span class="na">用户</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;ProfileClick&#34;</span><span class="p">&gt;</span><span class="na">档案</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">keep-alive</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="err">/keep-alive&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>最后我们来看看效果：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/364.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>首先位于 home 页面时，会显示 home 被创建了/被激活；随后当点击“用户”、“关于”、“档案” 页面时，显示相应的页面被创建了。这说明被keep-alive 包裹住的组件都被缓存了。
+  但是有时候，我们希望<strong>有些组件不被缓存，而有些组件被缓存</strong>。也就是有些组件能够被频繁的创建和销毁而有些组件不能够被频繁的创建和销毁，单单靠keep-alive是不能够实现的，必须借助它了属性 exclude。</p>
+<h2 id="三使用步骤">三、使用步骤</h2>
+<p>  其实 exclude 的使用方法十分简单，仅仅<strong>将 exclude=&ldquo;name&rdquo; 嵌套在 keep-alive 标签里面</strong>即可。参数<strong>name</strong>就是某个页面在<strong>Vue实例中的name</strong>。
+比如：</p>
+<div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">keep-alive</span> <span class="na">exclude</span><span class="o">=</span><span class="s">&#34;profile&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/keep-alive&gt;</span></span></span></code></pre></div><p>上述代码的作用了，除了 profile 组件，其余的组件都不能被频繁的创建和销毁，具体可观看下面的动图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/365.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>当用户想要排除两个页面时，通过逗号隔开。</strong>
+比如：</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">keep-alive</span> <span class="na">exclude</span><span class="o">=</span><span class="s">&#34;profile,user&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/keep-alive&gt;</span></span></span></code></pre></div><p>上述代码的作用，除了 profile 和 user 组件，其余的组件都不能被频繁的创建和销毁，具体可观看下面的动图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/366.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h4 id="总结-1">总结:</h4>
+<p><strong>1.组件：keep-alive</strong>
+  是Vue提供的抽象组件，只要有它在，任何组件都别想随所欲为的创建和销毁并且保留组件的某个状态
+<strong>2.函数：activated 和 deactivated</strong>
+  两个生命函数，当组件被创建和被销毁时会被调用执行，只有字keep-alive组件使用的情况下才有效
+<strong>3.属性：include 和 exclude</strong>
+  被include 包含的组件不能为所欲为的创建和销毁，而被exclude 包含的组件则可以放飞自我的不断创建和不断销毁。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/" data-title="Vue之Router（三）" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Brouter%E4%B8%89-vue%E4%B9%8Brouter%E4%B8%89/" data-title="Vue之Router（三）"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8Brouter%E4%B8%80-vue%E4%B9%8Brouter%E4%B8%80/" class="post-nav-item" rel="prev" title="Vue之Router（一）"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之Router（一）</a>
+      <a href="/posts/vue%E4%B9%8Brouter%E4%BA%8C-vue%E4%B9%8Brouter%E4%BA%8C/" class="post-nav-item" rel="next" title="Vue之Router（二）">Vue之Router（二）<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

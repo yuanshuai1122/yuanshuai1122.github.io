@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Redis之持久化 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它" /><meta name="keywords" content='数据库, Redis' /><meta itemprop="name" content="Redis之持久化">
+<meta itemprop="description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它">
+
+<meta itemprop="wordCount" content="2546">
+<meta itemprop="keywords" content="数据库,Redis," /><meta property="og:title" content="Redis之持久化" />
+<meta property="og:description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之持久化"/>
+<meta name="twitter:description" content="1、RDB（Redis DataBase） 1.1、是什么 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0-redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Redis之持久化",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96\/"
+    },"genre": "posts","keywords": "数据库, Redis","wordcount":  2546 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Redis之持久化</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="2546 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2600 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#11是什么">1.1、是什么</a></li>
+    <li><a href="#12fork">1.2、Fork</a></li>
+    <li><a href="#13rdb-保存的是dumprdb文件">1.3、Rdb 保存的是dump.rdb文件</a></li>
+    <li><a href="#14配置位置">1.4、配置位置</a></li>
+    <li><a href="#15如何触发rdb快照">1.5、如何触发RDB快照</a>
+      <ul>
+        <li><a href="#151配置文件中默认的快照配置">1.5.1、配置文件中默认的快照配置</a></li>
+        <li><a href="#152命令save或者是bgsave">1.5.2、命令save或者是bgsave</a></li>
+        <li><a href="#153执行flushall命令也会产生dumprdb文件但里面是空的无意义">1.5.3、执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义</a></li>
+      </ul>
+    </li>
+    <li><a href="#16如何恢复">1.6、如何恢复</a></li>
+    <li><a href="#17优势">1.7、优势</a></li>
+    <li><a href="#18劣势">1.8、劣势</a></li>
+    <li><a href="#19如何停止">1.9、如何停止</a></li>
+    <li><a href="#110小总结">1.10、小总结</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#21是什么">2.1、是什么</a></li>
+    <li><a href="#22aof保存的是appendonlyaof文件">2.2、Aof保存的是appendonly.aof文件</a></li>
+    <li><a href="#23配置位置">2.3、配置位置</a></li>
+    <li><a href="#24aof启动修复恢复">2.4、AOF启动/修复/恢复</a>
+      <ul>
+        <li><a href="#241正常恢复">2.4.1、正常恢复</a></li>
+        <li><a href="#242异常恢复">2.4.2、异常恢复</a></li>
+      </ul>
+    </li>
+    <li><a href="#25rewrite">2.5、Rewrite</a>
+      <ul>
+        <li><a href="#251是什么">2.5.1、是什么</a></li>
+        <li><a href="#252重写原理">2.5.2、重写原理</a></li>
+        <li><a href="#253触发机制">2.5.3、触发机制</a></li>
+      </ul>
+    </li>
+    <li><a href="#26优势">2.6、优势</a></li>
+    <li><a href="#27劣势">2.7、劣势</a></li>
+    <li><a href="#28小总结">2.8、小总结</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="1rdbredis-database">1、RDB（Redis DataBase）</h1>
+<h2 id="11是什么">1.1、是什么</h2>
+<ul>
+<li>
+<p>在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它恢复时是将快照文件直接读到内存里</p>
+</li>
+<li>
+<p>Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失。</p>
+</li>
+</ul>
+<h2 id="12fork">1.2、Fork</h2>
+<p>Fork的作用是复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等）数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程</p>
+<h2 id="13rdb-保存的是dumprdb文件">1.3、Rdb 保存的是dump.rdb文件</h2>
+<h2 id="14配置位置">1.4、配置位置</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/87.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="15如何触发rdb快照">1.5、如何触发RDB快照</h2>
+<h3 id="151配置文件中默认的快照配置">1.5.1、配置文件中默认的快照配置</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/88.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>冷拷贝后重新使用</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/89.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以cp dump.rdb dump_new.rdb</p>
+<h3 id="152命令save或者是bgsave">1.5.2、命令save或者是bgsave</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/90.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>Save：save时只管保存，其它不管，全部阻塞</p>
+<p>BGSAVE：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间</p>
+<h3 id="153执行flushall命令也会产生dumprdb文件但里面是空的无意义">1.5.3、执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义</h3>
+<h2 id="16如何恢复">1.6、如何恢复</h2>
+<ul>
+<li>
+<p>将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务即可</p>
+</li>
+<li>
+<p>CONFIG GET dir获取目录</p>
+</li>
+</ul>
+<h2 id="17优势">1.7、优势</h2>
+<ul>
+<li>
+<p>适合大规模的数据恢复</p>
+</li>
+<li>
+<p>对数据完整性和一致性要求不高</p>
+</li>
+</ul>
+<h2 id="18劣势">1.8、劣势</h2>
+<ul>
+<li>
+<p>在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照后的所有修改</p>
+</li>
+<li>
+<p>Fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑</p>
+</li>
+</ul>
+<h2 id="19如何停止">1.9、如何停止</h2>
+<p>动态所有停止RDB保存规则的方法：redis-cli config set save &quot;&quot;</p>
+<h2 id="110小总结">1.10、小总结</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/91.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="2aofappend-only-file">2、<strong>AOF</strong>（Append Only File）</h1>
+<h2 id="21是什么">2.1、是什么</h2>
+<p>以日志的形式来记录每个写操作，将Redis执行过的所有写指令记录下来(读操作不记录)，只许追加文件但不可以改写文件，redis启动之初会读取该文件重新构建数据，换言之，redis重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作</p>
+<h2 id="22aof保存的是appendonlyaof文件">2.2、Aof保存的是appendonly.aof文件</h2>
+<h2 id="23配置位置">2.3、配置位置</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/92.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="24aof启动修复恢复">2.4、AOF启动/修复/恢复</h2>
+<h3 id="241正常恢复">2.4.1、正常恢复</h3>
+<ul>
+<li>启动：设置Yes
+<ul>
+<li>修改默认的appendonly no，改为yes</li>
+</ul>
+</li>
+<li>将有数据的aof文件复制一份保存到对应目录(config get dir)</li>
+<li>恢复：重启redis然后重新加载</li>
+</ul>
+<h3 id="242异常恢复">2.4.2、异常恢复</h3>
+<ul>
+<li>启动：设置Yes
+<ul>
+<li>修改默认的appendonly no，改为yes</li>
+</ul>
+</li>
+<li>备份被写坏的AOF文件
+<ul>
+<li>修复：Redis-check-aof &ndash;fix进行修复</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/93.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li></li>
+<li>恢复：重启redis然后重新加载</li>
+</ul>
+<h2 id="25rewrite">2.5、Rewrite</h2>
+<h3 id="251是什么">2.5.1、是什么</h3>
+<p>AOF采用文件追加方式，文件会越来越大为避免出现此种情况，新增了重写机制,当AOF文件的大小超过所设定的阈值时，Redis就会启动AOF文件的内容压缩，只保留可以恢复数据的最小指令集.可以使用命令bgrewriteaof</p>
+<h3 id="252重写原理">2.5.2、重写原理</h3>
+<p>AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(也是先写临时文件最后再rename)，遍历新进程的内存中数据，每条记录有一条的Set语句。重写aof文件的操作，并没有读取旧的aof文件，而是将整个内存中的数据库内容用命令的方式重写了一个新的aof文件，这点和快照有点类似</p>
+<h3 id="253触发机制">2.5.3、触发机制</h3>
+<p>Redis会记录上次重写时的AOF大小，默认配置是当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发</p>
+<h2 id="26优势">2.6、优势</h2>
+<ul>
+<li>
+<p>每修改同步：appendfsync always  同步持久化 每次发生数据变更会被立即记录到磁盘 性能较差但数据完整性比较好</p>
+</li>
+<li>
+<p>每秒同步：appendfsync everysec  异步操作，每秒记录  如果一秒内宕机，有数据丢失</p>
+</li>
+<li>
+<p>不同步：appendfsync no  从不同步</p>
+</li>
+</ul>
+<h2 id="27劣势">2.7、劣势</h2>
+<ul>
+<li>
+<p>相同数据集的数据而言aof文件要远大于rdb文件，恢复速度慢于rdb</p>
+</li>
+<li>
+<p>Aof运行效率要慢于rdb,每秒同步策略效率较好，不同步效率和rdb相同</p>
+</li>
+</ul>
+<h2 id="28小总结">2.8、小总结</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/94.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="3总结which-one">3、<strong>总结</strong>(Which one)</h1>
+<ul>
+<li>官网建议</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/95.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>
+<p>RDB持久化方式能够在指定的时间间隔能对你的数据进行快照存储</p>
+</li>
+<li>
+<p>AOF持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据,AOF命令以redis协议追加保存每次写的操作到文件末尾，Redis还能对AOF文件进行后台重写,使得AOF文件的体积不至于过大</p>
+</li>
+<li>
+<p>只做缓存：如果你只希望你的数据在服务器运行的时候存在,你也可以不使用任何持久化方式.</p>
+</li>
+<li>
+<p>同时开启两种持久化方式</p>
+<ul>
+<li>在这种情况下,当redis重启的时候会优先载入AOF文件来恢复原始的数据,因为在通常情况下AOF文件保存的数据集要比RDB文件保存的数据集要完整.</li>
+<li>RDB的数据不实时，同时使用两者时服务器重启也只会找AOF文件。那要不要只使用AOF呢？作者建议不要，因为RDB更适合用于备份数据库(AOF在不断变化不好备份)，快速重启，而且不会有AOF可能潜在的bug，留着作为一个万一的手段。</li>
+</ul>
+</li>
+<li>
+<p>性能建议</p>
+<ul>
+<li>因为RDB文件只用作后备用途，建议只在Slave上持久化RDB文件，而且只要15分钟备份一次就够了，只保留save 900 1这条规则。</li>
+<li>如果Enalbe AOF，好处是在最恶劣情况下也只会丢失不超过两秒数据，启动脚本较简单只load自己的AOF文件就可以了。代价一是带来了持续的IO，二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。只要硬盘许可，应该尽量减少AOF rewrite的频率，AOF重写的基础大小默认值64M太小了，可以设到5G以上。默认超过原大小100%大小时重写可以改到适当的数值。</li>
+<li>如果不Enable AOF ，仅靠Master-Slave Replication 实现高可用性也可以。能省掉一大笔IO也减少了rewrite时带来的系统波动。代价是如果Master/Slave同时倒掉，会丢失十几分钟的数据，启动脚本也要比较两个Master/Slave中的RDB文件，载入较新的那个。新浪微博就选用了这种架构</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" data-title="Redis之持久化" data-hashtags="数据库,Redis"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" data-hashtag="数据库"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96-redis%E4%B9%8B%E6%8C%81%E4%B9%85%E5%8C%96/" data-title="Redis之持久化"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/' class="post-tag">数据库</a><a href='/tags/redis/' class="post-tag">Redis</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-redis%E4%B9%8B%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" class="post-nav-item" rel="prev" title="Redis之发布订阅"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Redis之发布订阅</a>
+      <a href="/posts/redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0-redis%E4%B9%8Bnosql%E5%85%A5%E9%97%A8%E5%92%8C%E6%A6%82%E8%BF%B0/" class="post-nav-item" rel="next" title="Redis之NoSql入门和概述">Redis之NoSql入门和概述<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>SpringBoot2核心技术-原理解析 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="xxxAutoConfiguration &mdash; 容器中放入组件 &mdash;- 绑定xxxProperties &mdash;-** 配置项 2、自定义starter atguigu-hello-spring-boot-sta" /><meta name="keywords" content='Java, SpringBoot' /><meta itemprop="name" content="SpringBoot2核心技术-原理解析">
+<meta itemprop="description" content="xxxAutoConfiguration &mdash; 容器中放入组件 &mdash;- 绑定xxxProperties &mdash;-** 配置项 2、自定义starter atguigu-hello-spring-boot-sta">
+
+<meta itemprop="wordCount" content="1489">
+<meta itemprop="keywords" content="Java,SpringBoot," /><meta property="og:title" content="SpringBoot2核心技术-原理解析" />
+<meta property="og:description" content="xxxAutoConfiguration &mdash; 容器中放入组件 &mdash;- 绑定xxxProperties &mdash;-** 配置项 2、自定义starter atguigu-hello-spring-boot-sta" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SpringBoot2核心技术-原理解析"/>
+<meta name="twitter:description" content="xxxAutoConfiguration &mdash; 容器中放入组件 &mdash;- 绑定xxxProperties &mdash;-** 配置项 2、自定义starter atguigu-hello-spring-boot-sta"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "SpringBoot2核心技术-原理解析",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90\/"
+    },"genre": "posts","keywords": "Java, SpringBoot","wordcount":  1489 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>SpringBoot2核心技术-原理解析</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1489 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1500 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 3 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#2自定义starter">2、自定义starter</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#1springboot启动过程">1、SpringBoot启动过程</a></li>
+    <li><a href="#heading"></a></li>
+    <li><a href="#2application-events-and-listeners">2、Application Events and Listeners</a></li>
+    <li><a href="#3applicationrunner-与-commandlinerunner">3、ApplicationRunner 与 CommandLineRunner</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><p>xxxAutoConfiguration &mdash; 容器中放入组件 &mdash;- 绑定xxxProperties &mdash;-** <strong>配置项</strong></p>
+<h2 id="2自定义starter">2、自定义starter</h2>
+<p><strong>atguigu-hello-spring-boot-starter（启动器）</strong></p>
+<p><strong>atguigu-hello-spring-boot-starter-autoconfigure（自动配置包）</strong></p>
+<h1 id="4springboot原理">4、SpringBoot原理</h1>
+<p>Spring原理【<a href="https://www.bilibili.com/video/BV1gW411W7wy?p=1"target="_blank" rel="external nofollow noopener noreferrer">Spring注解</a>】、<strong>SpringMVC</strong>原理、<strong>自动配置原理</strong>、SpringBoot原理</p>
+<h2 id="1springboot启动过程">1、SpringBoot启动过程</h2>
+<ul>
+<li>
+<p>创建 <strong>SpringApplication</strong></p>
+</li>
+<li>
+<ul>
+<li>保存一些信息。</li>
+<li>判定当前应用的类型。ClassUtils。Servlet</li>
+<li><strong>bootstrappers</strong>**：初始启动引导器（<strong>List<!-- raw HTML omitted --></strong>）：去spring.factories文件中找** org.springframework.boot.<strong>Bootstrapper</strong></li>
+<li>找 <strong>ApplicationContextInitializer</strong>；去<strong>spring.factories****找</strong> <strong>ApplicationContextInitializer</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>List&lt;ApplicationContextInitializer<!-- raw HTML omitted -->&gt; <strong>initializers</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>找</strong> <strong>ApplicationListener  ；应用监听器。<strong>去</strong>spring.factories****找</strong> <strong>ApplicationListener</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>List&lt;ApplicationListener<!-- raw HTML omitted -->&gt; <strong>listeners</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>运行 <strong>SpringApplication</strong></p>
+</li>
+<li>
+<ul>
+<li><strong>StopWatch</strong></li>
+<li><strong>记录应用的启动时间</strong></li>
+<li>**创建引导上下文（Context环境）**<strong>createBootstrapContext()</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>获取到所有之前的 <strong>bootstrappers 挨个执行</strong> intitialize() 来完成对引导启动器上下文环境设置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>让当前应用进入<strong>headless</strong>模式。<strong>java.awt.headless</strong></li>
+<li><strong>获取所有</strong> <strong>RunListener</strong>**（运行监听器）【为了方便所有Listener进行事件感知】**</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>getSpringFactoriesInstances 去<strong>spring.factories****找</strong> <strong>SpringApplicationRunListener</strong>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>遍历 <strong>SpringApplicationRunListener 调用 starting 方法；</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>相当于通知所有感兴趣系统正在启动过程的人，项目正在 starting。</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>保存命令行参数；ApplicationArguments</li>
+<li>准备环境 prepareEnvironment（）;</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>返回或者创建基础环境信息对象。<strong>StandardServletEnvironment</strong></li>
+<li><strong>配置环境信息对象。</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>读取所有的配置源的配置属性值。</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>绑定环境信息</li>
+<li>监听器调用 listener.environmentPrepared()；通知所有的监听器当前环境准备完成</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>创建IOC容器（createApplicationContext（））</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>根据项目类型（Servlet）创建容器，</li>
+<li>当前会创建 <strong>AnnotationConfigServletWebServerApplicationContext</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>准备ApplicationContext IOC容器的基本信息</strong> <strong>prepareContext()</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>保存环境信息</li>
+<li>IOC容器的后置处理流程。</li>
+<li>应用初始化器；applyInitializers；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>遍历所有的 <strong>ApplicationContextInitializer 。调用</strong> <strong>initialize.。来对ioc容器进行初始化扩展功能</strong></li>
+<li>遍历所有的 listener 调用 <strong>contextPrepared。EventPublishRunListenr；通知所有的监听器contextPrepared</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>所有的监听器 调用</strong> <strong>contextLoaded。通知所有的监听器 contextLoaded；</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>**刷新IOC容器。**refreshContext</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li>创建容器中的所有组件（Spring注解）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>容器刷新完成后工作？afterRefresh</li>
+<li>所有监听 器 调用 listeners.<strong>started</strong>(context); <strong>通知所有的监听器</strong> <strong>started</strong></li>
+<li>**调用所有runners；**callRunners()</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>获取容器中的</strong> <strong>ApplicationRunner</strong></li>
+<li><strong>获取容器中的</strong>  <strong>CommandLineRunner</strong></li>
+<li><strong>合并所有runner并且按照@Order进行排序</strong></li>
+<li><strong>遍历所有的runner。调用 run</strong> <strong>方法</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>如果以上有异常，</strong></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>
+<ul>
+<li><strong>调用Listener 的 failed</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><strong>调用所有监听器的 running 方法</strong>  listeners.running(context); <strong>通知所有的监听器</strong> <strong>running</strong></li>
+<li>**running如果有问题。继续通知 failed 。**<strong>调用所有 Listener 的</strong> **failed；**<strong>通知所有的监听器</strong> <strong>failed</strong></li>
+</ul>
+</li>
+</ul>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Bootstrapper</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Initialize the given {@link BootstrapRegistry} with any required registrations.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param registry the registry to initialize
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">intitialize</span><span class="o">(</span><span class="n">BootstrapRegistry</span> <span class="n">registry</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/79.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/80.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springboot2.x/81.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@FunctionalInterface</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ApplicationRunner</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Callback used to run the bean.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param args incoming application arguments
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @throws Exception on error
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">ApplicationArguments</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@FunctionalInterface</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">CommandLineRunner</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Callback used to run the bean.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param args incoming main method arguments
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @throws Exception on error
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h2 id="heading"></h2>
+<h2 id="2application-events-and-listeners">2、Application Events and Listeners</h2>
+<p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-application-events-and-listeners"target="_blank" rel="external nofollow noopener noreferrer">https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-application-events-and-listeners</a></p>
+<p><strong>ApplicationContextInitializer</strong></p>
+<p><strong>ApplicationListener</strong></p>
+<p><strong>SpringApplicationRunListener</strong></p>
+<p>**
+**</p>
+<h2 id="3applicationrunner-与-commandlinerunner">3、ApplicationRunner 与 CommandLineRunner</h2>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" data-title="SpringBoot2核心技术-原理解析" data-hashtags="Java,SpringBoot"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" data-hashtag="Java"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/" data-title="SpringBoot2核心技术-原理解析"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">Java</a><a href='/tags/springboot/' class="post-tag">SpringBoot</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" class="post-nav-item" rel="prev" title="SpringBoot2核心技术-指标监控"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>SpringBoot2核心技术-指标监控</a>
+      <a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE/" class="post-nav-item" rel="next" title="SpringBoot2核心技术-数据访问">SpringBoot2核心技术-数据访问<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

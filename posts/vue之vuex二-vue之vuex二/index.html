@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之Vuex（二） - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Vuex的getters 一、getters 1.定义 getters 相当于我们之前使用过的计算属性。当数据要经过一系列变化时，我们就可以将这一系列的变化写在" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之Vuex（二）">
+<meta itemprop="description" content="Vuex的getters 一、getters 1.定义 getters 相当于我们之前使用过的计算属性。当数据要经过一系列变化时，我们就可以将这一系列的变化写在">
+
+<meta itemprop="wordCount" content="6171">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之Vuex（二）" />
+<meta property="og:description" content="Vuex的getters 一、getters 1.定义 getters 相当于我们之前使用过的计算属性。当数据要经过一系列变化时，我们就可以将这一系列的变化写在" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之Vuex（二）"/>
+<meta name="twitter:description" content="Vuex的getters 一、getters 1.定义 getters 相当于我们之前使用过的计算属性。当数据要经过一系列变化时，我们就可以将这一系列的变化写在"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuecli-vue%E4%B9%8Bvuecli/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之Vuex（二）",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  6171 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之Vuex（二）</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="6171 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 6200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 13 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一getters">一、getters</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#一基本结构">一、基本结构</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#二传递参数">二、传递参数</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#三提交风格">三、提交风格</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#一mutations的常量类型">一、mutations的常量类型</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#二mutations总结">二、mutations总结</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="vuex的getters">Vuex的getters</h1>
+<h2 id="一getters">一、getters</h2>
+<h5 id="1定义">1.定义</h5>
+<p>  getters 相当于我们之前使用过的计算属性。<strong>当数据要经过一系列变化时，我们就可以将这一系列的变化写在getters内部。</strong></p>
+<h5 id="2使用方法">2.使用方法</h5>
+<p>  getters的使用方法和mutation一样，通过声明<strong>方法</strong>然后在方法中书写相应的代码即可并且<strong>默认的参数是state</strong>。比如当我们计算counter的平方时可以有下面两种做法。
+<strong>做法一：直接运算</strong></p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>{{$store.state.counter * $store.state.counter}}<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span></span></span></code></pre></div><p>这种做法就是直接将运算也放在了显示内容上，如果别的页面中同样需要用到counter平方时，我们也需要在引入上面的代码，不仅仅利用不方便而且代码量看起来也快很多，所以一般我们都采用第二种做法。
+<strong>做法二：使用getters</strong></p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">getters</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">powerCounter</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span> <span class="o">*</span> <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span></span></span></code></pre></div><div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">App</span><span class="p">.</span><span class="nx">vue</span> <span class="nx">文件</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">----</span><span class="nx">做法一</span><span class="o">------</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">counter</span> <span class="o">*</span> <span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">--------</span><span class="nx">做法二</span><span class="err">：</span><span class="nx">getters的使用</span><span class="o">--------</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">powerCounter</span><span class="p">}}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="err">/template</span></span></span></code></pre></div><p> 首先在getters中声明了名字为<strong>powerCounter的方法</strong>，然后在方法中<strong>计算counter的平方</strong>，最后通过<strong>调用 $store.getters.powerCounter</strong> 就可以直接将counter的平方显示在页面上。下面是效果图</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/409.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>上述的getters只是处理的单一数值运算，下面看看用getters处理别的案例。现在state中有多个学生，但只显示年龄大于20岁的学生，具体代码如下：</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js 文件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">student</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">21</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">200</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;lisi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">18</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">300</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;wangwu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">22</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">400</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhaoliu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">19</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">getters</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">morestu</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">s</span> <span class="p">=&gt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">age</span><span class="o">&gt;</span><span class="mi">20</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-------</span><span class="nx">年龄大于20岁的人</span><span class="o">-------</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">morestu</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>上述代码中，在getters声明了名字为 morestu 的方法，默认参数是state，在该方法中通过 state.student 获取到学生的对象，然后通过filter对年龄大于20岁的学生进行筛选，最后再App.vue页面中引用该方法，具体效果图如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/410.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h5 id="3参数">3.参数</h5>
+<p>getters除了可以传递默认的state参数之外，还可以传递getters参数。比如下面的例子：</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">student</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">21</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">200</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;lisi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">18</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">300</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;wangwu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">22</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">400</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhaoliu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">19</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">getters</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">morestu</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">s</span> <span class="p">=&gt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">age</span><span class="o">&gt;</span><span class="mi">20</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">morestuLength</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="nx">getters</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">getters</span><span class="p">.</span><span class="nx">morestu</span><span class="p">.</span><span class="nx">length</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><p>上述代码中，我们希望在知道了年龄大于20岁的学生之后再求出年龄大于20岁的学生的人数，只要在上述的基础上添加length方法即可。
+  在morestu方法中，我们求出了年龄大于20岁的学生，因此我们可以在morestuLength 求年龄大于20岁的个数的方法中添加参数getters，然后再通过 getters.morestu.length 求年龄大于20岁的个数。具体效果图如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/411.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h5 id="4函数返回值">4.函数返回值</h5>
+<p>  上面中，我们返回了20岁年龄的人呢，这个20 岁是固定的，那我们能否动态的决定年龄大于某个值呢，其实是可以的，只要<strong>将getters的返回值变成一个函数即可</strong>。比如：</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">student</span><span class="o">:</span><span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhangsan&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">21</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">200</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;lisi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">18</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">300</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;wangwu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">22</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">400</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;zhaoliu&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">19</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">getters</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">moreAgeStu</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">age</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">s</span> <span class="p">=&gt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">age</span><span class="o">&gt;</span><span class="nx">age</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="o">-------</span><span class="nx">年龄大于age的人</span><span class="o">-------</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">getters</span><span class="p">.</span><span class="nx">moreAgeStu</span><span class="p">(</span><span class="mi">17</span><span class="p">)}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>我们希望返回的年龄是根据用户传递的参数进行筛选的。
+  上述代码中，将getters的返回值变成一个带有age参数的函数，然后根据用户在调用函数时传入的age值进行筛选，比如本例中就筛选出年龄17岁的人。效果如下:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/412.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>以上便是今天getters有关的知识，总结如下：
+<strong>1.使用场景</strong>
+  当一些数据需要经过变化的时候可以使用getters来处理变化，然后使别的组件在用到该数据时，这个数据是经过变过后得到的结果
+<strong>2.用法</strong>
+一般通过声明方法来使用，默认的参数是state
+<strong>3.方法的参数</strong>
+  除了默认的state参数，还可以传入getters，传入的getters参数其实就是Vuex中的getters，通过这个参数可以调用getters已经声明好的了方法，比如在morestuLength中调用了morestu方法
+<strong>4.返回值</strong>
+  除了可以直接返回具体的数值之外，还可以返回一个函数，返回函数的情况一般用在需要根据用户的参数进行某些判断的场景。</p>
+<h1 id="vuex中的mutations">Vuex中的mutations</h1>
+<h2 id="一基本结构">一、基本结构</h2>
+<h5 id="1作用">1.作用</h5>
+<p>  <strong>Vuex的store状态的更新唯一方式：提交Mutation</strong>。也就是我们前面提到过的，必须经过 state &ndash;&gt; Vuex &ndash;&gt; Action &ndash;&gt; Mutations 这个路径修改state的状态。</p>
+<h5 id="2组成">2.组成</h5>
+<p>mutations主要由两部分组成：<strong>事件类型和回调函数</strong>，具体的可以参考下面的代码：</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">counter</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>    <span class="p">},</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>      <span class="nx">increase</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span>      <span class="p">},</span>      <span class="nx">decrease</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="o">--</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>在上述的代码中，increase和decrease是事件类型，(state){state.counter++} 这部分是回调函数。</p>
+<h5 id="3定义的方式">3.定义的方式</h5>
+<p>定义的方式很简单，就是<strong>事件类型+回调函数</strong>，具体查看下面的代码：</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">counter</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>    <span class="p">},</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>      <span class="nx">increase</span><span class="p">(</span><span class="nx">state</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>上述代码中，定义的事件类型为increate，当执行该事件类型时，就会调用回调函数，执行对counter++的操作。
+  此外，如果想要通过mutations<strong>更新某些数据</strong>，可以使用<strong>commit方法</strong>，commit方法中传入的数据是事件类型。具体代码如下：</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-jsx" data-lang="jsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">counter</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>    <span class="p">},</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>     <span class="nx">increase</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>        <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increate&#39;</span><span class="p">)</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><h2 id="二传递参数">二、传递参数</h2>
+<h5 id="1传递变量">1.传递变量</h5>
+<p>  前面我们已经会通过调用increate函数对counter进行简单的加1操作，如果这个时候我们不再对counter进行简单的加1操作，而是加5甚至是加10，这个时候该怎么办呢？
+很简单，只需要传递多一个参数即可，比如：</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">counter</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>    <span class="p">},</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>     <span class="nx">increateCounter</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="nx">count</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">counter</span> <span class="o">+=</span> <span class="nx">count</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>在mutation中，声明increateCounter事件类型，然后回调函数主要是对counter做加上count的操作。在App.vue页面中调用该方法的代码如下：</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">message</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;addcounter&#34;</span> <span class="p">&gt;</span><span class="o">+</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;deccounter&#34;</span> <span class="p">&gt;</span><span class="o">-</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;addCount(5)&#34;</span> <span class="p">&gt;</span><span class="o">+</span><span class="mi">5</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">hellovue</span><span class="p">&gt;&lt;/</span><span class="nt">hellovue</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span>  <span class="kr">import</span> <span class="nx">hellovue</span> <span class="nx">from</span> <span class="s1">&#39;./components/HelloWorld.vue&#39;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">components</span><span class="o">:</span><span class="p">{</span>    <span class="nx">hellovue</span>  <span class="p">},</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">addcounter</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increase&#39;</span><span class="p">)</span>    <span class="p">},</span>    <span class="nx">deccounter</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;decrease&#39;</span><span class="p">)</span>    <span class="p">},</span>    <span class="nx">addCount</span><span class="p">(</span><span class="nx">count</span><span class="p">){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increateCounter&#39;</span><span class="p">,</span><span class="nx">count</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">},</span>    <span class="nx">data</span><span class="p">(){</span>        <span class="k">return</span> <span class="p">{</span>            <span class="nx">message</span><span class="o">:</span><span class="s2">&#34;我是组件1&#34;</span><span class="p">,</span>        <span class="p">}</span>    <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>在methods方法中，对addCount点击事件的处理，主要是通过commit方法调用了Vuex中mutation声明的increateCounter，然后传递count作为参数，在本例中，参数count = 5，所以点击一次，counter的数值就会增加5，具体效果图如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/413.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>如果我们传递的参数不再是变量这么简单，而是<strong>传递一个对象</strong>，又该怎么办呢？很简单，我们传递一个对象就可以啦。</p>
+<h5 id="2传递对象">2.传递对象</h5>
+<p>做法很简单，具体代码如下：</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">state</span><span class="o">:</span><span class="p">{</span>      <span class="nx">counter</span><span class="o">:</span><span class="mi">100</span><span class="p">,</span>    <span class="p">},</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>     <span class="nx">increateStu</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="nx">stu</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">stu</span><span class="p">)</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>上述代码中，将stu参数添加到student对象中，在App.vue中调用该方法的代码如下：</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">message</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;addStu&#34;</span><span class="p">&gt;</span><span class="na">添加学生</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">hellovue</span><span class="p">&gt;&lt;/</span><span class="nt">hellovue</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span>  <span class="kr">import</span> <span class="nx">hellovue</span> <span class="nx">from</span> <span class="s1">&#39;./components/HelloWorld.vue&#39;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">components</span><span class="o">:</span><span class="p">{</span>    <span class="nx">hellovue</span>  <span class="p">},</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span> <span class="nx">addStu</span><span class="p">(){</span>      <span class="kr">const</span> <span class="nx">stu</span> <span class="o">=</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">500</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;xiaoqi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">30</span><span class="p">}</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increateStu&#39;</span><span class="p">,</span><span class="nx">stu</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">},</span>    <span class="nx">data</span><span class="p">(){</span>        <span class="k">return</span> <span class="p">{</span>            <span class="nx">message</span><span class="o">:</span><span class="s2">&#34;我是组件1&#34;</span><span class="p">,</span>        <span class="p">}</span>    <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>当点击了“添加学生”按钮之后，就会将stu对象中的数据添加到student对象中，具体效果如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/414.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="三提交风格">三、提交风格</h2>
+<h5 id="1commit">1.commit</h5>
+<p>这是最简单的提交方式，在上面的例子中，小编也已经演示过了，这里就不再重复</p>
+<h5 id="2type">2.type</h5>
+<p>  这种风格的提交就是commit中提交的是一个对象，然后在type中传入具体要传入的数据，比如：</p>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="err">//App.vueaddCount(count){    // 第一种提风格:commit    this.$store.commit(&#39;increateCounter&#39;,count)     //第二种提交风格    this.$store.commit({      type:&#39;increateCounter&#39;,       count      })}//index.jsconst store = new Vuex.Store({    state:{      counter:100,    },    mutations:{      // 提交风格      increateCounter(state,payload){        state.counter += payload.count      }    }})</span></span></span></code></pre></div><p>上述代码中，commit提交的是一个对象，然后在对象中有一个type类型，type后面填写事件类型，比如本例子中的increateCounter。
+  值得注意的是参数问题。在第一种提交风格中，count就是一个简简单单的数值，但是在第二中风格中，<strong>count是一个对象</strong>，所以我们需要通过 <strong>对象.属性名</strong>来获取具体的变量，比如本例中的 payload.count 就是获得count变量</p>
+<h1 id="mutations的响应规则">Mutations的响应规则</h1>
+<h1 id="一响应式">一、响应式</h1>
+<h5 id="1原理">1.原理</h5>
+<p>响应式就是当数据发生改变的时候，页面中用到该数据的地方也会发生改变。
+  当我们已经在store对象中定义某些属性时，属性就会被加入到响应式系统中，该系统就会监听属性是否发生变化，如果属性发生变化，就会通知界面中所有用到该属性的地方发生变化，这就是响应式的基本原理。
+  简单的说就是<strong>预先在store对象定义的属性是被加入到响应式系统中的，只有加入到响应式系统中的属性才会发生响应式的变化。</strong>
+比如：</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.jsconst store = new Vuex.Store({    state:{      info:{        name:&#39;haha&#39;,        age:13,        height:1.45      }    },    mutations:{      // 响应式测试      changeInfo(state){        state.info.name=&#39;哈哈&#39;      }    }})
+</span></span></span></code></pre></div><div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">App</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">响应式测试</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;changeInfo&#34;</span><span class="p">&gt;</span><span class="na">修改信息</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">info</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span>  <span class="kr">import</span> <span class="nx">hellovue</span> <span class="nx">from</span> <span class="s1">&#39;./components/HelloWorld.vue&#39;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">changeInfo</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>首先定义了info属性，该属性包含姓名，年龄，身高三项基本信息，然后在mutations中定义了changeInfo方法，当用户点击按钮时，就将name中的‘haha’修改成“哈哈”。下面来看看效果图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/415.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>但是，当我们把changeInfo的内处理修改成下面的代码，数据是否依旧可以相应的？</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js      changeInfo(state){       state.info[&#39;address&#39;]=&#39;China&#39;      }
+</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/416.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到，当往info增加新的属性时，该属性只添加到了state中二并没有添加到页面中。因为该属性并没有被添加到响应式系统中，所以产生响应式，那我们要怎么做才能有响应式呢?看了下面你就知道了 o(<em>￣︶￣</em>)o</p>
+<h5 id="2方法">2.方法</h5>
+<p><strong>① set方法</strong>
+  set方法很简单，就是将新增加的属性添加到响应式系统中，这样新增加的属性也可以是响应式的，具体代码如下：</p>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js      changeInfo(state){            Vue.set(state.info,&#39;address&#39;,&#39;China&#39;)      }
+</span></span></span></code></pre></div><p>该方法第一个参数是要修改的对象名，第二个参数是要增加是属性名，第三个参数是新增加属性的值。比如本例中为inoffensive对象新增加数值是“China”的address属性。具体效果图如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/417.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>如果我们想要删除原本的属性，应该怎么做呢？
+很简单，通过 Vue.delete删除，具体查看下面的代码：</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js      changeInfo(state){            Vue.delete(state.info,&#39;age&#39;)      }
+</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/418.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="mutations常量和总结">mutations常量和总结</h1>
+<h2 id="一mutations的常量类型">一、mutations的常量类型</h2>
+<h5 id="1产生原因">1.产生原因</h5>
+<p>  在mutations中, 我们定义了很多事件类型(也就是其中的方法名称)。当项目增大时, Vuex管理的状态越来越多, 需要更新状态的情况越来越多, 意味Mutation中的方法越来越多。
+  这会导致使用者需要花费大量的精力去记住这些方法, 甚至是多个文件间来回切换, 查看方法名称, 甚至如果不是复制的时候, 可能还会出现写错的情况。如何避免上述的问题呢?
+  其中一种很常见的方案就是<strong>使用常量替代Mutation事件的类型</strong>。将这些常量放在一个单独的文件中, 方便管理以及让整个app所有的事件类型一目了然。</p>
+<h5 id="2使用方式">2.使用方式</h5>
+<p>  我们可以创建一个文件，并且在其中定义我们的常量， 使用一个常量来作为函数的名称。下面我们将mutations中的increate方法用常量INCREATE替代，具体代码如下所示:</p>
+<div class="highlight" id="id-22"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//新创建的mutations-type.js文件export const INCREATE = &#39;increate&#39;
+</span></span></span></code></pre></div><div class="highlight" id="id-23"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//在 index.js 文件中使用常量替代方法名import {  INCREATE} from &#39;./mutations-type.js&#39;const store = new Vuex.Store({    state:{      counter:100,    },    mutations:{      //原始方法      // increase(state){      //   state.counter++      // },      //常量替代方法      [INCREATE](state){        state.counter++      },    },})
+</span></span></span></code></pre></div><div class="highlight" id="id-24"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//在App.vue中用常量替代提交的方法名&lt;script&gt;  import {    INCREATE  }from &#39;../store/mutations-type.js&#39;export default {  name: &#39;App&#39;,  methods:{    addcounter(){      // this.$store.commit(&#39;increase&#39;)      this.$store.commit(INCREATE)    }  }}&lt;/script&gt;
+</span></span></span></code></pre></div><p>上述三个代码中，在 mutations-type.js 文件声明了常量INCREATE，然后分别将 index.js 文件和 App.vue 文件中的 increate 方法名用常量INCREATE替代。
+以上就是mutation中常量类型的简单介绍，下面小编总结一下mutations常用的知识点。</p>
+<h2 id="二mutations总结">二、mutations总结</h2>
+<h5 id="1基本结构">1.基本结构</h5>
+<p><strong>① 作用</strong>
+  用来<strong>修改state状态更新的唯一方式</strong>。state中任何状态的修改都必须经过mutations提交，因为mutations中有个浏览器插件 Devtools，该插件会记录和跟踪state中状态的所有变化，方便我们查找到底运行时在哪一步出错了。
+<strong>② 组成</strong>
+mutations的组成主要分成两大组成：<strong>事件类型和回调函数</strong>，比如：</p>
+<div class="highlight" id="id-25"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js文件const store = new Vuex.Store({    state:{      counter:100,    },    mutations:{      increase(state){        state.counter++      }    }})
+</span></span></span></code></pre></div><p>上述代码中，目的是点击一次按钮就使 counter 数值增加。increase是事件类型，(state){state.counter++} 是回调函数。
+<strong>③ 更新状态</strong>
+  借助上面的例子，我们在mutations 写好了相关的业务逻辑代码，需要将该处的业务实现起来，也就是需要更新counter的状态。主要通过<strong>commit方法进行更新</strong>，具体代码如下：</p>
+<div class="highlight" id="id-26"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="err">//App.vuemethods:{    addcounter(){        this.$store.commit(&#39;increase&#39;)    }}</span></span></span></code></pre></div><h5 id="2传递参数">2.传递参数</h5>
+<p>  传递参数的作用，是为了更够<strong>根据用户的需要进行状态的更新</strong>。比如上述的例子中，当用户点击按钮时，就将 counter 的值加5甚至加更多，此时单单通过上面的方法是没有办法实现的，因为没有获取到用户提供的数据，所以我们需要再引入参数，用该参数来存放用户提供的数据。
+引入的参数主要有两种类型：<strong>单一变量和函数</strong>
+<strong>① 单一变量</strong>
+  针对用户点击按钮，counter 数值就增加5的需求，具体代码如下：</p>
+<div class="highlight" id="id-27"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.jsconst store = new Vuex.Store({    state:{      counter:100,    },    mutations:{     increateCounter(state,count){        state.counter += count      }    }})
+</span></span></span></code></pre></div><div class="highlight" id="id-28"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">App</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">counter</span><span class="p">}}&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;addCount(5)&#34;</span> <span class="p">&gt;</span><span class="o">+</span><span class="mi">5</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">addcounter</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increase&#39;</span><span class="p">)</span>    <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p><strong>② 对象</strong>
+  当用户传递进来的不是变量，而是一个对象，这个时候我们仅需要将参数变成对象类型即可。比如</p>
+<div class="highlight" id="id-29"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vuex</span><span class="p">.</span><span class="nx">Store</span><span class="p">({</span>    <span class="nx">mutations</span><span class="o">:</span><span class="p">{</span>     <span class="nx">increateStu</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span><span class="nx">stu</span><span class="p">){</span>        <span class="nx">state</span><span class="p">.</span><span class="nx">student</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">stu</span><span class="p">)</span>      <span class="p">}</span>    <span class="p">}})</span></span></span></code></pre></div><p>上述代码中，将 stu 参数添加到student对象中，在App.vue中调用该方法的代码如下：</p>
+<div class="highlight" id="id-30"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;addStu&#34;</span><span class="p">&gt;</span><span class="na">添加学生</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">addStu</span><span class="p">(){</span>      <span class="kr">const</span> <span class="nx">stu</span> <span class="o">=</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span><span class="mi">500</span><span class="p">,</span><span class="nx">name</span><span class="o">:</span><span class="s1">&#39;xiaoqi&#39;</span><span class="p">,</span><span class="nx">age</span><span class="o">:</span><span class="mi">30</span><span class="p">}</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;increateStu&#39;</span><span class="p">,</span><span class="nx">stu</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><h5 id="3提交风格">3.提交风格</h5>
+<p>主要有两种：<strong>commit 和 type</strong>。具体的区别查看下面的代码即可。</p>
+<div class="highlight" id="id-31"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="err">//App.vueaddCount(count){    // 第一种提风格:commit    this.$store.commit(&#39;increateCounter&#39;,count)     //第二种提交风格    this.$store.commit({      type:&#39;increateCounter&#39;,       count      })}//index.jsconst store = new Vuex.Store({    state:{      counter:100,    },    mutations:{      // 提交风格      increateCounter(state,payload){        state.counter += payload.count      }    }})</span></span></span></code></pre></div><p>要注意的是，第二种风格中，<strong>获取的count不再是单一的变量，而是整个 type对象</strong>，所以需要再声明一个变量，通过该变量来获取conut。比如本例payload</p>
+<h5 id="4相应规则">4.相应规则</h5>
+<p><strong>① 响应式原理</strong>
+响应式就是当数据发生改变的时候，页面中用到该数据的地方也会发生改变。
+  当我们已经在store对象中定义某些属性时，属性就会被加入到<strong>响应式系统</strong>中，该系统就会监听属性是否发生变化，如果属性发生变化，就会通知界面中所有用到该属性的地方发生变化，这就是响应式的基本原理。
+<strong>② 前提</strong>
+  <strong>预先在store对象定义的属性是被加入到响应式系统中的</strong>，只有加入到响应式系统中的属性才会发生响应式的变化。
+<strong>③ 使用方式</strong>
+<strong>3-1 提前在store对象中定义了的变量</strong></p>
+<div class="highlight" id="id-32"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.jsconst store = new Vuex.Store({    state:{      info:{        name:&#39;haha&#39;,        age:13,        height:1.45      }    },    mutations:{      // 响应式测试      changeInfo(state){        state.info.name=&#39;哈哈&#39;      }    }})
+</span></span></span></code></pre></div><div class="highlight" id="id-33"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">App</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span><span class="nx">响应式测试</span><span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">button</span> <span class="nt">@click</span><span class="s">=&#34;changeInfo&#34;</span><span class="p">&gt;</span><span class="na">修改信息</span><span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>    <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;{{</span><span class="nx">$store</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">info</span><span class="p">}}&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;&lt;/</span><span class="nt">template</span><span class="p">&gt;&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>  <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>    <span class="nx">changeInfo</span><span class="p">(){</span>      <span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span><span class="s1">&#39;changeInfo&#39;</span><span class="p">)</span>    <span class="p">}</span>  <span class="p">}}&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>上述的代码，主要是对已经在store对象中定义了的属性 name 进行修改。
+<strong>3-2 没有提前在store对象定义的属性</strong>
+  如果属性没有提前在store对象定义，是不能够加入到响应式系统中的，但是在开发中，又可能需要像对象增加新的属性。这个时候就可以通过<strong>set方法</strong>解决，比如：</p>
+<div class="highlight" id="id-34"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js      changeInfo(state){            Vue.set(state.info,&#39;address&#39;,&#39;China&#39;)      }
+</span></span></span></code></pre></div><p>该方法第一个参数是要<strong>修改的对象名</strong>，第二个参数是要<strong>增加是属性名</strong>，第三个参数是<strong>新增加属性的值</strong>。比如本例中为inof对象新增加数值是“China”的address属性。</p>
+<h5 id="5常量类型">5.常量类型</h5>
+<p>  主要是为了防止今后大项目时方法名过多而导致出错的问题，用常量来替代方法名，便于管理，其用法在上面有写，这里就不进行阐述了。</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" data-title="Vue之Vuex（二）" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bvuex%E4%BA%8C-vue%E4%B9%8Bvuex%E4%BA%8C/" data-title="Vue之Vuex（二）"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8Bvuex%E4%B8%89-vue%E4%B9%8Bvuex%E4%B8%89/" class="post-nav-item" rel="prev" title="Vue之Vuex（三）"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之Vuex（三）</a>
+      <a href="/posts/vue%E4%B9%8Bvuecli-vue%E4%B9%8Bvuecli/" class="post-nav-item" rel="next" title="Vue之VueCLI">Vue之VueCLI<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

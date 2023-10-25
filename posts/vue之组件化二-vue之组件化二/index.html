@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之组件化（二） - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、父组件和子组件的区分 1.1.在Vue实例app中注册组件 &lt;script type=&#34;text/javascript&#34;&gt; /*创建组件构造器1*/ const cpnC1 = Vue.extend({ template: ` &lt;div&gt; &lt;h2&gt;我是组件1&lt;" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之组件化（二）">
+<meta itemprop="description" content="一、父组件和子组件的区分 1.1.在Vue实例app中注册组件 &lt;script type=&#34;text/javascript&#34;&gt; /*创建组件构造器1*/ const cpnC1 = Vue.extend({ template: ` &lt;div&gt; &lt;h2&gt;我是组件1&lt;">
+
+<meta itemprop="wordCount" content="2692">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之组件化（二）" />
+<meta property="og:description" content="一、父组件和子组件的区分 1.1.在Vue实例app中注册组件 &lt;script type=&#34;text/javascript&#34;&gt; /*创建组件构造器1*/ const cpnC1 = Vue.extend({ template: ` &lt;div&gt; &lt;h2&gt;我是组件1&lt;" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之组件化（二）"/>
+<meta name="twitter:description" content="一、父组件和子组件的区分 1.1.在Vue实例app中注册组件 &lt;script type=&#34;text/javascript&#34;&gt; /*创建组件构造器1*/ const cpnC1 = Vue.extend({ template: ` &lt;div&gt; &lt;h2&gt;我是组件1&lt;"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E5%BE%AA%E7%8E%AF%E9%81%8D%E5%8E%86-vue%E4%B9%8B%E5%BE%AA%E7%8E%AF%E9%81%8D%E5%8E%86/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之组件化（二）",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  2692 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之组件化（二）</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="2692 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2700 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#11在vue实例app中注册组件">1.1.在Vue实例app中注册组件</a></li>
+    <li><a href="#12父子组件引入">1.2.父子组件引入</a></li>
+    <li><a href="#13父组件和子组件是谁">1.3.父组件和子组件是谁？</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#21全局注册组件语法糖">2.1.全局注册组件语法糖</a></li>
+    <li><a href="#22局部注册组件语法糖">2.2.局部注册组件语法糖</a></li>
+    <li><a href="#23总结注册组件的语法糖写法">2.3.总结注册组件的语法糖写法</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#31使用注册组件语法糖">3.1.使用注册组件语法糖</a></li>
+    <li><a href="#32分离template--script">3.2.分离template&ndash;script</a></li>
+    <li><a href="#33template分离--template标签常用">3.3.template分离&ndash;template标签（常用）</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#41组件中数据存放位置的引入">4.1.组件中数据存放位置的引入</a></li>
+    <li><a href="#42组件中数据的存放位置">4.2.组件中数据的存放位置</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#51组件化一个计数器功能">5.1.组件化一个计数器功能</a></li>
+    <li><a href="#52为什么组件中的data必须是个函数">5.2.为什么组件中的data必须是个函数</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="一父组件和子组件的区分">一、父组件和子组件的区分</h1>
+<h2 id="11在vue实例app中注册组件">1.1.在Vue实例app中注册组件</h2>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/*创建组件构造器1*/</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cpnC1</span> <span class="o">=</span> <span class="nx">Vue</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span> <span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">                &lt;div&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                    &lt;h2&gt;我是组件1&lt;/h2&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                &lt;/div&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                `</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="cm">/*创建组件构造器2*/</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cpnC2</span> <span class="o">=</span> <span class="nx">Vue</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span> <span class="sb">`
+</span></span></span><span class="line"><span class="cl"><span class="sb">                &lt;div&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                    &lt;h2&gt;我是组件2&lt;/h2&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                &lt;/div&gt;
+</span></span></span><span class="line"><span class="cl"><span class="sb">                `</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="cm">/*创建Vue实例*/</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/*注册组件cpnC1*/</span>
+</span></span><span class="line"><span class="cl">            <span class="cm">/*注册组件cpnC2*/</span>           
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn1</span><span class="o">:</span><span class="nx">cpnC1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">cpn2</span><span class="o">:</span><span class="nx">cpnC2</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>          
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>在html中使用组件cpn1和cpn2</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn2</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/158.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="12父子组件引入">1.2.父子组件引入</h2>
+<p>如果将组件1注册在组件2的构造器中，并在组件2的tmplate中使用组件1，在Vue实例中值注册组件2，在html中使用组件cpn2会怎么样？
+组件构造器中也有components属性，可以在该属性中注册其他组件
+1.在组件构造器2中注册并使用组件1</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*创建组件构造器1*/
+</span></span><span class="line"><span class="cl">            const cpnC1 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>我是组件1<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            /*创建组件构造器2*/
+</span></span><span class="line"><span class="cl">            const cpnC2 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>我是组件2<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                `,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn1: cpnC1
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/159.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>2.在Vue实例中只注册组件2</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el: &#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn2:cpnC2
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })  </span></span></code></pre></div><p>3.在html中使用组件2</p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn2</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/160.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="13父组件和子组件是谁">1.3.父组件和子组件是谁？</h2>
+<p>因为组件1在组件2构造器中注册，
+并在组件2构造器template中使用，
+即使组件1并没有在Vue实例中注册，也没有在html中使用，
+但是，组件1存在在组件2的模板中，会被一起展示到html中。
+所以，
+组件2是父组件，
+组件1是子组件</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/161.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="二注册组件的语法糖写法">二、注册组件的语法糖写法</h1>
+<h2 id="21全局注册组件语法糖">2.1.全局注册组件语法糖</h2>
+<p>全局组件不用语法糖的构建过程：
+生成组件构造器</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*全局组件构造器*/
+</span></span><span class="line"><span class="cl">            const cpnC1 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>全局组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p>注册组件</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*注册全局组件*/
+</span></span><span class="line"><span class="cl">            Vue.component(&#39;cpn1&#39;,cpnC1);</span></span></code></pre></div><p>使用组件</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span></span></span></code></pre></div><p>全局注册组件的语法糖，省略extend步骤，直接在注册组件的第二参数中创建组件构造器</p>
+<p>1.语法糖写法下，注册组件的参数</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            Vue.component(&#39;cpn1&#39;,{
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>全局组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/162.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在html中使用全局组件</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/163.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="22局部注册组件语法糖">2.2.局部注册组件语法糖</h2>
+<p>局部注册组件不用语法糖的构建过程：
+生成组件构造器</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            const cpnC2 = Vue.extend({
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>局部组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p>在Vue实例中注册局部组件</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el: &#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn2: cpnC2
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p>使用局部组件</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn2</span><span class="p">&gt;&lt;/</span><span class="nt">cpn2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/164.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>注册局部组件时，components对象中，一对key value对应的是组件标签和组件构造器，使用语法糖注册时，在value构造器的位置，传入构造器的具体代码</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el: &#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn2: {
+</span></span><span class="line"><span class="cl">                        template: `
+</span></span><span class="line"><span class="cl">                            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>局部组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">                        `
+</span></span><span class="line"><span class="cl">                    }
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/165.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在html中使用局部组件</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/166.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="23总结注册组件的语法糖写法">2.3.总结注册组件的语法糖写法</h2>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            /*全局注册组件语法糖*/       
+</span></span><span class="line"><span class="cl">            Vue.component(&#39;cpn1&#39;,{
+</span></span><span class="line"><span class="cl">                template: `
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>全局组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/167.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            const app = new Vue({
+</span></span><span class="line"><span class="cl">                el: &#39;#app&#39;,
+</span></span><span class="line"><span class="cl">                components: {
+</span></span><span class="line"><span class="cl">                    cpn2: {
+</span></span><span class="line"><span class="cl">                        template: `
+</span></span><span class="line"><span class="cl">                            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>局部组件<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>              
+</span></span><span class="line"><span class="cl">                        `
+</span></span><span class="line"><span class="cl">                    }
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/168.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="三template分离写法">三、template分离写法</h1>
+<h2 id="31使用注册组件语法糖">3.1.使用注册组件语法糖</h2>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            Vue.component(&#39;cpn1&#39;,{
+</span></span><span class="line"><span class="cl">                template:`
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>template未分离<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                `
+</span></span><span class="line"><span class="cl">            })  </span></span></code></pre></div><p>在template中编写html代码是没有自动补齐的功能，并且当模板中的html代码变多时，注册组件部分看上去就会变得复杂。
+所以，这时候就需要将template部分分离出来。</p>
+<h2 id="32分离template--script">3.2.分离template&ndash;script</h2>
+<p>用script标签分离template时的注意点：
+1.script标签的类型是 type=&ldquo;text/x-template&rdquo;
+2.script标签要有id属性，用于标识模板</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/x-template&#34;</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="o">&lt;</span><span class="nx">h2</span><span class="o">&gt;</span><span class="nx">template分离</span><span class="o">&lt;</span><span class="err">/h2&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;cpn1&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span><span class="nx">cpn1</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>          
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/169.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在html中使用组件</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/170.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="33template分离--template标签常用">3.3.template分离&ndash;template标签（常用）</h2>
+<p>使用template标签分离template模板的注意点：
+要有id标签标识模板</p>
+<div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>template分离--template标签<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/171.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>在html中使用组件</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/172.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="四组件中的数据存储的位置">四、组件中的数据存储的位置</h1>
+<h2 id="41组件中数据存放位置的引入">4.1.组件中数据存放位置的引入</h2>
+<p>组件的html部分可以存放在template标签中，并且template标签是独立在Vue实例外的，
+若template中的数据也需要动态化的话，那动态数据存放在哪？
+是否同样存放在Vue实例中呢？</p>
+<p>验证Vue组件是否能使用Vue实例data中的数据：</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>{{message}}<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;cpn1&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;#cpn1&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;hello&#39;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>报错：message没有定义</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/173.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>说明Vue组件不能使用Vue实例data中的数据。
+即使组件能使用Vue实例中的数据，但是一个页面划分成若干个组件，每个组件中的数据都存放在Vue实例中的data里，会让Vue实例变得非常臃肿。
+所以无论如何，Vue组件中的数据是不会存放在Vue实例中的。</p>
+<p>因为Vue组件的原型链上有Vue实例的原型，所以Vue组件的数据应该存放在自己的data内。</p>
+<h2 id="42组件中数据的存放位置">4.2.组件中数据的存放位置</h2>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>{{message}}<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>组件中的数据存放在组件的data内，并且data是个函数，函数内return回一个对象，在return回的对象中存放数据</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">            Vue.component(&#39;cpn1&#39;,{
+</span></span><span class="line"><span class="cl">                template:&#39;#cpn1&#39;,
+</span></span><span class="line"><span class="cl">                data(){
+</span></span><span class="line"><span class="cl">                    return{
+</span></span><span class="line"><span class="cl">                        message:&#39;hello&#39;
+</span></span><span class="line"><span class="cl">                    }
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            })</span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/174.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="五组件中的data为什么必须是个函数">五、组件中的data为什么必须是个函数</h1>
+<h2 id="51组件化一个计数器功能">5.1.组件化一个计数器功能</h2>
+<p>在+button上绑定increase的点击事件，触发increase事件，让counter加1
+在-button上绑定decrease的点击事件，触发decrease事件，让counter减1</p>
+<div class="highlight" id="id-22"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;app&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">cpn1</span><span class="p">&gt;&lt;/</span><span class="nt">cpn1</span><span class="p">&gt;</span>           
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">template</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;cpn1&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>当前计数器：{{counter}}<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;increase&#34;</span><span class="p">&gt;</span>+<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">button</span> <span class="err">@</span><span class="na">click</span><span class="o">=</span><span class="s">&#34;decrease&#34;</span><span class="p">&gt;</span>-<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>                
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;js/vue.js&#34;</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&#34;text/javascript&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">Vue</span><span class="p">.</span><span class="nx">component</span><span class="p">(</span><span class="s1">&#39;cpn1&#39;</span><span class="p">,{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">template</span><span class="o">:</span><span class="s1">&#39;#cpn1&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="nx">counter</span><span class="o">:</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">increase</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">                    <span class="nx">decrease</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">this</span><span class="p">.</span><span class="nx">counter</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">})</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>各个组件化出的计数器互不影响</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/175.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="52为什么组件中的data必须是个函数">5.2.为什么组件中的data必须是个函数</h2>
+<p>首先：data若是个对象的话，会报错
+data是个对象</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/176.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/177.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>那么手动让data返回的是一个对象</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/178.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这么写就相当于data函数返回的都是同一个对象，和下面写法的效果一样</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/179.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>再测试计数器
+三个计数器不会相互独立，操作其中一个全部同时改变。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/180.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这是因为三个Vue组件实例共享的是同一个对象中的数据，所以当数据变化时，所以的Vue实例都同步变化</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/181.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>所以组件中的data必须是个函数，函数中return出的对象都是独立的，每实例化一个组件，该组件就会获取一个独立的data对象，即三个计数器组件实例获取的是三个return出的data对象，所以三个计数器功能互不影响。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/182.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/" data-title="Vue之组件化（二）" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%BA%8C/" data-title="Vue之组件化（二）"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89-vue%E4%B9%8B%E7%BB%84%E4%BB%B6%E5%8C%96%E4%B8%89/" class="post-nav-item" rel="prev" title="Vue之组件化（三）"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之组件化（三）</a>
+      <a href="/posts/vue%E4%B9%8B%E5%BE%AA%E7%8E%AF%E9%81%8D%E5%8E%86-vue%E4%B9%8B%E5%BE%AA%E7%8E%AF%E9%81%8D%E5%8E%86/" class="post-nav-item" rel="next" title="Vue之循环遍历">Vue之循环遍历<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Spring5之新功能Webflux - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Webflux 1、SpringWebflux 介绍 (1)是 Spring5 添加新的模块，用于 web 开发的，功能和 SpringMVC 类似的，Webflux 使用 当前一种比较流程响应式编程出现的" /><meta name="keywords" content='Spring5, Java' /><meta itemprop="name" content="Spring5之新功能Webflux">
+<meta itemprop="description" content="Webflux 1、SpringWebflux 介绍 (1)是 Spring5 添加新的模块，用于 web 开发的，功能和 SpringMVC 类似的，Webflux 使用 当前一种比较流程响应式编程出现的">
+
+<meta itemprop="wordCount" content="2867">
+<meta itemprop="keywords" content="Spring5,Java," /><meta property="og:title" content="Spring5之新功能Webflux" />
+<meta property="og:description" content="Webflux 1、SpringWebflux 介绍 (1)是 Spring5 添加新的模块，用于 web 开发的，功能和 SpringMVC 类似的，Webflux 使用 当前一种比较流程响应式编程出现的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spring5之新功能Webflux"/>
+<meta name="twitter:description" content="Webflux 1、SpringWebflux 介绍 (1)是 Spring5 添加新的模块，用于 web 开发的，功能和 SpringMVC 类似的，Webflux 使用 当前一种比较流程响应式编程出现的"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-web%E5%BC%80%E5%8F%91-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-web%E5%BC%80%E5%8F%91/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2@nullable%E7%AD%89-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2nullable%E7%AD%89/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Spring5之新功能Webflux",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux\/"
+    },"genre": "posts","keywords": "Spring5, Java","wordcount":  2867 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Spring5之新功能Webflux</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="2867 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2900 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 6 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1springwebflux-介绍"><strong>1</strong>、<strong>SpringWebflux</strong> 介绍</a></li>
+    <li><a href="#2响应式编程java-实现"><strong>2</strong>、响应式编程(<strong>Java</strong> 实现)</a></li>
+    <li><a href="#3响应式编程reactor-实现"><strong>3</strong>、响应式编程(<strong>Reactor</strong> 实现)</a></li>
+    <li><a href="#4springwebflux-执行流程和核心-api"><strong>4</strong>、<strong>SpringWebflux</strong> 执行流程和核心 **API</a></li>
+    <li><a href="#5springwebflux基于注解编程模型"><strong>5</strong>、<strong>SpringWebflux</strong>(基于注解编程模型)</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="webflux"><strong>Webflux</strong></h1>
+<h2 id="1springwebflux-介绍"><strong>1</strong>、<strong>SpringWebflux</strong> 介绍</h2>
+<p>(1)是 Spring5 添加新的模块，用于 web 开发的，功能和 SpringMVC 类似的，Webflux 使用 当前一种比较流程响应式编程出现的框架。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/43.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>(2)使用传统 web 框架，比如 SpringMVC，这些基于 Servlet 容器，Webflux 是一种异步非阻 塞的框架，异步非阻塞的框架在 Servlet3.1</p>
+<p>以后才支持，核心是基于 Reactor 的相关 API 实现 的。</p>
+<p>(3)解释什么是异步非阻塞</p>
+<ul>
+<li>
+<p>异步和同步</p>
+</li>
+<li>
+<p>非阻塞和阻塞</p>
+<ul>
+<li>上面都是针对对象不一样</li>
+</ul>
+</li>
+<li>
+<p>异步和同步针对调用者，调用者发送请求，如果等着对方回应之后才去做其他事情就是同步，如果发送请求之后不等着对方回应就去做其他事情就是异步</p>
+</li>
+<li>
+<p>阻塞和非阻塞针对被调用者，被调用者受到请求之后，做完请求任务之后才给出反馈就是阻塞，受到请求之后马上给出反馈然后再去做事情就是非阻塞</p>
+</li>
+</ul>
+<p>(4)Webflux 特点:</p>
+<p>第一 非阻塞式:在有限资源下，提高系统吞吐量和伸缩性，以 Reactor 为基础实现响应式编程 第二 函数式编程:Spring5 框架基于 java8，</p>
+<p>Webflux 使用 Java8 函数式编程方式实现路由请求</p>
+<p>(5)比较 SpringMVC</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/44.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>第一 两个框架都可以使用注解方式，都运行在 Tomcat 等容器中</p>
+<p>第二 SpringMVC 采用命令式编程，Webflux 采用异步响应式编程</p>
+<h2 id="2响应式编程java-实现"><strong>2</strong>、响应式编程(<strong>Java</strong> 实现)</h2>
+<p>(1)什么是响应式编程</p>
+<p>响应式编程是一种面向数据流和变化传播的编程范式。这意味着可以在编程语言中很方便地表达静态或动态的数据流，而相关的计算模型会自动将变化的值通过数据流进行传播。</p>
+<p>电子表格程序就是响应式编程的一个例子。单元格可以包含字面值或类似&quot;=B1+C1&quot;的公式，而包含公式的单元格的值会依据其他单元格的值的变化而变化。</p>
+<p>(2)Java8 及其之前版本</p>
+<ul>
+<li>提供的观察者模式两个类 Observer 和 Observable</li>
+</ul>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObserverDemo</span> <span class="kd">extends</span> <span class="n">Observable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">ObserverDemo</span> <span class="n">observer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObserverDemo</span><span class="o">();</span> 
+</span></span><span class="line"><span class="cl">    <span class="c1">//添加观察者 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">observer</span><span class="o">.</span><span class="na">addObserver</span><span class="o">((</span><span class="n">o</span><span class="o">,</span><span class="n">arg</span><span class="o">)-&gt;{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;发生变化&#34;</span><span class="o">);</span> 
+</span></span><span class="line"><span class="cl">    <span class="o">});</span>
+</span></span><span class="line"><span class="cl">		<span class="n">observer</span><span class="o">.</span><span class="na">addObserver</span><span class="o">((</span><span class="n">o</span><span class="o">,</span><span class="n">arg</span><span class="o">)-&gt;{</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;手动被观察者通知，准备改变&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="o">});</span>
+</span></span><span class="line"><span class="cl">			<span class="n">observer</span><span class="o">.</span><span class="na">setChanged</span><span class="o">();</span> <span class="c1">//数据变化 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">observer</span><span class="o">.</span><span class="na">notifyObservers</span><span class="o">();</span> <span class="c1">//通知
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span> 
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h2 id="3响应式编程reactor-实现"><strong>3</strong>、响应式编程(<strong>Reactor</strong> 实现)</h2>
+<p>(<strong>1</strong>)响应式编程操作中，<strong>Reactor</strong> 是满足 <strong>Reactive</strong> 规范框架</p>
+<p>(<strong>2</strong>)<strong>Reactor</strong> 有两个核心类，<strong>Mono</strong> 和 <strong>Flux</strong>，这两个类实现接口 <strong>Publisher</strong>，提供丰富操作 符。<strong>Flux</strong> 对象实现发布者，返回 <strong>N</strong> 个元</p>
+<p>素;<strong>Mono</strong> 实现发布者，返回 <strong>0</strong> 或者 <strong>1</strong> 个元素</p>
+<p>(3)Flux 和 Mono 都是数据流的发布者，使用 Flux 和 Mono 都可以发出三种数据信号: 元素值，错误信号，完成信号，错误信号和完成信</p>
+<p>号都代表终止信号，终止信号用于告诉 订阅者数据流结束了，错误信号终止数据流同时把错误信息传递给订阅者</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/45.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>(<strong>4</strong>)代码演示 <strong>Flux</strong> 和 <strong>Mono</strong></p>
+<p>第一步 引入依赖</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">				<span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>io.projectreactor<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>reactor-core<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>3.1.5.RELEASE<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></div><p>第二步 编程代码</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestReactor</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">//just方法直接声明
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Flux</span><span class="o">.</span><span class="na">just</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Mono</span><span class="o">.</span><span class="na">just</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">//其他的方法
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        Integer[] array = {1,2,3,4};
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        Flux.fromArray(array);
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        List&lt;Integer&gt; list = Arrays.asList(array);
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        Flux.fromIterable(list);
+</span></span></span><span class="line"><span class="cl"><span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        Stream&lt;Integer&gt; stream = list.stream();
+</span></span></span><span class="line"><span class="cl"><span class="c1">//        Flux.fromStream(stream);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>(5)三种信号特点</p>
+<ul>
+<li>错误信号和完成信号都是终止信号，不能共存的</li>
+<li>如果没有发送任何元素值，而是直接发送错误或者完成信号，表示是空数据流</li>
+<li>如果没有错误信号，没有完成信号，表示是无限数据流</li>
+</ul>
+<p>(6)调用 just 或者其他方法只是声明数据流，数据流并没有发出，只有进行订阅之后才会触 发数据流，不订阅什么都不会发生的</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">				<span class="c1">//just方法直接声明
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Flux</span><span class="o">.</span><span class="na">just</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">).</span><span class="na">subscribe</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">print</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Mono</span><span class="o">.</span><span class="na">just</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">subscribe</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">print</span><span class="o">);</span></span></span></code></pre></div><p>(<strong>7</strong>)操作符</p>
+<p>对数据流进行一道道操作，成为操作符，比如工厂流水线</p>
+<ul>
+<li>第一 map 元素映射为新元素</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/46.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>第二 flatMap 元素映射为流
+<ul>
+<li>把每个元素转换流，把转换之后多个流合并大的流</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/47.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="4springwebflux-执行流程和核心-api"><strong>4</strong>、<strong>SpringWebflux</strong> 执行流程和核心 **API</h2>
+<p>SpringWebflux 基于 Reactor，默认使用容器是 Netty，Netty 是高性能的 NIO 框架，异步非阻塞的框架</p>
+<p>(1)Netty(blocking I/O)： 同步并阻塞</p>
+<ul>
+<li>BIO</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/48.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>NIO (non-blocking I/O)： 同步非阻塞</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/49.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>(2)SpringWebflux 执行过程和 SpringMVC 相似的</p>
+<ul>
+<li>SpringWebflux 核心控制器 DispatchHandler，实现接口 WebHandler</li>
+<li>接口 WebHandler 有一个方法</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/50.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/51.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>(3)SpringWebflux 里面 DispatcherHandler，负责请求的处理</p>
+<ul>
+<li>
+<p>HandlerMapping:请求查询到处理的方法</p>
+</li>
+<li>
+<p>HandlerAdapter:真正负责请求处理</p>
+</li>
+<li>
+<p>HandlerResultHandler:响应结果处理</p>
+</li>
+</ul>
+<p>(4)SpringWebflux 实现函数式编程，两个接口:RouterFunction(路由处理) 和 HandlerFunction(处理函数)</p>
+<h2 id="5springwebflux基于注解编程模型"><strong>5</strong>、<strong>SpringWebflux</strong>(基于注解编程模型)</h2>
+<p>SpringWebflux 实现方式有两种:注解编程模型和函数式编程模型 使用注解编程模型方式，和之前 SpringMVC 使用相似的，只需要把相</p>
+<p>关依赖配置到项目中， SpringBoot 自动配置相关运行容器，默认情况下使用 Netty 服务器</p>
+<p>第一步 创建 SpringBoot 工程，引入 Webflux 依赖</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/52.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">				<span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-webflux<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></div><p>第二步 配置启动端口号</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/spring5/53.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>第三步 创建包和相关类</p>
+<ul>
+<li>实体类</li>
+</ul>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//实体类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">String</span> <span class="n">gender</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">User</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">User</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">String</span> <span class="n">gender</span><span class="o">,</span> <span class="n">Integer</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGender</span><span class="o">(</span><span class="n">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="n">Integer</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getGender</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">gender</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><ul>
+<li>创建接口定义操作的方法</li>
+</ul>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//用户操作接口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//根据id查询用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getUserById</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//查询所有用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Flux</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getAllUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//添加用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Mono</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="nf">saveUserInfo</span><span class="o">(</span><span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><ul>
+<li>接口实现类</li>
+</ul>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Repository</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserServiceImpl</span> <span class="kd">implements</span> <span class="n">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//创建map集合存储数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">UserServiceImpl</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">users</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="s">&#34;lucy&#34;</span><span class="o">,</span><span class="s">&#34;nan&#34;</span><span class="o">,</span><span class="mi">20</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">users</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span><span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="s">&#34;mary&#34;</span><span class="o">,</span><span class="s">&#34;nv&#34;</span><span class="o">,</span><span class="mi">30</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">users</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span><span class="k">new</span> <span class="n">User</span><span class="o">(</span><span class="s">&#34;jack&#34;</span><span class="o">,</span><span class="s">&#34;nv&#34;</span><span class="o">,</span><span class="mi">50</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//根据id查询
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getUserById</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Mono</span><span class="o">.</span><span class="na">justOrEmpty</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">users</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//查询多个用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Flux</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getAllUser</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">Flux</span><span class="o">.</span><span class="na">fromIterable</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">users</span><span class="o">.</span><span class="na">values</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//添加用户
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="nf">saveUserInfo</span><span class="o">(</span><span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userMono</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">userMono</span><span class="o">.</span><span class="na">doOnNext</span><span class="o">(</span><span class="n">person</span> <span class="o">-&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//向map集合里面放值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="n">users</span><span class="o">.</span><span class="na">size</span><span class="o">()+</span><span class="mi">1</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">users</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">id</span><span class="o">,</span><span class="n">person</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}).</span><span class="na">thenEmpty</span><span class="o">(</span><span class="n">Mono</span><span class="o">.</span><span class="na">empty</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><ul>
+<li>创建controller</li>
+</ul>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RestController</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="c1">//注入 service
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">private</span> <span class="n">UserService</span> <span class="n">userService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//id 查询
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/user/{id}&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">geetUserId</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">userService</span><span class="o">.</span><span class="na">getUserById</span><span class="o">(</span><span class="n">id</span><span class="o">);</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//查询所有
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/user&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="n">Flux</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="nf">getUsers</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">userService</span><span class="o">.</span><span class="na">getAllUser</span><span class="o">();</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//添加
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@PostMapping</span><span class="o">(</span><span class="s">&#34;/saveuser&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="nf">saveUser</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userMono</span> <span class="o">=</span> <span class="n">Mono</span><span class="o">.</span><span class="na">just</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="n">userService</span><span class="o">.</span><span class="na">saveUserInfo</span><span class="o">(</span><span class="n">userMono</span><span class="o">);</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>说明
+SpringMVC 方式实现，同步阻塞的方式，基于 SpringMVC+Servlet+Tomcat SpringWebflux 方式实现，异步非阻塞方式，基于</p>
+<p>SpringWebflux+Reactor+Netty</p>
+<p><strong>6</strong>、<strong>SpringWebflux</strong>(基于函数式编程模型)</p>
+<p>(1)在使用函数式编程模型操作时候，需要自己初始化服务器</p>
+<p>(2)基于函数式编程模型时候，有两个核心接口:RouterFunction(实现路由功能，请求转发 给对应的 handler)和 HandlerFunction(处理请求生成响应的函数)。核心任务定义两个函数 式接口的实现并且启动需要的服务器。</p>
+<p>(3)SpringWebflux 请求和响应不再是 ServletRequest 和 ServletResponse，而是 ServerRequest 和 ServerResponse</p>
+<p>第一步 把注解编程模型工程复制一份 ，保留 entity 和 service 内容 第二步 创建 Handler(具体实现方法)</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserHandler</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="n">UserService</span> <span class="n">userService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="nf">UserHandler</span><span class="o">(</span><span class="n">UserService</span> <span class="n">userService</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">userService</span> <span class="o">=</span> <span class="n">userService</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//根据id查询
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="nf">getUserById</span><span class="o">(</span><span class="n">ServerRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//获取id值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>       <span class="kt">int</span> <span class="n">userId</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">pathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">       <span class="c1">//空值处理
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Mono</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="n">notFound</span> <span class="o">=</span> <span class="n">ServerResponse</span><span class="o">.</span><span class="na">notFound</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       <span class="c1">//调用service方法得到数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userMono</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">userService</span><span class="o">.</span><span class="na">getUserById</span><span class="o">(</span><span class="n">userId</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//把userMono进行转换返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">//使用Reactor操作符flatMap
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">                <span class="n">userMono</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">.</span><span class="na">flatMap</span><span class="o">(</span><span class="n">person</span> <span class="o">-&gt;</span> <span class="n">ServerResponse</span><span class="o">.</span><span class="na">ok</span><span class="o">().</span><span class="na">contentType</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                                <span class="o">.</span><span class="na">body</span><span class="o">(</span><span class="n">fromObject</span><span class="o">(</span><span class="n">person</span><span class="o">)))</span>
+</span></span><span class="line"><span class="cl">                                <span class="o">.</span><span class="na">switchIfEmpty</span><span class="o">(</span><span class="n">notFound</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//查询所有
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="nf">getAllUsers</span><span class="o">(</span><span class="n">ServerRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//调用service得到结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Flux</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">users</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">userService</span><span class="o">.</span><span class="na">getAllUser</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ServerResponse</span><span class="o">.</span><span class="na">ok</span><span class="o">().</span><span class="na">contentType</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">).</span><span class="na">body</span><span class="o">(</span><span class="n">users</span><span class="o">,</span><span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//添加
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="n">Mono</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="nf">saveUser</span><span class="o">(</span><span class="n">ServerRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//得到user对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Mono</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">userMono</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">bodyToMono</span><span class="o">(</span><span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ServerResponse</span><span class="o">.</span><span class="na">ok</span><span class="o">().</span><span class="na">build</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">userService</span><span class="o">.</span><span class="na">saveUserInfo</span><span class="o">(</span><span class="n">userMono</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>第三步 初始化服务器，编写 Router</p>
+<ul>
+<li>创建路由的方法</li>
+</ul>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//1 创建Router路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="n">RouterFunction</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="nf">routingFunction</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//创建hanler对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">UserService</span> <span class="n">userService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserServiceImpl</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">UserHandler</span> <span class="n">handler</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserHandler</span><span class="o">(</span><span class="n">userService</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//设置路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="n">RouterFunctions</span><span class="o">.</span><span class="na">route</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">GET</span><span class="o">(</span><span class="s">&#34;/users/{id}&#34;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">accept</span><span class="o">(</span><span class="n">APPLICATION_JSON</span><span class="o">)),</span><span class="n">handler</span><span class="o">::</span><span class="n">getUserById</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">andRoute</span><span class="o">(</span><span class="n">GET</span><span class="o">(</span><span class="s">&#34;/users&#34;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">accept</span><span class="o">(</span><span class="n">APPLICATION_JSON</span><span class="o">)),</span><span class="n">handler</span><span class="o">::</span><span class="n">getAllUsers</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span></span></span></code></pre></div><ul>
+<li>创建服务器完成适配</li>
+</ul>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">//2 创建服务器完成适配
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">createReactorServer</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//路由和handler适配
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">RouterFunction</span><span class="o">&lt;</span><span class="n">ServerResponse</span><span class="o">&gt;</span> <span class="n">route</span> <span class="o">=</span> <span class="n">routingFunction</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">HttpHandler</span> <span class="n">httpHandler</span> <span class="o">=</span> <span class="n">toHttpHandler</span><span class="o">(</span><span class="n">route</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ReactorHttpHandlerAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReactorHttpHandlerAdapter</span><span class="o">(</span><span class="n">httpHandler</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//创建服务器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">HttpServer</span> <span class="n">httpServer</span> <span class="o">=</span> <span class="n">HttpServer</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">httpServer</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">adapter</span><span class="o">).</span><span class="na">bindNow</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span></span></span></code></pre></div><ul>
+<li>最终调用</li>
+</ul>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Server</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server</span><span class="o">.</span><span class="na">createReactorServer</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;enter to exit&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">.</span><span class="na">read</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span></span></span></code></pre></div><p>(4)使用 WebClient 调用</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//调用服务器地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">WebClient</span> <span class="n">webClient</span> <span class="o">=</span> <span class="n">WebClient</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="s">&#34;http://127.0.0.1:5794&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">//根据id查询
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">String</span> <span class="n">id</span> <span class="o">=</span> <span class="s">&#34;1&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">userresult</span> <span class="o">=</span> <span class="n">webClient</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">uri</span><span class="o">(</span><span class="s">&#34;/users/{id}&#34;</span><span class="o">,</span> <span class="n">id</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">).</span><span class="na">retrieve</span><span class="o">().</span><span class="na">bodyToMono</span><span class="o">(</span><span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">block</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">userresult</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">//查询所有
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">Flux</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">webClient</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">uri</span><span class="o">(</span><span class="s">&#34;/users&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">                <span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">).</span><span class="na">retrieve</span><span class="o">().</span><span class="na">bodyToFlux</span><span class="o">(</span><span class="n">User</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">results</span><span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">stu</span> <span class="o">-&gt;</span> <span class="n">stu</span><span class="o">.</span><span class="na">getName</span><span class="o">())</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">.</span><span class="na">buffer</span><span class="o">().</span><span class="na">doOnNext</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">).</span><span class="na">blockFirst</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux/" data-title="Spring5之新功能Webflux" data-hashtags="Spring5,Java"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux/" data-hashtag="Spring5"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDwebflux/" data-title="Spring5之新功能Webflux"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/spring5/' class="post-tag">Spring5</a><a href='/tags/java/' class="post-tag">Java</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-web%E5%BC%80%E5%8F%91-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-web%E5%BC%80%E5%8F%91/" class="post-nav-item" rel="prev" title="SpringBoot2核心技术-web开发"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>SpringBoot2核心技术-web开发</a>
+      <a href="/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2@nullable%E7%AD%89-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2nullable%E7%AD%89/" class="post-nav-item" rel="next" title="Spring5之新功能（Log4j2、@Nullable等）">Spring5之新功能（Log4j2、@Nullable等）<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

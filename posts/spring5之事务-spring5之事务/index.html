@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Spring5之事务 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、事务概念 1、什么是事务 (1)事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操 作都失败 (2)典型场景:银行转账" /><meta name="keywords" content='Spring5, Java' /><meta itemprop="name" content="Spring5之事务">
+<meta itemprop="description" content="一、事务概念 1、什么是事务 (1)事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操 作都失败 (2)典型场景:银行转账">
+
+<meta itemprop="wordCount" content="2480">
+<meta itemprop="keywords" content="Spring5,Java," /><meta property="og:title" content="Spring5之事务" />
+<meta property="og:description" content="一、事务概念 1、什么是事务 (1)事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操 作都失败 (2)典型场景:银行转账" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spring5之事务"/>
+<meta name="twitter:description" content="一、事务概念 1、什么是事务 (1)事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操 作都失败 (2)典型场景:银行转账"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2@nullable%E7%AD%89-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2nullable%E7%AD%89/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E5%88%9D%E4%BD%93%E9%AA%8C-spring5%E4%B9%8B%E5%88%9D%E4%BD%93%E9%AA%8C/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Spring5之事务",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1\/"
+    },"genre": "posts","keywords": "Spring5, Java","wordcount":  2480 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Spring5之事务</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="2480 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2500 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1什么是事务"><strong>1</strong>、什么是事务</a></li>
+    <li><a href="#2事务四个特性acid"><strong>2</strong>、事务四个特性(<strong>ACID</strong>)</a></li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1创建数据库表添加记录"><strong>1</strong>、创建数据库表，添加记录</a></li>
+        <li><a href="#2创建-service搭建-dao完成对象创建和注入关系"><strong>2</strong>、创建 <strong>service</strong>，搭建 <strong>dao</strong>，完成对象创建和注入关系</a></li>
+        <li><a href="#3在-dao-创建两个方法多钱和少钱的方法在-service-创建方法转账的方法"><strong>3</strong>、在 <strong>dao</strong> 创建两个方法:多钱和少钱的方法，在 <strong>service</strong> 创建方法(转账的方法)</a></li>
+        <li><a href="#4上面代码如果正常执行没有问题的但是如果代码执行过程中出现异常有问题"><strong>4</strong>、上面代码，如果正常执行没有问题的，但是如果代码执行过程中出现异常，有问题</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#1事务添加到-javaee-三层结构里面-service-层业务逻辑层"><strong>1</strong>、事务添加到 <strong>JavaEE</strong> 三层结构里面 <strong>Service</strong> 层(业务逻辑层)</a></li>
+    <li><a href="#2在-spring-进行事务管理操作"><strong>2</strong>、在 <strong>Spring</strong> 进行事务管理操作</a>
+      <ul>
+        <li><a href="#1有两种方式编程式事务管理和声明式事务管理使用">(<strong>1</strong>)有两种方式:编程式事务管理和声明式事务管理(使用)</a></li>
+      </ul>
+    </li>
+    <li><a href="#3声明式事务管理"><strong>3</strong>、声明式事务管理</a>
+      <ul>
+        <li><a href="#1基于注解方式使用">(<strong>1</strong>)基于注解方式(使用)</a></li>
+        <li><a href="#2基于-xml-配置文件方式">(2)基于 xml 配置文件方式</a></li>
+      </ul>
+    </li>
+    <li><a href="#4在-spring-进行声明式事务管理底层使用-aop-原理"><strong>4</strong>、在 <strong>Spring</strong> 进行声明式事务管理，底层使用 <strong>AOP</strong> 原理</a></li>
+    <li><a href="#5spring-事务管理-api"><strong>5</strong>、<strong>Spring</strong> 事务管理 <strong>API</strong></a>
+      <ul>
+        <li><a href="#1提供一个接口代表事务管理器这个接口针对不同的框架提供不同的实现类">(1)提供一个接口，代表事务管理器，这个接口针对不同的框架提供不同的实现类</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#1在-spring-配置文件配置事务管理器"><strong>1</strong>、在 <strong>spring</strong> 配置文件配置事务管理器</a></li>
+    <li><a href="#2在-spring-配置文件开启事务注解">2、在 <strong>spring</strong> 配置文件，开启事务注解</a></li>
+    <li><a href="#3在-service-类上面或者-service-类里面方法上面添加事务注解"><strong>3</strong>、在 <strong>service</strong> 类上面(或者 <strong>service</strong> 类里面方法上面)添加事务注解</a></li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1在-service-类上面添加注解transactional在这个注解里面可以配置事务相关参数"><strong>1</strong>、在 <strong>service</strong> 类上面添加注解**@Transactional**，在这个注解里面可以配置事务相关参数</a></li>
+        <li><a href="#2propagation事务传播行为"><strong>2</strong>、<strong>propagation</strong>:事务传播行为</a></li>
+        <li><a href="#3ioslation事务隔离级别"><strong>3</strong>、<strong>ioslation</strong>:事务隔离级别</a></li>
+        <li><a href="#4timeout超时时间"><strong>4</strong>、<strong>timeout</strong>:超时时间</a></li>
+        <li><a href="#5readonly是否只读"><strong>5</strong>、<strong>readOnly</strong>:是否只读</a></li>
+        <li><a href="#6rollbackfor回滚"><strong>6</strong>、<strong>rollbackFor</strong>:回滚</a></li>
+        <li><a href="#7norollbackfor不回滚"><strong>7</strong>、<strong>noRollbackFor</strong>:不回滚</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="一事务概念">一、事务概念</h1>
+<h2 id="1什么是事务"><strong>1</strong>、什么是事务</h2>
+<p>(1)事务是数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操 作都失败</p>
+<p>(2)典型场景:银行转账</p>
+<ul>
+<li>lucy转账100元给mary</li>
+<li>lucy 少 100，mary 多 100</li>
+</ul>
+<h2 id="2事务四个特性acid"><strong>2</strong>、事务四个特性(<strong>ACID</strong>)</h2>
+<p>(1)原子性</p>
+<p>(2)一致性</p>
+<p>(3)隔离性</p>
+<p>(4)持久性</p>
+<h1 id="二搭建事务操作环境">二、搭建事务操作环境</h1>
+<p><img loading="lazy" src="img/31.png" srcset="img/31.png, img/31.png 1.5x, img/31.png 2x" sizes="auto" data-title="31" data-alt="31" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="1创建数据库表添加记录"><strong>1</strong>、创建数据库表，添加记录</h3>
+<p><img loading="lazy" src="img/32.png" srcset="img/32.png, img/32.png 1.5x, img/32.png 2x" sizes="auto" data-title="32" data-alt="32" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2创建-service搭建-dao完成对象创建和注入关系"><strong>2</strong>、创建 <strong>service</strong>，搭建 <strong>dao</strong>，完成对象创建和注入关系</h3>
+<p>(1)service 注入 dao，在 dao 注入 JdbcTemplate，在 JdbcTemplate 注入 DataSource</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  	<span class="c1">//注入 dao
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">UserDao</span> <span class="n">userDao</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Repository</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserDaoImpl</span> <span class="kd">implements</span> <span class="n">UserDao</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">JdbcTemplate</span> <span class="n">jdbcTemplate</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="3在-dao-创建两个方法多钱和少钱的方法在-service-创建方法转账的方法"><strong>3</strong>、在 <strong>dao</strong> 创建两个方法:多钱和少钱的方法，在 <strong>service</strong> 创建方法(转账的方法)</h3>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Repository</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserDaoImpl</span> <span class="kd">implements</span> <span class="n">UserDao</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">JdbcTemplate</span> <span class="n">jdbcTemplate</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//lucy 转账 100 给 mary 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//少钱
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">reduceMoney</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">&#34;update t_account set money=money-? where username=?&#34;</span><span class="o">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">jdbcTemplate</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">sql</span><span class="o">,</span><span class="mi">100</span><span class="o">,</span><span class="s">&#34;lucy&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//多钱
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addMoney</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">&#34;update t_account set money=money+? where username=?&#34;</span><span class="o">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">jdbcTemplate</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">sql</span><span class="o">,</span><span class="mi">100</span><span class="o">,</span><span class="s">&#34;mary&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">	<span class="o">}</span> 
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="c1">//注入 dao
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">UserDao</span> <span class="n">userDao</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//转账的方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">accountMoney</span><span class="o">()</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="c1">//lucy 少 100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">userDao</span><span class="o">.</span><span class="na">reduceMoney</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">//mary 多 100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userDao</span><span class="o">.</span><span class="na">addMoney</span><span class="o">();</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="4上面代码如果正常执行没有问题的但是如果代码执行过程中出现异常有问题"><strong>4</strong>、上面代码，如果正常执行没有问题的，但是如果代码执行过程中出现异常，有问题</h3>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">  <span class="c1">//注入 dao
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nd">@Autowired</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">UserDao</span> <span class="n">userDao</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//转账的方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">accountMoney</span><span class="o">()</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="c1">//lucy 少 100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">userDao</span><span class="o">.</span><span class="na">reduceMoney</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1">//模拟异常
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">/</span><span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">		<span class="c1">//mary 多 100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">userDao</span><span class="o">.</span><span class="na">addMoney</span><span class="o">();</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h4 id="1上面问题如何解决呢">(1)上面问题如何解决呢?</h4>
+<ul>
+<li>使用事务进行解决</li>
+</ul>
+<h4 id="2事务操作过程">(2)事务操作过程</h4>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">    <span class="c1">//转账的方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">accountMoney</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//第一步 开启事务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//第二步 进行业务操作
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">//lucy少100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">userDao</span><span class="o">.</span><span class="na">reduceMoney</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">//模拟异常
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">/</span><span class="mi">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">//mary多100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">userDao</span><span class="o">.</span><span class="na">addMoney</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">//第三步 没有发生异常，提交事务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">//第四步 出现异常，事务回滚
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span></span></span></code></pre></div><h1 id="三spring-事务管理介绍">三、<strong>Spring</strong> 事务管理介绍</h1>
+<h2 id="1事务添加到-javaee-三层结构里面-service-层业务逻辑层"><strong>1</strong>、事务添加到 <strong>JavaEE</strong> 三层结构里面 <strong>Service</strong> 层(业务逻辑层)</h2>
+<h2 id="2在-spring-进行事务管理操作"><strong>2</strong>、在 <strong>Spring</strong> 进行事务管理操作</h2>
+<h3 id="1有两种方式编程式事务管理和声明式事务管理使用">(<strong>1</strong>)有两种方式:编程式事务管理和声明式事务管理(使用)</h3>
+<h2 id="3声明式事务管理"><strong>3</strong>、声明式事务管理</h2>
+<h3 id="1基于注解方式使用">(<strong>1</strong>)基于注解方式(使用)</h3>
+<h3 id="2基于-xml-配置文件方式">(2)基于 xml 配置文件方式</h3>
+<h2 id="4在-spring-进行声明式事务管理底层使用-aop-原理"><strong>4</strong>、在 <strong>Spring</strong> 进行声明式事务管理，底层使用 <strong>AOP</strong> 原理</h2>
+<h2 id="5spring-事务管理-api"><strong>5</strong>、<strong>Spring</strong> 事务管理 <strong>API</strong></h2>
+<h3 id="1提供一个接口代表事务管理器这个接口针对不同的框架提供不同的实现类">(1)提供一个接口，代表事务管理器，这个接口针对不同的框架提供不同的实现类</h3>
+<p><img loading="lazy" src="img/33.png" srcset="img/33.png, img/33.png 1.5x, img/33.png 2x" sizes="auto" data-title="33" data-alt="33" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h1 id="四注解声明式事务管理">四、注解声明式事务管理</h1>
+<h2 id="1在-spring-配置文件配置事务管理器"><strong>1</strong>、在 <strong>spring</strong> 配置文件配置事务管理器</h2>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!--创建事务管理器--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;transactionManager&#34;</span> <span class="na">class=</span><span class="s">&#34;org.springframework.jdbc.datasource.DataSourceTransactionManager&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--注入数据源--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span><span class="nt">&gt;&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/bean&gt;</span></span></span></code></pre></div><h2 id="2在-spring-配置文件开启事务注解">2、在 <strong>spring</strong> 配置文件，开启事务注解</h2>
+<p>(1)在 spring 配置文件引入名称空间 tx</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="na">xmlns:context=</span><span class="s">&#34;http://www.springframework.org/schema/context&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="na">xmlns:aop=</span><span class="s">&#34;http://www.springframework.org/schema/aop&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="na">xmlns:tx=</span><span class="s">&#34;http://www.springframework.org/schema/tx&#34;</span>
+</span></span><span class="line"><span class="cl">       <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+</span></span></span><span class="line"><span class="cl"><span class="s">                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+</span></span></span><span class="line"><span class="cl"><span class="s">                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+</span></span></span><span class="line"><span class="cl"><span class="s">                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd&#34;</span><span class="nt">&gt;</span></span></span></code></pre></div><p>(2)开启事务注解</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!--开启事务注解--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;tx:annotation-driven</span> <span class="na">transaction-manager=</span><span class="s">&#34;transactionManager&#34;</span><span class="nt">&gt;&lt;/tx:annotation-driven&gt;</span></span></span></code></pre></div><h2 id="3在-service-类上面或者-service-类里面方法上面添加事务注解"><strong>3</strong>、在 <strong>service</strong> 类上面(或者 <strong>service</strong> 类里面方法上面)添加事务注解</h2>
+<p>(1)@Transactional，这个注解添加到类上面，也可以添加方法上面</p>
+<p>(2)如果把这个注解添加类上面，这个类里面所有的方法都添加事务</p>
+<p>(3)如果把这个注解添加方法上面，为这个方法添加事务</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> <span class="o">....</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h1 id="五声明式事务管理参数配置">五、声明式事务管理参数配置</h1>
+<h3 id="1在-service-类上面添加注解transactional在这个注解里面可以配置事务相关参数"><strong>1</strong>、在 <strong>service</strong> 类上面添加注解**@Transactional**，在这个注解里面可以配置事务相关参数</h3>
+<p><img loading="lazy" src="img/34.png" srcset="img/34.png, img/34.png 1.5x, img/34.png 2x" sizes="auto" data-title="34" data-alt="34" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="2propagation事务传播行为"><strong>2</strong>、<strong>propagation</strong>:事务传播行为</h3>
+<p>(<strong>1</strong>)多事务方法直接进行调用，这个过程中事务是如何进行管理的</p>
+<p><img loading="lazy" src="img/35.png" srcset="img/35.png, img/35.png 1.5x, img/35.png 2x" sizes="auto" data-title="35" data-alt="35" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="img/%e4%ba%8b%e5%8a%a1%e4%bc%a0%e6%92%ad%e8%a1%8c%e4%b8%ba.bmp" srcset="img/%e4%ba%8b%e5%8a%a1%e4%bc%a0%e6%92%ad%e8%a1%8c%e4%b8%ba.bmp, img/%e4%ba%8b%e5%8a%a1%e4%bc%a0%e6%92%ad%e8%a1%8c%e4%b8%ba.bmp 1.5x, img/%e4%ba%8b%e5%8a%a1%e4%bc%a0%e6%92%ad%e8%a1%8c%e4%b8%ba.bmp 2x" sizes="auto" data-title="事务传播行为" data-alt="事务传播行为" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>我们只需要掌握前两种常用的行为即可！</p>
+<p>(2)添加方法</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="o">(</span><span class="n">propagation</span> <span class="o">=</span> <span class="n">Propagation</span><span class="o">.</span><span class="na">REQUIRED</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="3ioslation事务隔离级别"><strong>3</strong>、<strong>ioslation</strong>:事务隔离级别</h3>
+<h4 id="1事务有特性成为隔离性多事务操作之间不会产生影响不考虑隔离性产生很多问题">(1)事务有特性成为隔离性，多事务操作之间不会产生影响。不考虑隔离性产生很多问题</h4>
+<h4 id="2有三个读问题脏读不可重复读虚幻读">(2)有三个读问题:脏读、不可重复读、虚(幻)读</h4>
+<h4 id="3脏读一个未提交事务读取到另一个未提交事务的数据">(3)脏读:一个未提交事务读取到另一个未提交事务的数据</h4>
+<p><img loading="lazy" src="img/36.png" srcset="img/36.png, img/36.png 1.5x, img/36.png 2x" sizes="auto" data-title="36" data-alt="36" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>东方不败和岳不群分别开启了事务A、B，岳不群将数值5000 update 到60000，此时东方不败select数值为60000，接着岳不群并未commit，而是rollback，数值又回到了5000，可是东方不败读取的数值却为60000（数据库中的实际数值仍为5000），这就是脏读。</p>
+<h4 id="4不可重复读一个未提交事务读取到另一提交事务修改数据">(4)不可重复读:一个未提交事务读取到另一提交事务修改数据</h4>
+<p><img loading="lazy" src="img/37.png" srcset="img/37.png, img/37.png 1.5x, img/37.png 2x" sizes="auto" data-title="37" data-alt="37" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>东方不败和岳不群分别开启了事务A、B，东方不败和岳不群同时读取到数据5000，接着岳不群将5000 update到900 ，并且立刻commit（此时数据库中的数值已经成了900），此时东方不败又读取数据，却拿到900，两次读取结果不一样，这就是不可重复读。</p>
+<h4 id="5虚读一个未提交事务读取到另一提交事务添加数据">(5)虚读:一个未提交事务读取到另一提交事务添加数据</h4>
+<p>和脏读类似。</p>
+<h4 id="6解决通过设置事务隔离级别解决读问题">(6)解决:通过设置事务隔离级别，解决读问题</h4>
+<p><img loading="lazy" src="img/%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab.bmp" srcset="img/%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab.bmp, img/%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab.bmp 1.5x, img/%e4%ba%8b%e5%8a%a1%e9%9a%94%e7%a6%bb%e7%ba%a7%e5%88%ab.bmp 2x" sizes="auto" data-title="事务隔离级别" data-alt="事务隔离级别" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h4 id="7添加事务隔离的方法">(7)添加事务隔离的方法</h4>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="o">(</span><span class="n">isolation</span> <span class="o">=</span> <span class="n">Isolation</span><span class="o">.</span><span class="na">REPEATABLE_READ</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="4timeout超时时间"><strong>4</strong>、<strong>timeout</strong>:超时时间</h3>
+<p>(1)事务需要在一定时间内进行提交，如果不提交进行回滚</p>
+<p>(2)默认值是 -1 ，设置时间以秒单位进行计算</p>
+<p>(3)添加方法</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="o">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="5readonly是否只读"><strong>5</strong>、<strong>readOnly</strong>:是否只读</h3>
+<p>(1)读:查询操作，写:添加修改删除操作</p>
+<p>(2)readOnly 默认值 false，表示可以查询，可以添加修改删除操作</p>
+<p>(3)设置 readOnly 值是 true，设置成 true 之后，只能查询</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Service</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="o">(</span><span class="n">readOnly</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserService</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><h3 id="6rollbackfor回滚"><strong>6</strong>、<strong>rollbackFor</strong>:回滚</h3>
+<p>(1)设置出现哪些异常进行事务回滚</p>
+<h3 id="7norollbackfor不回滚"><strong>7</strong>、<strong>noRollbackFor</strong>:不回滚</h3>
+<p>(1)设置出现哪些异常不进行事务回滚</p>
+<h1 id="六xml-声明式事务管理">六、<strong>XML</strong> 声明式事务管理</h1>
+<p><strong>1</strong>、在 <strong>spring</strong> 配置文件中进行配置</p>
+<p>第一步 配置事务管理器</p>
+<p>第二步 配置通知</p>
+<p>第三步 配置切入点和切面</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!--1 创建事务管理器--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">&#34;transactionManager&#34;</span> <span class="na">class=</span><span class="s">&#34;org.springframework.jdbc.datasource.DataSourceTransactionManager&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--注入数据源--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">&#34;dataSource&#34;</span> <span class="na">ref=</span><span class="s">&#34;dataSource&#34;</span><span class="nt">&gt;&lt;/property&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/bean&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!--2 配置通知--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;tx:advice</span> <span class="na">id=</span><span class="s">&#34;txadvice&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--配置事务参数--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;tx:attributes&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--指定哪种规则的方法上面添加事务--&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;tx:method</span> <span class="na">name=</span><span class="s">&#34;accountMoney&#34;</span> <span class="na">propagation=</span><span class="s">&#34;REQUIRED&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="c">&lt;!--&lt;tx:method name=&#34;account*&#34;/&gt;--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/tx:attributes&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/tx:advice&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c">&lt;!--3 配置切入点和切面--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;aop:config&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--配置切入点--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;aop:pointcut</span> <span class="na">id=</span><span class="s">&#34;pt&#34;</span> <span class="na">expression=</span><span class="s">&#34;execution(* com.atguigu.spring5.service.UserService.*(..))&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--配置切面--&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;aop:advisor</span> <span class="na">advice-ref=</span><span class="s">&#34;txadvice&#34;</span> <span class="na">pointcut-ref=</span><span class="s">&#34;pt&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/aop:config&gt;</span></span></span></code></pre></div><h1 id="七完全注解声明式事务管理">七、完全注解声明式事务管理</h1>
+<p><strong>1</strong>、创建配置类，使用配置类替代 <strong>xml</strong> 配置文件</p>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Configuration</span> <span class="c1">//配置类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@ComponentScan</span><span class="o">(</span><span class="n">basePackages</span> <span class="o">=</span> <span class="s">&#34;com.atguigu&#34;</span><span class="o">)</span> <span class="c1">//组件扫描
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nd">@EnableTransactionManagement</span> <span class="c1">//开启事务
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TxConfig</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//创建数据库连接池
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">DruidDataSource</span> <span class="nf">getDruidDataSource</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">DruidDataSource</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DruidDataSource</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dataSource</span><span class="o">.</span><span class="na">setDriverClassName</span><span class="o">(</span><span class="s">&#34;com.mysql.jdbc.Driver&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dataSource</span><span class="o">.</span><span class="na">setUrl</span><span class="o">(</span><span class="s">&#34;jdbc:mysql:///user_db&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dataSource</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="s">&#34;root&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dataSource</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="s">&#34;root&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">dataSource</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//创建JdbcTemplate对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">JdbcTemplate</span> <span class="nf">getJdbcTemplate</span><span class="o">(</span><span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//到ioc容器中根据类型找到dataSource
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">JdbcTemplate</span> <span class="n">jdbcTemplate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JdbcTemplate</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//注入dataSource
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">jdbcTemplate</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">jdbcTemplate</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">//创建事务管理器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nd">@Bean</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">DataSourceTransactionManager</span> <span class="nf">getDataSourceTransactionManager</span><span class="o">(</span><span class="n">DataSource</span> <span class="n">dataSource</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">DataSourceTransactionManager</span> <span class="n">transactionManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DataSourceTransactionManager</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">transactionManager</span><span class="o">.</span><span class="na">setDataSource</span><span class="o">(</span><span class="n">dataSource</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">transactionManager</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1/" data-title="Spring5之事务" data-hashtags="Spring5,Java"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1/" data-hashtag="Spring5"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1-spring5%E4%B9%8B%E4%BA%8B%E5%8A%A1/" data-title="Spring5之事务"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/spring5/' class="post-tag">Spring5</a><a href='/tags/java/' class="post-tag">Java</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2@nullable%E7%AD%89-spring5%E4%B9%8B%E6%96%B0%E5%8A%9F%E8%83%BDlog4j2nullable%E7%AD%89/" class="post-nav-item" rel="prev" title="Spring5之新功能（Log4j2、@Nullable等）"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Spring5之新功能（Log4j2、@Nullable等）</a>
+      <a href="/posts/spring5%E4%B9%8B%E5%88%9D%E4%BD%93%E9%AA%8C-spring5%E4%B9%8B%E5%88%9D%E4%BD%93%E9%AA%8C/" class="post-nav-item" rel="next" title="Spring5之初体验">Spring5之初体验<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

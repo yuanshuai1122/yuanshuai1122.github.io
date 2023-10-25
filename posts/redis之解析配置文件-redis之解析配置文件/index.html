@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Redis之解析配置文件 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="解析配置文件Redis.conf 1、它在哪 1.1、地址 记得将它拷贝出来单独执行~ 2、Units单位 配置大小单位,开头定义了一些基本的度量单位" /><meta name="keywords" content='数据库, Redis' /><meta itemprop="name" content="Redis之解析配置文件">
+<meta itemprop="description" content="解析配置文件Redis.conf 1、它在哪 1.1、地址 记得将它拷贝出来单独执行~ 2、Units单位 配置大小单位,开头定义了一些基本的度量单位">
+
+<meta itemprop="wordCount" content="4198">
+<meta itemprop="keywords" content="数据库,Redis," /><meta property="og:title" content="Redis之解析配置文件" />
+<meta property="og:description" content="解析配置文件Redis.conf 1、它在哪 1.1、地址 记得将它拷贝出来单独执行~ 2、Units单位 配置大小单位,开头定义了一些基本的度量单位" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Redis之解析配置文件"/>
+<meta name="twitter:description" content="解析配置文件Redis.conf 1、它在哪 1.1、地址 记得将它拷贝出来单独执行~ 2、Units单位 配置大小单位,开头定义了一些基本的度量单位"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D-redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Redis之解析配置文件",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6\/"
+    },"genre": "posts","keywords": "数据库, Redis","wordcount":  4198 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Redis之解析配置文件</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="4198 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 4200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 9 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1它在哪">1、<strong>它在哪</strong></a>
+      <ul>
+        <li><a href="#11地址">1.1、地址</a></li>
+      </ul>
+    </li>
+    <li><a href="#2units单位">2、<strong>Units</strong>单位</a></li>
+    <li><a href="#3includes包含"><strong>3、INCLUDES</strong>包含</a></li>
+    <li><a href="#4general通用">4、<strong>GENERAL</strong>通用</a></li>
+    <li><a href="#5snapshotting快照">5、<strong>SNAPSHOTTING</strong>快照</a>
+      <ul>
+        <li><a href="#51save">5.1、Save</a></li>
+        <li><a href="#52stop-writes-on-bgsave-error">5.2、Stop-writes-on-bgsave-error</a></li>
+        <li><a href="#53rdbcompression">5.3、rdbcompression</a></li>
+        <li><a href="#54rdbchecksum">5.4、rdbchecksum</a></li>
+        <li><a href="#55dbfilename">5.5、dbfilename</a></li>
+        <li><a href="#56dir">5.6、dir</a></li>
+      </ul>
+    </li>
+    <li><a href="#6replication复制">6、<strong>REPLICATION</strong>复制</a></li>
+    <li><a href="#7security安全">7、SECURITY安全</a></li>
+    <li><a href="#8limits限制">8、<strong>LIMITS</strong>限制</a>
+      <ul>
+        <li><a href="#81maxclients">8.1、Maxclients</a></li>
+        <li><a href="#82maxmemory">8.2、Maxmemory</a></li>
+        <li><a href="#83maxmemory-policy">8.3、Maxmemory-policy</a></li>
+        <li><a href="#84maxmemory-samples">8.4、Maxmemory-samples</a></li>
+      </ul>
+    </li>
+    <li><a href="#9append-only-mode追加">9、<strong>APPEND ONLY MODE</strong>追加</a></li>
+    <li><a href="#10常见配置redisconf介绍">10、<strong>常见配置</strong>redis.conf介绍</a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="解析配置文件redisconf"><strong>解析配置文件</strong>Redis.conf</h1>
+<h2 id="1它在哪">1、<strong>它在哪</strong></h2>
+<h3 id="11地址">1.1、地址</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/77.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>记得将它拷贝出来单独执行~</strong></p>
+<h2 id="2units单位">2、<strong>Units</strong>单位</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/78.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ol>
+<li>配置大小单位,开头定义了一些基本的度量单位，只支持bytes，不支持bit</li>
+</ol>
+<p>2 . 对大小写不敏感</p>
+<h2 id="3includes包含"><strong>3、INCLUDES</strong>包含</h2>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/79.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>和我们的Struts2配置文件类似，可以通过includes包含，redis.conf可以作为总闸，包含其他</p>
+<h2 id="4general通用">4、<strong>GENERAL</strong>通用</h2>
+<ul>
+<li>
+<p>Daemonize</p>
+</li>
+<li>
+<p>Pidfile</p>
+</li>
+<li>
+<p>Port</p>
+</li>
+<li>
+<p>Tcp-backlog</p>
+</li>
+</ul>
+<p>tcp-backlog</p>
+<p>设置tcp的backlog，backlog其实是一个连接队列，backlog队列总和=未完成三次握手队列 + 已经完成三次握手队列。</p>
+<p>在高并发环境下你需要一个高backlog值来避免慢客户端连接问题。注意Linux内核会将这个值减小到/proc/sys/net/core/somaxconn的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值来达到想要的效果</p>
+<ul>
+<li>
+<p>Timeout</p>
+</li>
+<li>
+<p>Bind</p>
+</li>
+<li>
+<p>Tcp-keepalive</p>
+</li>
+</ul>
+<p>​       单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60</p>
+<ul>
+<li>
+<p>Loglevel</p>
+</li>
+<li>
+<p>Logfile</p>
+</li>
+<li>
+<p>Syslog-enabled</p>
+<p>是否把日志输出到syslog中</p>
+</li>
+<li>
+<p>Syslog-ident</p>
+<p>指定syslog里的日志标志</p>
+</li>
+<li>
+<p>Syslog-facility</p>
+<p>指定syslog设备，值可以是USER或LOCAL0-LOCAL7</p>
+</li>
+<li>
+<p>Databases</p>
+</li>
+</ul>
+<h2 id="5snapshotting快照">5、<strong>SNAPSHOTTING</strong>快照</h2>
+<h3 id="51save">5.1、Save</h3>
+<ul>
+<li>save 秒钟 写操作次数</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/80.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>RDB是整个内存的压缩过的Snapshot，RDB的数据结构，可以配置复合的快照触发条件，</p>
+<p>默认</p>
+<p>是1分钟内改了1万次，</p>
+<p>或5分钟内改了10次，</p>
+<p>或15分钟内改了1次。</p>
+<ul>
+<li>禁用</li>
+<li><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/81.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></li>
+</ul>
+<p>如果想禁用RDB持久化的策略，只要不设置任何save指令，或者给save传入一个空字符串参数也可以</p>
+<h3 id="52stop-writes-on-bgsave-error">5.2、Stop-writes-on-bgsave-error</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/82.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>如果配置成no，表示你不在乎数据不一致或者有其他的手段发现和控制</p>
+<h3 id="53rdbcompression">5.3、rdbcompression</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/83.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>rdbcompression：对于存储到磁盘中的快照，可以设置是否进行压缩存储。如果是的话，redis会采用</p>
+<p>LZF算法进行压缩。如果你不想消耗CPU来进行压缩的话，可以设置为关闭此功能</p>
+<h3 id="54rdbchecksum">5.4、rdbchecksum</h3>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/84.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>rdbchecksum：在存储快照后，还可以让redis使用CRC64算法来进行数据校验，但是这样做会增加大约</p>
+<p>10%的性能消耗，如果希望获取到最大的性能提升，可以关闭此功能</p>
+<h3 id="55dbfilename">5.5、dbfilename</h3>
+<h3 id="56dir">5.6、dir</h3>
+<h2 id="6replication复制">6、<strong>REPLICATION</strong>复制</h2>
+<h2 id="7security安全">7、SECURITY安全</h2>
+<ul>
+<li>访问密码的查看、设置和取消</li>
+<li><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/85.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></li>
+</ul>
+<h2 id="8limits限制">8、<strong>LIMITS</strong>限制</h2>
+<h3 id="81maxclients">8.1、Maxclients</h3>
+<p>设置redis同时可以与多少个客户端进行连接。默认情况下为10000个客户端。当你无法设置进程文件句柄限制时，redis会设置为当前的文件句柄限制值减去32，因为redis会为自身内部处理逻辑留一些句柄出来。如果达到了此限制，redis则会拒绝新的连接请求，并且向这 些连接请求方发出“max number of clients reached”以作回应。</p>
+<h3 id="82maxmemory">8.2、Maxmemory</h3>
+<p>设置redis可以使用的内存量。一旦到达内存使用上限，redis将会试图移除内部数据，移除规则可以通过maxmemory-policy来指定。如果redis无法根据移除规则来移除内存中的数据，或者设置了“不允许移除”， 那么redis则会针对那些需要申请内存的指令返回错误信息，比如SET、LPUSH等。 但是对于无内存申请的指令，仍然会正常响应，比如GET等。如果你的redis是主redis（说明你的redis有从redis），那么在设置内存使用上限时，需要在系统中留出一些内存空间给同步队列缓存，只有在你设置的是“不移除”的情况下，才不用考虑这个因素</p>
+<h3 id="83maxmemory-policy">8.3、Maxmemory-policy</h3>
+<p>（1）volatile-lru：使用LRU算法移除key，只对设置了过期时间的键</p>
+<p>（2）allkeys-lru：使用LRU算法移除key</p>
+<p>（3）volatile-random：在过期集合中移除随机的key，只对设置了过期时间的键</p>
+<p>（4）allkeys-random：移除随机的key</p>
+<p>（5）volatile-ttl：移除那些TTL值最小的key，即那些最近要过期的key</p>
+<p>（6）noeviction：不进行移除。针对写操作，只是返回错误信息</p>
+<h3 id="84maxmemory-samples">8.4、Maxmemory-samples</h3>
+<p>设置样本数量，LRU算法和最小TTL算法都并非是精确的算法，而是估算值，所以你可以设置样本的大小， redis默认会检查这么多个key并选择其中LRU的那个</p>
+<h2 id="9append-only-mode追加">9、<strong>APPEND ONLY MODE</strong>追加</h2>
+<ul>
+<li>
+<p>appendonly</p>
+</li>
+<li>
+<p>appendfilename</p>
+</li>
+<li>
+<p>Appendfsync</p>
+</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/redis/86.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>Always：同步持久化 每次发生数据变更会被立即记录到磁盘 性能较差但数据完整性比较好</p>
+<p>Everysec：出厂默认推荐，异步操作，每秒记录  如果一秒内宕机，有数据丢失</p>
+<p>No</p>
+<ul>
+<li>
+<p>No-appendfsync-on-rewrite：重写时是否可以运用Appendfsync，用默认no即可，保证数据安全性。</p>
+</li>
+<li>
+<p>Auto-aof-rewrite-min-size：设置重写的基准值</p>
+</li>
+<li>
+<p>Auto-aof-rewrite-percentage：设置重写的基准值</p>
+</li>
+</ul>
+<h2 id="10常见配置redisconf介绍">10、<strong>常见配置</strong>redis.conf介绍</h2>
+<blockquote>
+<p><strong>参数说明</strong></p>
+<p>redis.conf 配置项说明如下：</p>
+<p>\1. Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程</p>
+<p>daemonize no</p>
+<p>\2. 当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定</p>
+<p>pidfile /var/run/redis.pid</p>
+<p>\3. 指定Redis监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字</p>
+<p>port 6379</p>
+<p>\4. 绑定的主机地址</p>
+<p>bind 127.0.0.1</p>
+<p>5.当 客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能</p>
+<p>timeout 300</p>
+<p>\6. 指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose</p>
+<p>loglevel verbose</p>
+<p>\7. 日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null</p>
+<p>logfile stdout</p>
+<p>\8. 设置数据库的数量，默认数据库为0，可以使用SELECT <!-- raw HTML omitted -->命令在连接上指定数据库id</p>
+<p>databases 16</p>
+<p>\9. 指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合</p>
+<p>save <!-- raw HTML omitted --> <!-- raw HTML omitted --></p>
+<p>Redis默认配置文件中提供了三个条件：</p>
+<p>save 900 1</p>
+<p>save 300 10</p>
+<p>save 60 10000</p>
+<p>分别表示900秒（15分钟）内有1个更改，300秒（5分钟）内有10个更改以及60秒内有10000个更改。</p>
+<p>\10. 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大</p>
+<p>rdbcompression yes</p>
+<p>\11. 指定本地数据库文件名，默认值为dump.rdb</p>
+<p>dbfilename dump.rdb</p>
+<p>\12. 指定本地数据库存放目录</p>
+<p>dir ./</p>
+<p>\13. 设置当本机为slav服务时，设置master服务的IP地址及端口，在Redis启动时，它会自动从master进行数据同步</p>
+<p>slaveof <!-- raw HTML omitted --> <!-- raw HTML omitted --></p>
+<p>\14. 当master服务设置了密码保护时，slav服务连接master的密码</p>
+<p>masterauth <!-- raw HTML omitted --></p>
+<p>\15. 设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH <!-- raw HTML omitted -->命令提供密码，默认关闭</p>
+<p>requirepass foobared</p>
+<p>\16. 设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max number of clients reached错误信息</p>
+<p>maxclients 128</p>
+<p>\17. 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，当此方法处理 后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区</p>
+<p>maxmemory <!-- raw HTML omitted --></p>
+<p>\18. 指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no</p>
+<p>appendonly no</p>
+<p>\19. 指定更新日志文件名，默认为appendonly.aof</p>
+<p>appendfilename appendonly.aof</p>
+<p>\20. 指定更新日志条件，共有3个可选值：</p>
+<p>no：表示等操作系统进行数据缓存同步到磁盘（快）</p>
+<p>always：表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）</p>
+<p>everysec：表示每秒同步一次（折衷，默认值）</p>
+<p>appendfsync everysec</p>
+<p>\21. 指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制）</p>
+<p>vm-enabled no</p>
+<p>\22. 虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享</p>
+<p>vm-swap-file /tmp/redis.swap</p>
+<p>\23. 将所有大于vm-max-memory的数据存入虚拟内存,无论vm-max-memory设置多小,所有索引数据都是内存存储的(Redis的索引数据 就是keys),也就是说,当vm-max-memory设置为0的时候,其实是所有value都存在于磁盘。默认值为0</p>
+<p>vm-max-memory 0</p>
+<p>\24. Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的 数据大小来设定的，作者建议如果存储很多小对象，page大小最好设置为32或者64bytes；如果存储很大大对象，则可以使用更大的page，如果不 确定，就使用默认值</p>
+<p>vm-page-size 32</p>
+<p>\25. 设置swap文件中的page数量，由于页表（一种表示页面空闲或使用的bitmap）是在放在内存中的，，在磁盘上每8个pages将消耗1byte的内存。</p>
+<p>vm-pages 134217728</p>
+<p>\26. 设置访问swap文件的线程数,最好不要超过机器的核数,如果设置为0,那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟。默认值为4</p>
+<p>vm-max-threads 4</p>
+<p>\27. 设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启</p>
+<p>glueoutputbuf yes</p>
+<p>\28. 指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法</p>
+<p>hash-max-zipmap-entries 64</p>
+<p>hash-max-zipmap-value 512</p>
+<p>\29. 指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍）</p>
+<p>activerehashing yes</p>
+<p>\30. 指定包含其它的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件</p>
+<p>include /path/to/local.conf</p>
+</blockquote>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" data-title="Redis之解析配置文件" data-hashtags="数据库,Redis"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" data-hashtag="数据库"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-redis%E4%B9%8B%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" data-title="Redis之解析配置文件"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/' class="post-tag">数据库</a><a href='/tags/redis/' class="post-tag">Redis</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D-redis%E4%B9%8B%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/" class="post-nav-item" rel="prev" title="Redis之入门介绍"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Redis之入门介绍</a>
+      <a href="/posts/redis%E4%B9%8B%E5%A4%8D%E5%88%B6-redis%E4%B9%8B%E5%A4%8D%E5%88%B6/" class="post-nav-item" rel="next" title="Redis之复制">Redis之复制<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

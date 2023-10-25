@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>SpringMVC之常用注解 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="常用注解 1、RequestParam 1.1、使用说明 作用: 把请求中指定名称的参数给控制器中的形参赋值。 属性: value:请求参数中的名称。 r" /><meta name="keywords" content='Java, SpringMVC' /><meta itemprop="name" content="SpringMVC之常用注解">
+<meta itemprop="description" content="常用注解 1、RequestParam 1.1、使用说明 作用: 把请求中指定名称的参数给控制器中的形参赋值。 属性: value:请求参数中的名称。 r">
+
+<meta itemprop="wordCount" content="4148">
+<meta itemprop="keywords" content="Java,SpringMVC," /><meta property="og:title" content="SpringMVC之常用注解" />
+<meta property="og:description" content="常用注解 1、RequestParam 1.1、使用说明 作用: 把请求中指定名称的参数给控制器中的形参赋值。 属性: value:请求参数中的名称。 r" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="SpringMVC之常用注解"/>
+<meta name="twitter:description" content="常用注解 1、RequestParam 1.1、使用说明 作用: 把请求中指定名称的参数给控制器中的形参赋值。 属性: value:请求参数中的名称。 r"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8-springmvc%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "SpringMVC之常用注解",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3\/"
+    },"genre": "posts","keywords": "Java, SpringMVC","wordcount":  4148 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>SpringMVC之常用注解</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="4148 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 4200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 9 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1requestparam">1、RequestParam</a>
+      <ul>
+        <li><a href="#11使用说明">1.1、使用说明</a></li>
+        <li><a href="#12使用示例">1.2、使用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#2requestbody">2、RequestBody</a>
+      <ul>
+        <li><a href="#21使用说明">2.1、使用说明</a></li>
+        <li><a href="#22使用示例">2.2、使用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#3pathvaribale">3、PathVaribale</a>
+      <ul>
+        <li><a href="#31使用说明">3.1、使用说明</a></li>
+        <li><a href="#32使用示例">3.2、使用示例</a></li>
+        <li><a href="#33rest-风格-url">3.3、REST 风格 URL</a></li>
+        <li><a href="#34基于-hiddenthttpmethodfilter-的示例">3.4、基于 HiddentHttpMethodFilter 的示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#4requestheader">4、RequestHeader</a>
+      <ul>
+        <li><a href="#41使用说明">4.1、使用说明</a></li>
+        <li><a href="#42使用示例">4.2、使用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#5cookievalue">5、CookieValue</a>
+      <ul>
+        <li><a href="#51使用说明">5.1、使用说明</a></li>
+        <li><a href="#52使用示例">5.2、使用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#6modelattribute">6、ModelAttribute</a>
+      <ul>
+        <li><a href="#61使用说明">6.1、使用说明</a></li>
+        <li><a href="#62使用示例">6.2、使用示例</a></li>
+      </ul>
+    </li>
+    <li><a href="#7sessionattribute">7、SessionAttribute</a>
+      <ul>
+        <li><a href="#71使用说明">7.1、使用说明</a></li>
+        <li><a href="#72使用示例">7.2、使用示例</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="常用注解">常用注解</h1>
+<h2 id="1requestparam">1、RequestParam</h2>
+<h3 id="11使用说明">1.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>把请求中指定名称的参数给控制器中的形参赋值。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:请求参数中的名称。</li>
+<li>required:请求参数中是否必须提供此参数。默认值:true。表示必须提供，如果不提供将报错。</li>
+</ul>
+<h3 id="12使用示例">1.2、使用示例</h3>
+<p>jsp 中的代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- requestParams 注解的使用 --&gt;
+&lt;a href=&#34;springmvc/useRequestParam?name=test&#34;&gt;requestParam注解&lt;/a&gt;</code></pre><p>控制器中的代码:</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * requestParams 注解的使用 * @param username
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/useRequestParam&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">useRequestParam</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">)</span><span class="n">String</span> <span class="n">username</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">                              <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;age&#34;</span><span class="o">,</span> <span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span><span class="n">Integer</span> <span class="n">age</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">username</span><span class="o">+</span><span class="s">&#34;,&#34;</span><span class="o">+</span><span class="n">age</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/19.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="2requestbody">2、RequestBody</h2>
+<h3 id="21使用说明">2.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>用于获取请求体内容。直接使用得到是 key=value&amp;key=value&hellip;结构的数据。</li>
+<li>get 请求方式不适用。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>required:是否必须有请求体。默认值是:true。当取值为 true 时,get 请求方式会报错。如果取值 为 false，get 请求得到是null。</li>
+</ul>
+<h3 id="22使用示例">2.2、使用示例</h3>
+<p>post 请求 jsp 代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- request body 注解 --&gt;
+&lt;form action=&#34;springmvc/useRequestBody&#34; method=&#34;post&#34;&gt;
+	用户名称:&lt;input type=&#34;text&#34; name=&#34;username&#34; &gt;&lt;br/&gt; 
+  用户密码:&lt;input type=&#34;password&#34; name=&#34;password&#34; &gt;&lt;br/&gt;
+	用户年龄:&lt;input type=&#34;text&#34; name=&#34;age&#34; &gt;&lt;br/&gt;
+&lt;input type=&#34;submit&#34; value=&#34;保存&#34;&gt; 
+&lt;/form&gt;</code></pre><p>get 请求 jsp 代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;a href=&#34;springmvc/useRequestBody?body=test&#34;&gt;requestBody注解get请求&lt;/a&gt;</code></pre><p>控制器代码:</p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * RequestBody注解 * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/useRequestBody&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">useRequestBody</span><span class="o">(</span><span class="nd">@RequestBody</span><span class="o">(</span><span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">String</span> <span class="n">body</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">body</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>post 请求运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/20.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>get 请求运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/21.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="3pathvaribale">3、PathVaribale</h2>
+<h3 id="31使用说明">3.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>用于绑定 url 中的占位符。例如:请求 url 中 /delete/{id}，这个{id}就是 url 占位符。</li>
+<li>url 支持占位符是 spring3.0 之后加入的。是 springmvc 支持 rest 风格 URL 的一个重要标志。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:用于指定 url 中占位符名称。</li>
+<li>required:是否必须提供占位符。</li>
+</ul>
+<h3 id="32使用示例">3.2、使用示例</h3>
+<p>jsp 代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- PathVariable 注解 --&gt;
+&lt;a href=&#34;springmvc/usePathVariable/100&#34;&gt;pathVariable 注解&lt;/a&gt;</code></pre><p>控制器代码:</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * PathVariable注解
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.PathVariable</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/usePathVariable/{id}&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">usePathVariable</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">)</span> <span class="n">Integer</span> <span class="n">id</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/22.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h3 id="33rest-风格-url">3.3、REST 风格 URL</h3>
+<p>什么是 rest:</p>
+<blockquote>
+<p>REST(英文:Representational State Transfer，简称 REST)描述了一个架构样式的网络系统， 比如 web 应用程序。它首次出现在 2000 年 Roy Fielding 的博士论文中，他是 HTTP 规范的主要编写者之 一。在目前主流的三种 Web 服务交互方案中，REST 相比于 SOAP(Simple Object Access protocol，简单 对象访问协议)以及 XML-RPC 更加简单明了，无论是对 URL 的处理还是对 Payload 的编码，REST 都倾向于用更 加简单轻量的方法设计和实现。值得注意的是 REST 并没有一个明确的标准，而更像是一种设计的风格。
+它本身并没有什么实用性，其核心价值在于如何设计出符合 REST 风格的网络接口。</p>
+</blockquote>
+<p>restful 的优点</p>
+<blockquote>
+<p>它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用。</p>
+</blockquote>
+<p>restful 的特性:</p>
+<blockquote>
+<p>资源(Resources):网络上的一个实体，或者说是网络上的一个具体信息。</p>
+<ul>
+<li>它可以是一段文本、一张图片、一首歌曲、一种服务，总之就是一个具体的存在。可以用一个 URI(统一资源定位符)指向它，每种资源对应一个特定的 URI 。要获取这个资源，访问它的 URI 就可以，因此 URI 即为每一个资源的独一无二的识别符。</li>
+</ul>
+<p>表现层(Representation):把资源具体呈现出来的形式，叫做它的表现层 (Representation)。</p>
+<ul>
+<li>比如，文本可以用 txt 格式表现，也可以用 HTML 格式、XML 格式、JSON 格式表现，甚至可以采用二进制格式。</li>
+</ul>
+<p>状态转化(State Transfer):每发出一个请求，就代表了客户端和服务器的一次交互过程。</p>
+<ul>
+<li>HTTP 协议，是一个无状态协议，即所有的状态都保存在服务器端。因此，如果客户端想要操作服务器，必须通过某种手段，让服务器端发生“状态转化”(State Transfer)。而这种转化是建立在表现层之上的，所以 就是 “表现层状态转化”。具体说，就是 HTTP 协议里面，四个表示操作方式的动词:GET、POST、PUT、 DELETE。它们分别对应四种基本操作:GET 用来获取资源，POST 用来新建资源，PUT 用来更新资源，DELETE 用来删除资源。</li>
+</ul>
+</blockquote>
+<p>restful 的示例:</p>
+<blockquote>
+<p>/account/1      HTTP GET :          得到 id = 1 的 account</p>
+<p>/account/1      HTTP DELETE:     删除 id = 1 的 account</p>
+<p>/account/1      HTTP PUT:           更新 id = 1 的 account</p>
+<p>/account/1      HTTP POST:         新增 account</p>
+</blockquote>
+<h3 id="34基于-hiddenthttpmethodfilter-的示例">3.4、基于 HiddentHttpMethodFilter 的示例</h3>
+<p>作用:</p>
+<ul>
+<li>由于浏览器 form 表单只支持 GET 与 POST 请求，而DELETE、PUT 等 method 并不支持，Spring3.0 添 加了一个过滤器，可以将浏览器请求改为指定的请求方式，发送给我们的控制器方法，使得支持 GET、POST、PUT与 DELETE 请求。</li>
+</ul>
+<p>使用方法:</p>
+<ul>
+<li>第一步:在 web.xml 中配置该过滤器。</li>
+<li>第二步:请求方式必须使用 post 请求。</li>
+<li>第三步:按照要求提供_method 请求参数，该参数的取值就是我们需要的请求方式</li>
+</ul>
+<p>源码分析:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/23.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>jsp 中示例代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- 保存 --&gt;
+&lt;form action=&#34;springmvc/testRestPOST&#34; method=&#34;post&#34;&gt;
+   用户名称:&lt;input type=&#34;text&#34; name=&#34;username&#34;&gt;&lt;br/&gt;
+&lt;!-- &lt;input type=&#34;hidden&#34; name=&#34;_method&#34; value=&#34;POST&#34;&gt; --&gt; 
+  &lt;input type=&#34;submit&#34; value=&#34;保存&#34;&gt;
+&lt;/form&gt;
+&lt;hr/&gt;
+&lt;!-- 更新 --&gt;
+&lt;form action=&#34;springmvc/testRestPUT/1&#34; method=&#34;post&#34;&gt;
+	用户名称:&lt;input type=&#34;text&#34; name=&#34;username&#34;&gt;&lt;br/&gt;
+	&lt;input type=&#34;hidden&#34; name=&#34;_method&#34; value=&#34;PUT&#34;&gt;
+	&lt;input type=&#34;submit&#34; value=&#34;更新&#34;&gt; 
+&lt;/form&gt;
+&lt;hr/&gt;
+&lt;!-- 删除 --&gt;
+&lt;form action=&#34;springmvc/testRestDELETE/1&#34; method=&#34;post&#34;&gt;
+	&lt;input type=&#34;hidden&#34; name=&#34;_method&#34; value=&#34;DELETE&#34;&gt; 
+  &lt;input type=&#34;submit&#34; value=&#34;删除&#34;&gt;
+&lt;/form&gt;
+&lt;hr/&gt;
+&lt;!-- 查询一个 --&gt;
+&lt;form action=&#34;springmvc/testRestGET/1&#34; method=&#34;post&#34;&gt;
+	&lt;input type=&#34;hidden&#34; name=&#34;_method&#34; value=&#34;GET&#34;&gt;
+	&lt;input type=&#34;submit&#34; value=&#34;查询&#34;&gt; 
+&lt;/form&gt;</code></pre><p>控制器中示例代码:</p>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * post请求:保存
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param username
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/testRestPOST&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testRestfulURLPOST</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rest post&#34;</span><span class="o">+</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * put请求:更新
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param username
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/testRestPUT/{id}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">PUT</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testRestfulURLPUT</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">)</span><span class="n">Integer</span> <span class="n">id</span><span class="o">,</span><span class="n">User</span> <span class="n">user</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rest put &#34;</span><span class="o">+</span><span class="n">id</span><span class="o">+</span><span class="s">&#34;,&#34;</span><span class="o">+</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * post请求:删除
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param username * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/testRestDELETE/{id}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">DELETE</span><span class="o">)</span> 
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testRestfulURLDELETE</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">)</span><span class="n">Integer</span> <span class="n">id</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rest delete &#34;</span><span class="o">+</span><span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * post请求:查询
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param username
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/testRestGET/{id}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testRestfulURLGET</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;id&#34;</span><span class="o">)</span><span class="n">Integer</span> <span class="n">id</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;rest get &#34;</span><span class="o">+</span><span class="n">id</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/24.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="4requestheader">4、RequestHeader</h2>
+<h3 id="41使用说明">4.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>用于获取请求消息头。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:提供消息头名称 required:是否必须有此消息头</li>
+</ul>
+<p>注:</p>
+<ul>
+<li>在实际开发中一般不怎么用。</li>
+</ul>
+<h3 id="42使用示例">4.2、使用示例</h3>
+<p>jsp 中代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- RequestHeader 注解 --&gt;
+&lt;a href=&#34;springmvc/useRequestHeader&#34;&gt;获取请求消息头&lt;/a&gt;</code></pre><p>控制器中代码:</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * RequestHeader 注解 * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/useRequestHeader&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">useRequestHeader</span><span class="o">(</span><span class="nd">@RequestHeader</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;Accept-Language&#34;</span><span class="o">,</span> <span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span><span class="n">String</span> <span class="n">requestHeader</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">requestHeader</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/25.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="5cookievalue">5、CookieValue</h2>
+<h3 id="51使用说明">5.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>用于把指定 cookie 名称的值传入控制器方法参数。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:指定 cookie 的名称。</li>
+<li>required:是否必须有此 cookie。</li>
+</ul>
+<h3 id="52使用示例">5.2、使用示例</h3>
+<p>jsp 中的代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- CookieValue 注解 --&gt;
+&lt;a href=&#34;springmvc/useCookieValue&#34;&gt;绑定cookie的值&lt;/a&gt;</code></pre><p>控制器中的代码:</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * Cookie注解注解 * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/useCookieValue&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">useCookieValue</span><span class="o">(</span><span class="nd">@CookieValue</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;JSESSIONID&#34;</span><span class="o">,</span> <span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">String</span> <span class="n">cookieValue</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cookieValue</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/26.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="6modelattribute">6、ModelAttribute</h2>
+<h3 id="61使用说明">6.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>该注解是 SpringMVC4.3 版本以后新加入的。它可以用于修饰方法和参数。</li>
+<li>出现在方法上，表示当前方法会在控制器的方法执行之前，先执行。它可以修饰没有返回值的方法，也可 以修饰有具体返回值的方法。</li>
+<li>出现在参数上，获取指定的数据给参数赋值。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:用于获取数据的 key。key 可以是 POJO 的属性名称，也可以是 map 结构的 key。</li>
+</ul>
+<p>应用场景:</p>
+<ul>
+<li>当表单提交数据不是完整的实体类数据时，保证没有提交数据的字段使用数据库对象原来的数据。
+例如:
+我们在编辑一个用户时， 用户有一个创建信息字段，该字段的值是不允许被修改的。在提交表单数
+据是肯定没有此字段的内容，一旦更新会把该字段内容置为 null，此时就可以使用此注解解决问题。</li>
+</ul>
+<h3 id="62使用示例">6.2、使用示例</h3>
+<h4 id="621基于-pojo-属性的基本使用">6.2.1、基于 POJO 属性的基本使用:</h4>
+<p>jps 代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- ModelAttribute 注解的基本使用 --&gt;
+&lt;a href=&#34;springmvc/testModelAttribute?username=test&#34;&gt;测试modelattribute&lt;/a&gt;</code></pre><p>控制器代码:</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 被 ModelAttribute 修饰的方法
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@ModelAttribute</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">showModel</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;执行了 showModel 方法&#34;</span><span class="o">+</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 接收请求的方法 
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/testModelAttribute&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testModelAttribute</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;执行了控制器的方法&#34;</span><span class="o">+</span><span class="n">user</span><span class="o">.</span><span class="na">getUsername</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/27.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h4 id="622基于-map-的应用场景示例-modelattribute-修饰方法带返回值">6.2.2、基于 Map 的应用场景示例 :ModelAttribute 修饰方法带返回值</h4>
+<p>需求:
+修改用户信息，要求用户的密码不能修改</p>
+<p>jsp 的代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- 修改用户信息 --&gt;
+&lt;form action=&#34;springmvc/updateUser&#34; method=&#34;post&#34;&gt; 
+  用户名称:&lt;input type=&#34;text&#34; name=&#34;username&#34; &gt;&lt;br/&gt;
+	用户年龄:&lt;input type=&#34;text&#34; name=&#34;age&#34; &gt;&lt;br/&gt;
+&lt;input type=&#34;submit&#34; value=&#34;保存&#34;&gt; 
+&lt;/form&gt;</code></pre><p>控制的代码:</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 查询数据库中用户信息
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@ModelAttribute</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">User</span> <span class="nf">showModel</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//模拟数据库查询
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">User</span> <span class="n">abc</span><span class="o">=</span><span class="n">findUserByName</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;执行了 showModel 方法&#34;</span><span class="o">+</span><span class="n">abc</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">abc</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 模拟修改用户方法 
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param user
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/updateUser&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="n">String</span> <span class="nf">testModelAttribute</span><span class="o">(</span><span class="n">User</span> <span class="n">user</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;控制器中处理请求的方法:修改用户:&#34;</span><span class="o">+</span><span class="n">user</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * 模拟数据库查询
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param username
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="kd">private</span> <span class="n">User</span> <span class="nf">findUserByName</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">User</span> <span class="n">user</span><span class="o">=</span><span class="k">new</span> <span class="n">User</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">user</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">username</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">user</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">19</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="s">&#34;123456&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/28.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="7sessionattribute">7、SessionAttribute</h2>
+<h3 id="71使用说明">7.1、使用说明</h3>
+<p>作用:</p>
+<ul>
+<li>用于多次执行控制器方法间的参数共享。</li>
+</ul>
+<p>属性:</p>
+<ul>
+<li>value:用于指定存入的属性名称</li>
+<li>type:用于指定存入的数据类型。</li>
+</ul>
+<h3 id="72使用示例">7.2、使用示例</h3>
+<p>jsp 中的代码:</p>
+<pre tabindex="0"><code class="language-jsp" data-lang="jsp">&lt;!-- SessionAttribute 注解的使用 --&gt;
+&lt;a href=&#34;springmvc/testPut&#34;&gt;存入SessionAttribute&lt;/a&gt;
+&lt;hr/&gt;
+&lt;a href=&#34;springmvc/testGet&#34;&gt;取出SessionAttribute&lt;/a&gt; 
+&lt;hr/&gt;
+&lt;a href=&#34;springmvc/testClean&#34;&gt;清除SessionAttribute&lt;/a&gt;</code></pre><p>控制器中的代码:</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * SessionAttribute 注解的使用
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@Controller</span><span class="o">(</span><span class="s">&#34;sessionAttributeController&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/springmvc&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="nd">@SessionAttributes</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="o">{</span><span class="s">&#34;username&#34;</span><span class="o">,</span> <span class="s">&#34;password&#34;</span><span class="o">},</span> <span class="n">types</span> <span class="o">=</span> <span class="o">{</span><span class="n">Integer</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SessionAttributeController</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 把数据存入 SessionAttribute
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @param model
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * @return 
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Model 是 spring 提供的一个接口，该接口有一个实现类 ExtendedModelMap
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 该类继承了 ModelMap，而 ModelMap 就是 LinkedHashMap 子类
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/testPut&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">testPut</span><span class="o">(</span><span class="n">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;username&#34;</span><span class="o">,</span> <span class="s">&#34;泰斯特&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;password&#34;</span><span class="o">,</span> <span class="s">&#34;123456&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&#34;age&#34;</span><span class="o">,</span> <span class="mi">31</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//跳转之前将数据保存到 username、password 和 age 中，因为注解@SessionAttribute中有这几个参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/testGet&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">testGet</span><span class="o">(</span><span class="n">ModelMap</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;username&#34;</span><span class="o">)</span> <span class="o">+</span> <span class="s">&#34;;&#34;</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;password&#34;</span><span class="o">)</span> <span class="o">+</span> <span class="s">&#34;;&#34;</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;a ge&#34;</span><span class="o">));</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/testClean&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="n">String</span> <span class="nf">complete</span><span class="o">(</span><span class="n">SessionStatus</span> <span class="n">sessionStatus</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sessionStatus</span><span class="o">.</span><span class="na">setComplete</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;success&#34;</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span></span></span></code></pre></div><p>运行结果:</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/springmvc/29.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" data-title="SpringMVC之常用注解" data-hashtags="Java,SpringMVC"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" data-hashtag="Java"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3-springmvc%E4%B9%8B%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" data-title="SpringMVC之常用注解"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/java/' class="post-tag">Java</a><a href='/tags/springmvc/' class="post-tag">SpringMVC</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/springmvc%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8-springmvc%E4%B9%8B%E6%8B%A6%E6%88%AA%E5%99%A8/" class="post-nav-item" rel="prev" title="SpringMVC之拦截器"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>SpringMVC之拦截器</a>
+      <a href="/posts/springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7-springboot2%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF-%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7/" class="post-nav-item" rel="next" title="SpringBoot2核心技术-指标监控">SpringBoot2核心技术-指标监控<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

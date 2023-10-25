@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Python爬虫之scrapy框架 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Python爬虫之scrapy框架 创建项目 scrapy startproject 项目名 创建爬虫 scrapy genspider 爬虫识别名称 &lsquo;要爬取的主机地址&rsquo; 运行爬虫 scrapy crawl 爬虫识别" /><meta name="keywords" content='Python, 爬虫' /><meta itemprop="name" content="Python爬虫之scrapy框架">
+<meta itemprop="description" content="Python爬虫之scrapy框架 创建项目 scrapy startproject 项目名 创建爬虫 scrapy genspider 爬虫识别名称 &lsquo;要爬取的主机地址&rsquo; 运行爬虫 scrapy crawl 爬虫识别">
+
+<meta itemprop="wordCount" content="1956">
+<meta itemprop="keywords" content="Python,爬虫," /><meta property="og:title" content="Python爬虫之scrapy框架" />
+<meta property="og:description" content="Python爬虫之scrapy框架 创建项目 scrapy startproject 项目名 创建爬虫 scrapy genspider 爬虫识别名称 &lsquo;要爬取的主机地址&rsquo; 运行爬虫 scrapy crawl 爬虫识别" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Python爬虫之scrapy框架"/>
+<meta name="twitter:description" content="Python爬虫之scrapy框架 创建项目 scrapy startproject 项目名 创建爬虫 scrapy genspider 爬虫识别名称 &lsquo;要爬取的主机地址&rsquo; 运行爬虫 scrapy crawl 爬虫识别"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Brequests-python%E7%88%AC%E8%99%AB%E4%B9%8Brequests/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Python爬虫之scrapy框架",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6\/"
+    },"genre": "posts","keywords": "Python, 爬虫","wordcount":  1956 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Python爬虫之scrapy框架</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1956 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2000 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 4 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#python爬虫之scrapy框架">Python爬虫之scrapy框架</a>
+      <ul>
+        <li><a href="#1scrapy框架的安装">1.Scrapy框架的安装</a></li>
+        <li><a href="#2scrapy框架的简单使用">2.Scrapy框架的简单使用</a></li>
+        <li><a href="#3scrapy框架的整体架构和组成">3.Scrapy框架的整体架构和组成</a></li>
+        <li><a href="#4中间件介绍">4.中间件介绍</a></li>
+        <li><a href="#5附件">5.附件</a></li>
+      </ul>
+    </li>
+    <li><a href="#heading"></a></li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="python爬虫之scrapy框架">Python爬虫之scrapy框架</h2>
+<ol>
+<li>创建项目</li>
+</ol>
+<blockquote>
+<p>scrapy startproject 项目名</p>
+</blockquote>
+<ol start="2">
+<li>创建爬虫</li>
+</ol>
+<blockquote>
+<p>scrapy  genspider  爬虫识别名称   &lsquo;要爬取的主机地址&rsquo;</p>
+</blockquote>
+<ol start="3">
+<li>运行爬虫</li>
+</ol>
+<blockquote>
+<p>scrapy crawl 爬虫识别名称</p>
+</blockquote>
+<h3 id="1scrapy框架的安装">1.Scrapy框架的安装</h3>
+<blockquote>
+<p>pip3 install scrapy</p>
+</blockquote>
+<h3 id="2scrapy框架的简单使用">2.Scrapy框架的简单使用</h3>
+<ul>
+<li>常用命令</li>
+</ul>
+<blockquote>
+<p>创建项目：scrapy startproject xxx
+进入项目：cd xxx #进入某个文件夹下
+创建爬虫：scrapy genspider xxx（爬虫名） xxx.com （爬取域）
+生成文件：scrapy crawl xxx -o xxx.json (生成某种类型的文件)
+运行爬虫：scrapy crawl XXX
+列出所有爬虫：scrapy list
+获得配置信息：scrapy settings [options]</p>
+</blockquote>
+<ul>
+<li>Scrapy项目下包含</li>
+</ul>
+<blockquote>
+<p>scrapy.cfg: 项目的配置文件
+tutorial/: 该项目的python模块。在此放入代码（核心）
+tutorial/items.py: 项目中的item文件.（这是创建容器的地方，爬取的信息分别放到不同容器里）
+tutorial/pipelines.py: 项目中的pipelines文件.
+tutorial/settings.py: 项目的设置文件.（我用到的设置一下基础参数，比如加个文件头，设置一个编码）
+tutorial/spiders/: 放置spider代码的目录. （放爬虫的地方）</p>
+</blockquote>
+<ul>
+<li>
+<p>容器（items）的定义，容器不一定是一开始全部都定义好的，可以跟随项目的更新一点点向里面添加</p>
+<p>也就是定义我们要爬取的内容</p>
+</li>
+</ul>
+<blockquote>
+<p>import scrapy
+class DmozItem(scrapy.Item): #创建一个类，继承scrapy.item类，就是继承人家写好的容器
+title = scrapy.Field() # 需要取哪些内容，就创建哪些容器
+link = scrapy.Field()
+desc = scrapy.Field()</p>
+</blockquote>
+<ul>
+<li>一个简单爬虫小例子</li>
+</ul>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">scrapy</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">DmozSpider</span><span class="p">(</span><span class="n">scrapy</span><span class="o">.</span><span class="n">Spider</span><span class="p">):</span> <span class="c1"># 继承Spider类</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name</span> <span class="o">=</span> <span class="s2">&#34;dmoz&#34;</span> <span class="c1"># 爬虫的唯一标识，不能重复，启动爬虫的时候要用</span>
+</span></span><span class="line"><span class="cl">    <span class="n">allowed_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;dmoz.org&#34;</span><span class="p">]</span> <span class="c1"># 限定域名，只爬取该域名下的网页</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span> <span class="c1"># 开始爬取的链接</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;https://www.baidu.com/&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">filename</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&#34;/&#34;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># 获取url，用”/”分段，获去倒数第二个字段</span>
+</span></span><span class="line"><span class="cl">        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="c1"># 把访问的得到的网页源码写入文件</span></span></span></code></pre></div><p>里面的parse方法，这个方法有两个作用
+1.负责解析start_url下载的Response 对象，根据item提取数据（解析item数据的前提是parse里全部requests请求都被加入了爬取队列）
+2.如果有新的url则加入爬取队列，负责进一步处理，URL的Request 对象
+这两点简单来说就是编写爬虫的主要部分</p>
+<p>那么爬虫编写完，我们需要启动爬虫</p>
+<blockquote>
+<p>cd XXX</p>
+</blockquote>
+<p>进入到你的文件夹下
+输入命令,启动爬虫</p>
+<blockquote>
+<p>scrapy crawl dmoz</p>
+</blockquote>
+<p>那么启动爬虫时发生了什么？
+Scrapy为Spider的 start_urls 属性中的每个url创建了Request 对象，并将 parse 方法作为回调函数(callback)赋值给了requests,而requests对象经过调度器的调度，执行生成response对象并送回给parse() 方法进行解析,所以请求链接的改变是靠回调函数实现的。</p>
+<blockquote>
+<p>yield scrapy.Request(self.url, callback=self.parse)</p>
+</blockquote>
+<h3 id="3scrapy框架的整体架构和组成">3.Scrapy框架的整体架构和组成</h3>
+<ul>
+<li>官方的Scrapy的架构图</li>
+</ul>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/1.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<blockquote>
+<p>图中绿色的是数据的流向
+我们看到图里有这么几个东西，分别是
+Spiders：爬虫，定义了爬取的逻辑和网页内容的解析规则，主要负责解析响应并生成结果和新的请求
+Engine：引擎，处理整个系统的数据流处理，出发事物，框架的核心。
+Scheduler：调度器，接受引擎发过来的请求，并将其加入队列中，在引擎再次请求时将请求提供给引擎
+Downloader：下载器，下载网页内容，并将下载内容返回给spider
+ItemPipeline：项目管道，负责处理spider从网页中抽取的数据，主要是负责清洗，验证和向数据库中存储数据
+Downloader Middlewares：下载中间件，是处于Scrapy的Request和Requesponse之间的处理模块
+Spider Middlewares：spider中间件，位于引擎和spider之间的框架，主要处理spider输入的响应和输出的结果及新的请求middlewares.py里实现</p>
+</blockquote>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/python_spider/2.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<ul>
+<li>最后我们来顺一下scrapy框架的整体执行流程：</li>
+</ul>
+<blockquote>
+<p>1.spider的yeild将request发送给engine
+2.engine对request不做任何处理发送给scheduler
+3.scheduler，生成request交给engine
+4.engine拿到request，通过middleware发送给downloader
+5.downloader在\获取到response之后，又经过middleware发送给engine
+6.engine获取到response之后，返回给spider，spider的parse()方法对获取到的response进行处理，解析出items或者requests
+7.将解析出来的items或者requests发送给engine
+8.engine获取到items或者requests，将items发送给ItemPipeline，将requests发送给scheduler（ps，只有调度器中不存在request时，程序才停止，及时请求失败scrapy也会重新进行请求）</p>
+</blockquote>
+<h3 id="4中间件介绍">4.中间件介绍</h3>
+<p>请查看xmind思维导图：Scrapy.xmind</p>
+<h3 id="5附件">5.附件</h3>
+<p>阳光问政平台爬虫（Scrapy实现：2020.7.21） sunSpider项目，详情查看关于我-我的项目</p>
+<h2 id="heading"></h2>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" data-title="Python爬虫之scrapy框架" data-hashtags="Python,爬虫"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" data-hashtag="Python"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6-python%E7%88%AC%E8%99%AB%E4%B9%8Bscrapy%E6%A1%86%E6%9E%B6/" data-title="Python爬虫之scrapy框架"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/python/' class="post-tag">Python</a><a href='/tags/%E7%88%AC%E8%99%AB/' class="post-tag">爬虫</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Burllib-python%E7%88%AC%E8%99%AB%E4%B9%8Burllib/" class="post-nav-item" rel="prev" title="Python爬虫之urllib"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Python爬虫之urllib</a>
+      <a href="/posts/python%E7%88%AC%E8%99%AB%E4%B9%8Brequests-python%E7%88%AC%E8%99%AB%E4%B9%8Brequests/" class="post-nav-item" rel="next" title="Python爬虫之requests">Python爬虫之requests<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>

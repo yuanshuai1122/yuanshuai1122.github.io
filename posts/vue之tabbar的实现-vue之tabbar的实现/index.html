@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>Vue之Tabbar的实现 - 我的 Hugo FixIt 网站</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="Tabbar实现 一、实现思路 最终的效果如下图所示，下面小编一一为大家解析每个部分如何实现，并附上最终的实现代码。 ① 路由懒加载 首先，肯定有两个" /><meta name="keywords" content='Vue' /><meta itemprop="name" content="Vue之Tabbar的实现">
+<meta itemprop="description" content="Tabbar实现 一、实现思路 最终的效果如下图所示，下面小编一一为大家解析每个部分如何实现，并附上最终的实现代码。 ① 路由懒加载 首先，肯定有两个">
+
+<meta itemprop="wordCount" content="8758">
+<meta itemprop="keywords" content="Vue," /><meta property="og:title" content="Vue之Tabbar的实现" />
+<meta property="og:description" content="Tabbar实现 一、实现思路 最终的效果如下图所示，下面小编一一为大家解析每个部分如何实现，并附上最终的实现代码。 ① 路由懒加载 首先，肯定有两个" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0/" /><meta property="article:section" content="posts" />
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vue之Tabbar的实现"/>
+<meta name="twitter:description" content="Tabbar实现 一、实现思路 最终的效果如下图所示，下面小编一一为大家解析每个部分如何实现，并附上最终的实现代码。 ① 路由懒加载 首先，肯定有两个"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0/" /><link rel="prev" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bv-model-vue%E4%B9%8Bv-model/" /><link rel="next" href="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD-vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Vue之Tabbar的实现",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0\/"
+    },"genre": "posts","keywords": "Vue","wordcount":  8758 ,
+    "url": "https:\/\/yuanshuai1122.github.com\/posts\/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0\/","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="我的 Hugo FixIt 网站" data-alt="我的 Hugo FixIt 网站" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              >文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              >分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              >标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="我的 Hugo FixIt 网站"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">My Hugo FixIt Site</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                >文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                >分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                >标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>Vue之Tabbar的实现</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="8758 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 8800 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 18 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一实现思路">一、实现思路</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#二实现代码">二、实现代码</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#知识小卡片1--flex">知识小卡片1&ndash;flex：</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#知识小卡片2---box-shadow">知识小卡片2&ndash; box-shadow</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#一组件抽取">一、组件抽取</a></li>
+    <li><a href="#二插槽">二、插槽</a></li>
+    <li><a href="#三插槽实现数据灵活变通">三、插槽实现数据灵活变通</a></li>
+  </ul>
+
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#二实现active文字">二、实现active文字</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#一搭建路由基本框架">一、搭建路由基本框架</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#三点击事件">三、点击事件</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#完整代码演示">完整代码演示：</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#一计算属性">一、计算属性</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h1 id="tabbar实现">Tabbar实现</h1>
+<h2 id="一实现思路">一、实现思路</h2>
+<p>  最终的效果如下图所示，下面小编一一为大家解析每个部分如何实现，并附上最终的实现代码。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/367.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h5 id="-路由懒加载">① 路由懒加载</h5>
+<p>  首先，肯定有两个组件组成，当点击红色组件中的“首页”、“分类”、“购物车”、“我的”这四个小标题时，就能在蓝色组件中显示相应标题的内容。这部分的实现内容可以通过路由的懒加载实现</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/368.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h5 id="-插槽">② 插槽</h5>
+<p>  上图中的红色组件就是小编今天重点为大家介绍的 Tabbar。毫无疑问，一整个 <strong>Tabbar 应该是一个单独的组件</strong>；然后是内部的小标题。我们希望标题的数量、图标、文字都是可以灵活变通的，因此每一个<strong>标题、图标、文字</strong>我们都可以用<strong>slot 插槽</strong>来实现，插槽最终显示的内容就会被用户传递过来的数据替换掉。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/369.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>综上所述，要实现 Tabbar 只需要通过<strong>路由懒加载</strong>和<strong>插槽</strong>实现。下面小编先对结构和样式进行简单的编写 ⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄</p>
+<h2 id="二实现代码">二、实现代码</h2>
+<h5 id="1-创建项目">1. 创建项目</h5>
+<p>  通过命令行： <strong>vue init webpack tabbar</strong> 创建项目，并删除原本自带的 HelloVue.vue 文件和 App.vue 中的 template、style 自带的模板和样式。</p>
+<h5 id="2结构和样式">2.结构和样式</h5>
+<h6 id="-html结构">① html结构</h6>
+<p>在模板中用<strong>4个 div</strong> 分别表示“首页”、“分类”、“购物车”、“我的”。效果如图所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/370.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="-样式">② 样式</h6>
+<p><strong>2.1 去除留白</strong>
+  首先我们会发现字体和边界有留白的部分，这个留白部分是因为<strong>自带有margin和padding</strong>，所以我们需要将这两个值设置为0px即可。
+  在asset中创建css文件夹，然后创建base.css文件，在base.css文件中书写下面的代码：</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-css" data-lang="css"><span class="line"><span class="cl"><span class="nt">body</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">margin</span><span class="p">:</span><span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">padding</span><span class="p">:</span><span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>接着就是在App.vue 文件中的style模块引入base.css文件：</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p>最后查看效果图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/371.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="22-布局">2.2 布局</h6>
+<p><strong>display</strong>:我们需要将 tabbar 的内容水平排列而不是垂直排列，所以在布局上采用 <strong>flex</strong>。</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;tab-bar&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 对父级 tab-bar 采用flex布局  */</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/372.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到每个小标题已经呈水平排列。</p>
+<p><strong>flex:<strong>为了让每个小标题都占据相同的位置，我们需要对小标题进行</strong>均等分</strong>。因此，我们为每个小标题添加一个 tab-bar-item 的类名，然后在该类中添加 <strong>flex：1</strong> 的样式。</p>
+<p><strong>text-alien</strong>: 此外为了让<strong>文字能够居中</strong>，我们必须对小标题设置 text-alien:center。</p>
+<p><strong>height</strong>：最后为了让小标题看起来不那么矮，我们需要为小标题设置高度。<strong>一般tabbar的高度在业界中公认的是 49px</strong></p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;tab-bar&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 引入base.css文件 */</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 对 tab-bar 采用 flex 布局 */</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 对 tab-bar-item 均等分 */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p>在设置完上面的样式后，效果如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/373.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="23-背景和位置">2.3 背景和位置</h6>
+<p>  <strong>background</strong>：设置背景颜色
+  <strong>position</strong>：设置位置</p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">background</span><span class="o">:</span> <span class="err">#</span><span class="nx">f6f6f6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">position</span><span class="o">:</span> <span class="nx">fixed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 为了让 tabbar 占据整个页面的宽度，最好设置 left 和 rigth为0 */</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/374.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="24-阴影">2.4 阴影</h6>
+<p><strong>box-shadow</strong>：为了让 tabbar 和界面的<strong>过渡更加自然</strong>，我们需要为 tabbar 添加阴影。</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">background</span><span class="o">:</span> <span class="err">#</span><span class="nx">f6f6f6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">position</span><span class="o">:</span> <span class="nx">fixed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span> <span class="o">-</span><span class="mi">1</span><span class="nx">px</span> <span class="mi">7</span><span class="nx">px</span> <span class="nx">rgb</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mf">0.2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/375.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>最后附加上今天整套的代码：</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;tab-bar&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">background</span><span class="o">:</span> <span class="err">#</span><span class="nx">f6f6f6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">position</span><span class="o">:</span> <span class="nx">fixed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span> <span class="o">-</span><span class="mi">1</span><span class="nx">px</span> <span class="mi">7</span><span class="nx">px</span> <span class="nx">rgb</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mf">0.2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><h2 id="知识小卡片1--flex">知识小卡片1&ndash;flex：</h2>
+<h6 id="-定义">① 定义</h6>
+<p>意为”弹性布局”，为盒状模型提供最大的灵活性。在设为Flex布局以后，子元素的float、clear和vertical-align属性将失效。</p>
+<h6 id="-相关概念">② 相关概念：</h6>
+<p><strong>2.1 容器</strong>：采用Flex布局的元素，称为Flex容器（flex container），简称”容器”，比如上面例子中是 tab-bar。</p>
+<p><strong>2.2 项目</strong>：容器内的所有子元素自动成为容器成员，称为Flex项目（flex item），简称”项目”。比如上面例子中的 tab-bar-item。</p>
+<p><strong>2.3 轴</strong>：容器默认存在两根轴，<strong>水平主轴</strong>和<strong>垂直交叉轴</strong>。主轴的开始位置（与边框的交叉点）叫做main start，结束位置叫做main end；交叉轴的开始位置叫做cross start，结束位置叫做cross end。
+  项目默认沿主轴排列。单个项目占据的主轴空间叫做main size，占据的交叉轴空间叫做cross size。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/376.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h6 id="-属性">③ 属性</h6>
+<p><strong>3.1 flex-direction：决定主轴的方向，即项目的排列方向</strong>
+主要语法是：<strong>flex-direction: row | row-reverse | column | column-reverse</strong>
+  四个值分别代表：row-主轴为<strong>水平方向</strong>，起点在<strong>左端</strong>；row-reverse -主轴为<strong>水平方向</strong>，起点在<strong>右端</strong>；column-主轴为<strong>垂直方向</strong>，起点在<strong>上沿</strong>；column-reverse-主轴为<strong>垂直方向</strong>，起点在<strong>下沿</strong>。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/377.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>3.2 flex-wrap：决定项目是否换行。</strong>
+主要语法是：flex-wrap: nowrap | wrap | wrap-reverse;
+  三个数值分别代表：nowrap-<strong>不换行</strong>；wrap-<strong>换行并且第一行在上面</strong>；wrap-reverse-<strong>换行并且第一行在下面</strong>。</p>
+<p>**3.3 flex-flow：**是flex-direction属性和flex-wrap属性的简写形式，默认值为row nowrap。
+主要语法是：flex-flow: <!-- raw HTML omitted --> <!-- raw HTML omitted --></p>
+<p><strong>3.4 justify-content：<strong>定义了项目在</strong>主轴上的对齐方式</strong>。
+主要语法是：justify-content: flex-start | flex-end | center | space-between | space-around;
+  五个数值分别代表：flex-start-<strong>左对齐</strong>；flex-end-<strong>右对齐</strong>；center-<strong>居中</strong>；space-between-<strong>两端对齐</strong>，项目之间的间隔都相等；space-around-<strong>每个项目两侧的间隔相等</strong>。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/378.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>3.5 align-item</strong>：定义项目在<strong>交叉轴上如何对齐</strong>。
+主要语法格式是： align-items: flex-start | flex-end | center | baseline | stretch;
+  五个参数分别是:flex-start-交叉轴的<strong>起点对齐</strong>；flex-end-交叉轴的<strong>终点对齐</strong>；center-交叉轴的<strong>中点对齐</strong>；baseline-项目的<strong>第一行文字的基线对齐</strong>；stretch（默认值）-如果项目未设置高度或设为auto，将占满整个容器的高度。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/379.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>3.6 align-content</strong>：定义了<strong>多根轴线的对齐方式</strong>。如果项目只有一根轴线，该属性不起作用。
+主要语法是：align-content: flex-start | flex-end | center | space-between | space-around | stretch;
+  六个数值分别是：flex-start-与交叉轴的<strong>起点对齐</strong>；flex-end-与交叉轴的<strong>终点对齐</strong>；center-与交叉轴的<strong>中点对齐</strong>；space-between-与交叉轴<strong>两端对齐</strong>，轴线之间的间隔平均分布；space-around-<strong>每根轴线两侧的间隔都相等</strong>。stretch（默认值）-轴线<strong>占满整个交叉轴</strong>。</p>
+<h2 id="知识小卡片2---box-shadow">知识小卡片2&ndash; box-shadow</h2>
+<h6 id="-定义-为盒子增加阴影">① 定义 ：为盒子增加阴影</h6>
+<h6 id="-语法box-shadow-h-shadow-v-shadow-blur-spread-color-inset">② 语法：box-shadow: h-shadow v-shadow blur spread color inset</h6>
+<h6 id="-参数解析">③ 参数解析</h6>
+<p>  h-shadow-水平偏移量，v-shadow-垂直偏移量，blur-模糊程度，spread -阴影的范围大小，color-阴影的颜色，inset-阴影的方向，inset是内阴影，outset是外部阴影</p>
+<h6 id="-注意事项">④ 注意事项</h6>
+<p>  偏移量的数值可以是正数也可以是负数；当为正数时，水平方向往右偏移，垂直方向往下偏移，因为偏移的源点在整个窗口的左上角。</p>
+<h1 id="tabbar实现版之组件抽取">Tabbar实现版之组件抽取</h1>
+<h2 id="一组件抽取">一、组件抽取</h2>
+<p>  上一篇的文章中，我们将Tabbar的模板和样式都写在了App.vue文件中，这样写的缺点是：不利于代码的重复利用。所以我们需要将模板和样式都抽取出来，放在一个单独的文件中，然后在App.vue引用该文件即可。比如：</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">tabbar</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;tab-bar&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbar&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">background</span><span class="o">:</span> <span class="err">#</span><span class="nx">f6f6f6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">position</span><span class="o">:</span> <span class="nx">fixed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span> <span class="o">-</span><span class="mi">1</span><span class="nx">px</span> <span class="mi">7</span><span class="nx">px</span> <span class="nx">rgb</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mf">0.2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">App</span><span class="p">.</span><span class="nx">vue</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;App&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">tabbar</span><span class="p">&gt;&lt;/</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbar</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbar</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><h2 id="二插槽">二、插槽</h2>
+<p>  但是上面tabbar组件中，不仅仅包含tabbar本身的模板和样式，还包含了tabbar-item的模板和样式，所以下一步我们最好将tabbar和tabbar-item抽离出来。</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">抽取过后的</span> <span class="nx">tabbar</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;tab-bar&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbar&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">#</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">display</span><span class="o">:</span> <span class="nx">flex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">background</span><span class="o">:</span> <span class="err">#</span><span class="nx">f6f6f6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">position</span><span class="o">:</span> <span class="nx">fixed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">bottom</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="o">:</span> <span class="mi">0</span><span class="nx">px</span> <span class="o">-</span><span class="mi">1</span><span class="nx">px</span> <span class="mi">7</span><span class="nx">px</span> <span class="nx">rgb</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mf">0.2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">加入tabbar</span><span class="o">-</span><span class="nx">item后的</span> <span class="nx">App</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;App&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbar</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbar</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span> <span class="nx">img</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">width</span><span class="o">:</span> <span class="mi">30</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span> <span class="mi">25</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p>在tabbar组件中，有关tabbar-item的模板和样式全部抽取到 App.vue中，就实现了tabbar和tabbar-item分离的目的.但是此时又造成另外一个问题，tabbar-item和App.vue混合了，所以我们最好再创造一个组件，将tabbar-item的相关模板和样式抽取到一块。比如：</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">单独的</span> <span class="nx">tabbar</span><span class="o">-</span><span class="nx">item</span> <span class="nx">zujian</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;../../assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbarItem&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span> <span class="nx">img</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">width</span><span class="o">:</span> <span class="mi">30</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span> <span class="mi">25</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">抽取tabbar</span><span class="o">-</span><span class="nx">item后的App</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;App&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbar</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbarItem</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar-item.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbar</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbarItem</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>这里逻辑可能比较混乱的是App在引用tabbar-item的时候。我们已经将tabbar-item抽取成了一个单独的组件，也就表示，每引用一次的<!-- raw HTML omitted --><!-- raw HTML omitted -->就使用了一个小的文字加图片。引用了四次就有了四个文字和图片。效果如下图所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/380.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>以上两步就完成了tabbar和tabbat-item的分离，紧接着就是将tabbat-item内的文字和图标写活。</p>
+<h2 id="三插槽实现数据灵活变通">三、插槽实现数据灵活变通</h2>
+<p>  在上面我们可以知道，在 tabbar-item 的template中书写什么，就会显示什么，但是我们并不希望将数据写死，而是希望来什么数据就用数据，这个特点和插槽很像，插槽就相当于一个空的标签，你来什么文字和图片，插槽就会被该文字和图片替代，所以第一步是将 tabbar-item 显示数据的地方用插槽替代，代码如下：</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="c">&lt;!--</span> <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p>然后，当我们在 App.vue 中引入tabbarItem标签，就意味着我们调用了一次 tabbar-item组件，而tabbar-item组件中slot的内容就由tabbarItem标签的内部决定，比如 ：</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;App&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/phone.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/4.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/my.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/381.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这样便实现了数据的灵活性，不需要考虑个数，不需要考虑样式，不需要考虑结构，因为所有的样式，结构已经在组件tabbar-item中实现了，你尽管的大胆放心的使用便是。</p>
+<p>  以上就是有关Tabbar 实现的组件抽取，总体思路是 现将tabbar 和tabbar-item分离，分别用两个组件单独的设计tabbar和tabbar-item的结构和样式，然后就是通过插槽来实现数据的灵活处理。</p>
+<h1 id="tabbar传入active图片和文字">Tabbar传入active图片和文字</h1>
+<h1 id="一实现active图片">一、实现active图片</h1>
+<h5 id="1定义">1.定义</h5>
+<p>  为了避免大家误会，在这里解释一下什么是active图片。简单的说，就是某张图片没有被点击之前是白色的，被点击之后就变成黑色，而被点击之后变成黑色的图片就是active图片，因为被点击了，所以是处于活跃状态的。</p>
+<h5 id="2思路">2.思路</h5>
+<p>  active图片的思路是<strong>一开始就传入了所有图片</strong>，当用户没有点击时显示图片1，当用户点击之后就显示图片2 而并不是当用户点击时才传入图片。</p>
+<h5 id="3实现过程">3.实现过程</h5>
+<p>  根据上面的思路，我们知道在tabbar-item中应该再多使用一个<strong>插槽</strong>来存放图片，然后通过设置<strong>标志位和v-if</strong>语句来判断该显示哪张图片。比如：</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">tabbar</span><span class="o">-</span><span class="nx">item</span> <span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">slot</span> <span class="nt">v-if</span><span class="s">=&#34;!isActive&#34; name=&#34;item-icon&#34;&gt;&lt;/slot&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">        &lt;slot v-else name=&#34;item-icon-active&#34;&gt;&lt;/slot&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s">        &lt;slot name=&#34;item-text&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbarItem&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">              <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">isActive</span><span class="o">:</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div><p>当然了，相应的 App.vue 组件也应该增加多一个 img 标签来存放活跃状态下的图片。比如：</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home2.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span></span></span></code></pre></div><p>上两个代码中，name 为 item-icon-active 是新增加的插槽，用来存放活跃状态下的图片。v-if语句通过 isActive 标志位的值来判断显示哪张图片，当 isActive 的值为真，显示活跃状态的图片，结果如图所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/382.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/383.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="二实现active文字">二、实现active文字</h2>
+<h5 id="1定义-1">1.定义</h5>
+<p>  active文字呢，也是和上面的active图片一个道理。当用户点击某段文字时，该文字的样式就会发生改变。</p>
+<h5 id="2思路-1">2.思路</h5>
+<p>  思路和active图片的思路是类似，设置<strong>一个变化样式的类，通过设置标志位来增加该类。</strong></p>
+<h5 id="3实现过程-1">3.实现过程</h5>
+<p>  首先声明一个类，在该类中书写文字有关的样式，然后通过 标志位的值来判断是否要添加该类。比如：</p>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">为了便于理解和观察</span><span class="err">，</span><span class="nx">小编为大家伙清除了和文字无关的任何一切</span> <span class="nx">O</span><span class="p">(</span><span class="err">∩</span><span class="nx">_</span><span class="err">∩</span><span class="p">)</span><span class="nx">O哈哈</span><span class="o">~--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">slot</span> <span class="nt">:class</span><span class="s">=&#34;{active:isActive}&#34;</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">active</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">color</span><span class="o">:</span> <span class="nx">red</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p>上述的代码，表示当 isActive 为真时，就为插槽添加类名为active的类，然后文字的颜色就会由原来的黑色变成红色。我们来看效果：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/384.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>但是我们发现文字的颜色并没有发生任何的变化。这是为什么呢？
+  这个跟插槽被替换有关。上述代码中，我们将 active 类添加在了插槽中是行不通的，<strong>因为插槽最终会被 App.vue组件中的<!-- raw HTML omitted -->首页<!-- raw HTML omitted --> 替换，也就相当于 active类其实并没有被添加到文字所在的div中。</strong></p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/385.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p> 我们的解决思路很简单，就是在slot外面在裹上div，把active类添加到div上即可，比如：</p>
+<pre tabindex="0"><code class="language-vuw" data-lang="vuw">&lt;div :class=&#34;{active:isActive}&#34;&gt;
+    &lt;slot name=&#34;item-text&#34;&gt;&lt;/slot&gt;
+&lt;/div&gt;</code></pre><p>最终呈现的效果如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/386.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>同理，我们也在图片的 slot 外层裹上div，将相应的语法添加到外层的div上，所以本次最终实现的代码如下所示：</p>
+<div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">v-if</span><span class="s">=&#34;!isActive&#34;</span><span class="p">&gt;&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">v-else</span><span class="p">&gt;&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">:class</span><span class="s">=&#34;{active:isActive}&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbarItem&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">              <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="c1">// 判断图片是否处于激活状态的标志位
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                  <span class="nx">isActive</span><span class="o">:</span><span class="kc">true</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span> <span class="nx">img</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">width</span><span class="o">:</span> <span class="mi">30</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span> <span class="mi">25</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 文字处于激活状态下的样式 */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">active</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">color</span><span class="o">:</span> <span class="nx">red</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><p>以上便是今天Tabbar中实现active图片和文字的主要代码和思路，总结如下：</p>
+<p>1.active图片是一开始就传入所有的图片，然后根据不同的条件显示不同的图片，而并不是真正使用时才传入的</p>
+<p>2.随着图片的数量的增加，也需要添加相应的插槽数量</p>
+<p>3.通过设置标志位和 if 判断语句来决定显示那张图片</p>
+<p>4.通过标志位来决定文字的样式是否发生改变</p>
+<p>5.最后为了避免插槽被替换而导致添加的类名无效，一般在插槽外层包裹一层的div，然后将类、if语句都放到div中。</p>
+<h1 id="tabbar链接路由">Tabbar链接路由</h1>
+<h2 id="一搭建路由基本框架">一、搭建路由基本框架</h2>
+<p>  在终端，通过命令 <strong>npm install vue-route &ndash;save</strong> 为项目安装路由，然后创建route文件夹来存放和路由有关的组件，紧接着创建index.js文件，在该文件中搭建路由的基本框架。
+  搭建路由的基本框架步骤如下：<strong>1.引入路由 &ndash;&gt; 2.安装插件 &ndash;&gt; 3.创建路由对象 &ndash;&gt; 4.导出路由</strong>。其代码如下所示：</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">// 1.import 引入路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="nx">Vue</span> <span class="nx">from</span> <span class="s1">&#39;vue&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">VueRouter</span> <span class="nx">from</span> <span class="s2">&#34;vue-router&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 2.安装插件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">VueRouter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 3.创建路由对象
+</span></span></span><span class="line"><span class="cl"><span class="c1">//将router实例中的routes抽取出来写
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">routes</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 4.导出路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">export</span> <span class="k">default</span> <span class="nx">router</span></span></span></code></pre></div><h1 id="二路由配置">二、路由配置</h1>
+<p>在上面搭建好的框架基础上，我们对路由的映射关系进行配置。
+<strong>① 创建目录</strong>
+  为什么要强调这点呢？为了以后做项目的时候，更加方便管理自己的代码，不至于因为项目过于庞大而找不到自己相关页面代码。
+  首先创建 <strong>view 文件夹</strong>，该文件夹主要放和视图有关的代码；然后在view文件夹下在分别创建 <strong>home、category、car、profile 四个文件夹</strong>，这四个文件夹分别放置和 home、category、car、profile有关的代码文件，具体的文件目录如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/387.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>②配置路由映射关系</strong>
+  我们通过<strong>路由懒加载</strong>的方式来建立tabbar-item和各个大组件之间的联系
+配置步骤如下：<strong>1.引入文件 &ndash;&gt; 2.配置映射关系</strong>。其代码如下：</p>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js 文件
+</span></span></span><span class="line"><span class="cl"><span class="c1">//① 引入文件 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">Home</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/home/home.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Car</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/car/car.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Category</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/category/category.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Profile</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/profile/profile.vue&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ② 配置映射关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">redirect</span><span class="o">:</span><span class="s2">&#34;/home&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/home&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/category&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Category</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/car&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Car</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/profile&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Profile</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span></span></span></code></pre></div><p>在上面的配置关系中，首先通过路由懒加载的方式，只有当某个页面被激活时才会从服务器中下载下来，提高了运行效率;
+  接着是当path为空时，就显示首页的信息，让用户一进来就显示首页的信息，而不是需要用户点击tabbar-item的“首页”才显示首页的信息，显得更加的合理；
+  最后就是tabbar-item各个子标题的配置。比如当用户点击了“购物车”就会跳转到购物车的页面。
+  以上两步就是路由框架的搭建和映射关系的配置过程，接下来我们希望用户点击下面的tabbar-item时就会发生跳转，所以我们还需要在增加点击事件。</p>
+<h2 id="三点击事件">三、点击事件</h2>
+<h5 id="1目的">1.目的</h5>
+<p>  添加点击事件的目的很简单，就是希望用户点击“首页”时，上面的内容就变成和首页相关的内容。</p>
+<h5 id="2步骤">2.步骤</h5>
+<p><strong>① 添加点击事件</strong>
+  如果我们将点击事件添加到App.vue 文件的<!-- raw HTML omitted --><!-- raw HTML omitted --> 标签中，就需要添加四个点击事件，显然不够高效，所以我们<strong>将点击事件添加到 tabbar-item.vue文件中的<!-- raw HTML omitted --><!-- raw HTML omitted -->标签中</strong>，其代码如下所示：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/388.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>② 事件的处理</strong>
+关于事件的处理会比较麻烦，小编从下面几点为大家分析分析：
+<strong>2.1 监听是否成功</strong>
+  首先我们得要确定在tabbar-item添加的点击事件是成功的，所以在用户点击相应的tabbart-item小标题的时候在控制台打印“11”就证明点击事件是添加成功的。其代码和效果如下所示：</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">itemClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;11&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/389.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><strong>2.2 链接跳转</strong>
+  我们知道，路由的链接跳转是通过**this.$router(参数)**来实现的，小编这里要重点分析的就是参数。
+  参数肯定不能是被写死的，因为当用户点击不同的tabbar-item时，传递的跳转链接也是不一样的。所以我们通过 <strong>props属性来声明path变量，并且该变量的类型是String类型</strong>，其代码如下所示：</p>
+<div class="highlight" id="id-22"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">props</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">path</span><span class="o">:</span><span class="nb">String</span>
+</span></span><span class="line"><span class="cl"><span class="p">},</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">itemClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>那么path具体的数值来自哪里呢？就来自 App.vue文件中的tabbart-item标签，比如：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/390.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>当用户点击了哪个tabbar-item就传递哪个tabbar-item的链接过去。
+<strong>2.3 内容的显示</strong>
+  为了让内容显示出来，我们要添加**占位标签 <!-- raw HTML omitted --><!-- raw HTML omitted -->**这是很容易忘记的。</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/391.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>最终显示的效果图如下：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/392.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<h2 id="完整代码演示">完整代码演示：</h2>
+<div class="highlight" id="id-23"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span><span class="nx">tabbar</span><span class="o">-</span><span class="nx">item代码</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tab-bar-item&#34;</span> <span class="nt">@click</span><span class="s">=&#34;itemClick&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">v-if</span><span class="s">=&#34;!isActive&#34;</span><span class="p">&gt;&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">v-else</span><span class="p">&gt;&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">div</span> <span class="nt">:class</span><span class="s">=&#34;{active:isActive}&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">slot</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">slot</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;tabbarItem&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">props</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">path</span><span class="o">:</span><span class="nb">String</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">              <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                  <span class="nx">isActive</span><span class="o">:</span><span class="kc">false</span>
+</span></span><span class="line"><span class="cl">              <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">methods</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">itemClick</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;111&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">this</span><span class="p">.</span><span class="nx">$router</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">path</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">flex</span><span class="o">:</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">text</span><span class="o">-</span><span class="nx">align</span><span class="o">:</span> <span class="nx">center</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span><span class="mi">49</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">tab</span><span class="o">-</span><span class="nx">bar</span><span class="o">-</span><span class="nx">item</span> <span class="nx">img</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">width</span><span class="o">:</span> <span class="mi">30</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span><span class="o">:</span> <span class="mi">25</span><span class="nx">px</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* 文字处于激活状态下的样式 */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="nx">active</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">color</span><span class="o">:</span> <span class="nx">red</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><div class="highlight" id="id-24"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//index.js 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 1.import 引入路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="nx">Vue</span> <span class="nx">from</span> <span class="s1">&#39;vue&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">VueRouter</span> <span class="nx">from</span> <span class="s2">&#34;vue-router&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//① 引入文件 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">Home</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/home/Home&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Car</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/car/Car&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Category</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/category/Category&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">Profile</span>  <span class="o">=</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="kr">import</span> <span class="p">(</span><span class="s1">&#39;../view/profile/Profile&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 2.安装插件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">VueRouter</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 3.创建路由对象
+</span></span></span><span class="line"><span class="cl"><span class="c1">// ② 配置映射关系
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">redirect</span><span class="o">:</span><span class="s2">&#34;/home&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/home&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Home</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/category&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Category</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/car&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Car</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">path</span><span class="o">:</span><span class="s2">&#34;/profile&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">component</span><span class="o">:</span><span class="nx">Profile</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">router</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VueRouter</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">routes</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mode</span><span class="o">:</span><span class="s1">&#39;history&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 4.导出路由
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">export</span> <span class="k">default</span> <span class="nx">router</span></span></span></code></pre></div><div class="highlight" id="id-25"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c">&lt;!--</span> <span class="nx">App</span><span class="p">.</span><span class="nx">vue</span><span class="o">--&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;App&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">router-view</span><span class="p">&gt;</span><span class="o">&lt;</span><span class="err">/router-view&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span> <span class="na">path</span><span class="o">=</span><span class="s">&#39;/home&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/home2.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">首页</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span> <span class="na">path</span><span class="o">=</span><span class="s">&#39;/category&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/phone.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/phone2.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">分类</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span> <span class="na">path</span><span class="o">=</span><span class="s">&#39;/car&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/4.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/5.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">购物车</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;</span><span class="nt">tabbarItem</span> <span class="na">path</span><span class="o">=</span><span class="s">&#39;/profile&#39;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/my.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">img</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-icon-active&#34;</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;./assets/img/tabbar/my2.png&#34;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">slot</span><span class="o">=</span><span class="s">&#34;item-text&#34;</span><span class="p">&gt;</span><span class="nx">我的</span><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">&lt;/</span><span class="nt">tabbarItem</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">&lt;/</span><span class="nt">tabbar</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbar</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">tabbarItem</span> <span class="nx">from</span> <span class="s2">&#34;./components/Tabbar/tabbar-item.vue&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">router</span> <span class="nx">from</span> <span class="s2">&#34;./router/index.js&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbar</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tabbarItem</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">@</span><span class="kr">import</span> <span class="nx">url</span><span class="p">(</span><span class="s2">&#34;./assets/css/base.css&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span></span></span></code></pre></div><div class="highlight" id="id-26"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="c1">//main,js
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">import</span> <span class="nx">Vue</span> <span class="nx">from</span> <span class="s1">&#39;vue&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">App</span> <span class="nx">from</span> <span class="s1">&#39;./App&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">router</span> <span class="nx">from</span> <span class="s1">&#39;./router&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">Vue</span><span class="p">.</span><span class="nx">config</span><span class="p">.</span><span class="nx">productionTip</span> <span class="o">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">el</span><span class="o">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">router</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">render</span><span class="o">:</span> <span class="nx">h</span> <span class="p">=&gt;</span> <span class="nx">h</span><span class="p">(</span><span class="nx">App</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div><h1 id="tabbar-动态颜色控制">Tabbar 动态颜色控制</h1>
+<h2 id="一计算属性">一、计算属性</h2>
+<h6 id="1图片动态颜色">1.图片动态颜色</h6>
+<p><strong>① 不动态的原因</strong>
+  回顾之前的知识，我们是通过设置标志位 isActive 的true 和 false 的值来决定图片和文字的活跃状态，显示isActive不是动态的，很难满足我们的要求，所接下来我们就要对isActive进行劳改 ⁄(⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄
+<strong>②解决方法</strong>
+  大致的思路是，通过计算属性computed来声明isActive，然后通过this.$route来决定isActive的值，具体代码如下：</p>
+<div class="highlight" id="id-27"><pre tabindex="0" class="chroma"><code class="language-vue" data-lang="vue"><span class="line"><span class="cl"><span class="c1">//tabbar-item.vue
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">data</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">         <span class="c1">// isActive:false
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="nx">computed</span><span class="o">:</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">isActive</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">$route</span><span class="p">.</span><span class="nx">path</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">path</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>上述代码中，用 this.$route.path 获取当前活跃状态下的路由的path，通过活跃状态下的路由的path来查找item中的path，没有找到就返回-1。所以总结上面的代码就是：当活跃状态下的路由的path在item中找到相应的path就返回-1，以为着此时的isActive结果为true。我们来看看效果图：</p>
+<p><img loading="lazy" src="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif" srcset="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif 1.5x, https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif 2x" sizes="auto" data-title="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif" data-alt="https://hexobbblog.oss-cn-beijing.aliyuncs.com/images/vue/393.gif" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0/" data-title="Vue之Tabbar的实现" data-hashtags="Vue"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0/" data-hashtag="Vue"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://yuanshuai1122.github.com/posts/vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0-vue%E4%B9%8Btabbar%E7%9A%84%E5%AE%9E%E7%8E%B0/" data-title="Vue之Tabbar的实现"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/vue/' class="post-tag">Vue</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/vue%E4%B9%8Bv-model-vue%E4%B9%8Bv-model/" class="post-nav-item" rel="prev" title="Vue之v-model"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Vue之v-model</a>
+      <a href="/posts/vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD-vue%E4%B9%8Bslot%E6%8F%92%E6%A7%BD/" class="post-nav-item" rel="next" title="Vue之slot插槽">Vue之slot插槽<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
