@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>docker安装部署ElasticSearch（单机版） - CN.yuanshuai</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="一、ElasticSearch安装部署 什么是ElasticSearch？ 简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获" /><meta name="keywords" content='docker, es' /><meta itemprop="name" content="docker安装部署ElasticSearch（单机版）">
+<meta itemprop="description" content="一、ElasticSearch安装部署 什么是ElasticSearch？ 简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获"><meta itemprop="datePublished" content="2023-07-19T18:12:20+00:00" />
+<meta itemprop="dateModified" content="2023-07-19T18:12:20+00:00" />
+<meta itemprop="wordCount" content="2373">
+<meta itemprop="keywords" content="docker,es," /><meta property="og:title" content="docker安装部署ElasticSearch（单机版）" />
+<meta property="og:description" content="一、ElasticSearch安装部署 什么是ElasticSearch？ 简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-19T18:12:20+00:00" />
+<meta property="article:modified_time" content="2023-07-19T18:12:20+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="docker安装部署ElasticSearch（单机版）"/>
+<meta name="twitter:description" content="一、ElasticSearch安装部署 什么是ElasticSearch？ 简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获"/>
+<meta name="application-name" content="FixIt">
+<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" /><link rel="prev" href="http://yuanshuai1122.github.io/posts/elasticsearch-%E6%9F%A5%E8%AF%A2/" /><link rel="next" href="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85kibana%E5%92%8Cfscrawler/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "docker安装部署ElasticSearch（单机版）",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/yuanshuai1122.github.io\/posts\/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88\/"
+    },"genre": "posts","keywords": "docker, es","wordcount":  2373 ,
+    "url": "http:\/\/yuanshuai1122.github.io\/posts\/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88\/","datePublished": "2023-07-19T18:12:20+00:00","dateModified": "2023-07-19T18:12:20+00:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="CN.yuanshuai"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="CN.yuanshuai" data-alt="CN.yuanshuai" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">CN.yuanshuai</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="CN.yuanshuai"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">CN.yuanshuai</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>docker安装部署ElasticSearch（单机版）</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span title="发布于 2023-07-19 18:12:20"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2023-07-19">2023-07-19</time></span>&nbsp;<span title="更新于 2023-07-19 18:12:20"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2023-07-19">2023-07-19</time></span>&nbsp;<span title="2373 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 2400 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 5 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#一elasticsearch安装部署">一、ElasticSearch安装部署</a>
+      <ul>
+        <li><a href="#11-elasticsearch和jdk版本">1.1 ElasticSearch和JDK版本</a></li>
+        <li><a href="#12-拉取镜像">1.2 拉取镜像</a></li>
+        <li><a href="#13-创建挂载目录">1.3 创建挂载目录</a></li>
+        <li><a href="#14-修改配置">1.4 修改配置</a></li>
+        <li><a href="#15-挂载启动">1.5 挂载启动</a></li>
+      </ul>
+    </li>
+    <li><a href="#二初始化密码">二、初始化密码</a></li>
+    <li><a href="#三-验证安装">三、 验证安装</a></li>
+    <li><a href="#四插件安装ik中文分词器">四、插件安装：IK中文分词器</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="一elasticsearch安装部署">一、ElasticSearch安装部署</h2>
+<p>什么是<code>ElasticSearch</code>？</p>
+<blockquote>
+<p>简单来说，我们的目标是帮助每个人更快地找到所需内容，从需要通过内网获取文档的员工，到在网上购物寻找适合自己鞋子的客户。但从更技术的角度来说，大致描述如下：</p>
+<p>Elasticsearch 是一个免费且开放的分布式搜索和分析引擎，适用于包括文本、数字、地理空间、结构化和非结构化数据等在内的所有类型的数据。Elasticsearch 在 Apache Lucene 的基础上开发而成，由 Elasticsearch N.V.（即现在的 Elastic）于 2010 年首次发布。Elasticsearch 以其简单的 REST 风格 API、分布式特性、速度和可扩展性而闻名，是 Elastic Stack 的核心组件；Elastic Stack 是一套适用于数据采集、扩充、存储、分析和可视化的免费开源工具。人们通常将 Elastic Stack 称为 ELK Stack（代指 Elasticsearch、Logstash 和 Kibana），目前 Elastic Stack 包括一系列丰富的轻量型数据采集代理，这些代理统称为 Beats，可用来向 Elasticsearch 发送数据。</p>
+<p>&mdash; 来自ES官方 <a href="https://www.elastic.co/cn/what-is/elasticsearch"target="_blank" rel="external nofollow noopener noreferrer">https://www.elastic.co/cn/what-is/elasticsearch</a></p>
+</blockquote>
+<p><code>简单来说，可以当作一个高性能搜索数据库</code></p>
+<h3 id="11-elasticsearch和jdk版本">1.1 ElasticSearch和JDK版本</h3>
+<p>ElasticSearch和JDK版本适配图（2023-07-25）。</p>
+<p><strong>官网地址：https://www.elastic.co/cn/support/matrix#matrix_jvm</strong></p>
+<!-- raw HTML omitted -->
+<p>可以看到从ES8.0开始，就只支持JDK17以上了。</p>
+<p>由于我们环境为：</p>
+<pre tabindex="0"><code>[root@server ~]# java --version
+openjdk 11.0.18 2023-01-17 LTS
+OpenJDK Runtime Environment (Red_Hat-11.0.18.0.10-1.el7_9) (build 11.0.18+10-LTS)
+OpenJDK 64-Bit Server VM (Red_Hat-11.0.18.0.10-1.el7_9) (build 11.0.18+10-LTS, mixed mode, sharing)</code></pre><p>所以我们本着最新原则，选择镜像<code>elasticsearch:7.17.7</code></p>
+<p>千万别选最新<code>7.17.9</code>,IK中文分词器只支持到<code>7.17.7</code>，导致安装不上，除非自己编译，大坑😭</p>
+<p>(PS:官方还说明了ES和Linux版本兼容关系，我们环境时<code>CentOS7.x</code>，正好也是兼容ES7版本的&hellip;)</p>
+<h3 id="12-拉取镜像">1.2 拉取镜像</h3>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull elasticsearch:7.17.7</span></span></code></pre></div><h3 id="13-创建挂载目录">1.3 创建挂载目录</h3>
+<h4 id="131-docker工作目录">1.3.1 docker工作目录</h4>
+<p>ps:请根据自己的环境修改自己的路径</p>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 创建工作目录</span>
+</span></span><span class="line"><span class="cl">mkdir -p /yyss/elasticsearch/
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /yyss/elasticsearch/
+</span></span><span class="line"><span class="cl"><span class="c1"># logs挂载目录</span>
+</span></span><span class="line"><span class="cl">mkdir logs</span></span></code></pre></div><p>给权限（这里很重要，否则es会因为没权限起不来）</p>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 由于这里时演示 所以给了777权限 生产环境别学我😄</span>
+</span></span><span class="line"><span class="cl">chmod <span class="m">777</span> /yyss/elasticsearch/</span></span></code></pre></div><h4 id="132-初次启动镜像">1.3.2 初次启动镜像</h4>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 因为只是获取其配置文件，启动时设置了较小的JVM</span>
+</span></span><span class="line"><span class="cl">docker run --name es -p 9200:9200 -p 9300:9300 -e <span class="s2">&#34;discovery.type=single-node&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-e <span class="nv">ES_JAVA_OPTS</span><span class="o">=</span><span class="s2">&#34;-Xms64m -Xmx128m&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-d elasticsearch:7.17.7</span></span></code></pre></div><h4 id="133-拷贝镜像内配置">1.3.3 拷贝镜像内配置</h4>
+<p>先确定下自己所在的位置</p>
+<pre tabindex="0"><code>[root@server elasticsearch]# pwd
+/yyss/elasticsearch</code></pre><p>拷贝镜像中的文件</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker cp es:/usr/share/elasticsearch/config/ ./
+</span></span><span class="line"><span class="cl">docker cp es:/usr/share/elasticsearch/data/ ./
+</span></span><span class="line"><span class="cl">docker cp es:/usr/share/elasticsearch/plugins/ ./</span></span></code></pre></div><p>查看下现在目录下的文件</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>root@server elasticsearch<span class="o">]</span><span class="c1"># ll</span>
+</span></span><span class="line"><span class="cl">total <span class="m">4</span>
+</span></span><span class="line"><span class="cl">drwxrwxrwx. <span class="m">3</span> root root <span class="m">270</span> Aug  <span class="m">5</span> 13:52 config
+</span></span><span class="line"><span class="cl">drwxrwxrwx. <span class="m">3</span> root root  <span class="m">19</span> Aug  <span class="m">5</span> 13:49 data
+</span></span><span class="line"><span class="cl">drwxrwxrwx. <span class="m">2</span> root root  <span class="m">37</span> Aug  <span class="m">5</span> 13:55 logs
+</span></span><span class="line"><span class="cl">drwxrwxrwx. <span class="m">2</span> root root   <span class="m">6</span> Jan <span class="m">31</span>  <span class="m">2023</span> plugins</span></span></code></pre></div><p>可以看到 我们需要的都拷贝出来了</p>
+<h3 id="14-修改配置">1.4 修改配置</h3>
+<blockquote>
+<p>根据实际情况修改JVM内存大小</p>
+</blockquote>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">cd</span> config/
+</span></span><span class="line"><span class="cl">vim jvm.options</span></span></code></pre></div><p>默认配置为：</p>
+<blockquote>
+<p>-Xms1g -Xmx1g</p>
+</blockquote>
+<p><strong>编辑elasticsearch.yml：</strong></p>
+<p>追加内容：</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">http.cors.enabled: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">http.cors.allow-origin: <span class="s2">&#34;*&#34;</span>
+</span></span><span class="line"><span class="cl">node.name: node-1
+</span></span><span class="line"><span class="cl">discovery.seed_hosts: <span class="o">[</span><span class="s2">&#34;127.0.0.1&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">xpack.security.enabled: <span class="nb">true</span> <span class="c1"># 这条配置表示开启xpack认证机制 spring boot连接使用</span>
+</span></span><span class="line"><span class="cl">xpack.security.transport.ssl.enabled: true</span></span></code></pre></div><blockquote>
+<p>xpack.security配置后，elasticsearch需要账号密码使用，建议安排上。如果使用springboot查询，那一定要设置，否者会报错！</p>
+</blockquote>
+<h3 id="15-挂载启动">1.5 挂载启动</h3>
+<h4 id="151-删除之前启动的临时容器">1.5.1 删除之前启动的临时容器</h4>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker rm -f es</span></span></code></pre></div><h4 id="152-挂载启动新容器">1.5.2 挂载启动新容器</h4>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run --name  --restart<span class="o">=</span>always <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-p 9200:9200 -p 9300:9300 -e <span class="s2">&#34;discovery.type=single-node&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v /yyss/elasticsearch/config:/usr/share/elasticsearch/config <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v /yyss/elasticsearch/data:/usr/share/elasticsearch/data <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v /yyss/elasticsearch/plugins:/usr/share/elasticsearch/plugins <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-v /yyss/elasticsearch/logs:/usr/share/elasticsearch/logs <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-d elasticsearch:7.17.7</span></span></code></pre></div><p><code>参数解释</code></p>
+<ul>
+<li>
+<p>&ndash;name es  ：指定容器名称</p>
+</li>
+<li>
+<p>-p 9200:9200  -p 9300:9300 ：指定端口号映射 格式 宿主机端口号:容器端口号</p>
+</li>
+<li>
+<p>-e  &ldquo;discovery.type=single-node&rdquo;  ：单机模式</p>
+</li>
+<li>
+<p>-v /yyss/elasticsearch/config:/usr/share/elasticsearch/config 映射配置文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p>-v /yyss/elasticsearch/data:/usr/share/elasticsearch/data 映射日志文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p>-v /yyss/elasticsearch/plugins:/usr/share/elasticsearch/plugins 映射插件在宿主机的挂载位置</p>
+</li>
+<li>
+<p>-v /yyss/elasticsearch/logs:/usr/share/elasticsearch/logs 映射日志文件在宿主机的挂载位置</p>
+</li>
+<li>
+<p>-d elasticsearch:7.17.7  ：指定镜像和版本</p>
+</li>
+</ul>
+<h2 id="二初始化密码">二、初始化密码</h2>
+<p>此项仅在上文xpack配置的情况下才需要执行，首先进入容器命令行：</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it es /bin/bash</span></span></code></pre></div><p>然后直行初始化命令:</p>
+<pre tabindex="0"><code>bin/elasticsearch-setup-passwords interactive</code></pre><!-- raw HTML omitted -->
+<blockquote>
+<p>然后老老实实依次输入密码（需要输入很多很多次，别挣扎了，输入吧！😭）</p>
+</blockquote>
+<h2 id="三-验证安装">三、 验证安装</h2>
+<p>访问ip:9200，如果上文开启了xpack.security，需要输入账号密码。</p>
+<p><code>云服务器记得放行端口安全组～</code></p>
+<p>账号/密码：elastic/上文设置的密码</p>
+<p>如果出现以下页面，则代表成功。</p>
+<!-- raw HTML omitted -->
+<h2 id="四插件安装ik中文分词器">四、插件安装：IK中文分词器</h2>
+<h4 id="41-版本对应">4.1 版本对应</h4>
+<p>下载地址：https://github.com/medcl/elasticsearch-analysis-ik/releases</p>
+<p>下载的版本需要与es版本一致；（必须严格一致）</p>
+<p>地址：<code>https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.17.7/elasticsearch-analysis-ik-7.17.7.zip</code></p>
+<h4 id="42-安装">4.2 安装</h4>
+<h5 id="421-进入到插件挂载目录">4.2.1 进入到插件挂载目录</h5>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">cd</span> /yyss/elasticsearch/plugins</span></span></code></pre></div><h5 id="422-下载对ik中文分词器">4.2.2 下载对IK中文分词器</h5>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.17.7/elasticsearch-analysis-ik-7.17.7.zip</span></span></code></pre></div><h5 id="423-解压并清理">4.2.3 解压并清理</h5>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 如果unzip命令不存在，则安装：yum install unzip</span>
+</span></span><span class="line"><span class="cl">unzip elasticsearch-analysis-ik-7.17.7.zip -d ik-analyzer
+</span></span><span class="line"><span class="cl"><span class="c1"># 解压完成后，删除`elasticsearch-analysis-ik-7.17.7.zip`压缩包</span>
+</span></span><span class="line"><span class="cl">rm elasticsearch-analysis-ik-7.17.7.zip</span></span></code></pre></div><h5 id="324-重启容器">3.2.4 重启容器</h5>
+<div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker restart es</span></span></code></pre></div><h4 id="43-验证">4.3 验证</h4>
+<ul>
+<li>使用<code>docker exec -it es /bin/bash </code>命令 进入容器内部</li>
+<li>进入容器的 <code>cd /usr/share/elasticsearch/bin</code> 目录</li>
+<li>执行 <code>elasticsearch-plugin list</code> 命令(列出es安装的所有插件)</li>
+<li>如果列出了 <code>ik-analyzer</code> 就说明es的ik中文分词器安装成功了</li>
+</ul>
+<!-- raw HTML omitted -->
+<h4 id="44-测试">4.4 测试</h4>
+<h5 id="441-测试普通分词器">4.4.1 测试普通分词器</h5>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// GET http://IP:9200/_analyze
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;analyzer&#34;</span><span class="p">:</span> <span class="s2">&#34;standard&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;text&#34;</span><span class="p">:</span>     <span class="s2">&#34;测试分词器&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>response:</p>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;tokens&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;测&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;试&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;分&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;词&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;器&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;&lt;IDEOGRAPHIC&gt;&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><blockquote>
+<p>可以看到，查询出的内容，每个文字都是单独的，不会组成一个<code>词</code>；</p>
+</blockquote>
+<h5 id="442-使用ik分词器">4.4.2 使用<code>IK分词器</code></h5>
+<p>请求json如下：</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="c1">// GET http://IP:9200/_analyze
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;analyzer&#34;</span><span class="p">:</span> <span class="s2">&#34;ik_max_word&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;text&#34;</span><span class="p">:</span>     <span class="s2">&#34;测试分词器&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>response:</p>
+<div class="highlight" id="id-22"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;tokens&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;测试&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;分词器&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;分词&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;器&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_CHAR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>结束!</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 2023-07-19 18:12:20">更新于 2023-07-19&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" data-title="docker安装部署ElasticSearch（单机版）" data-hashtags="docker,es"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" data-hashtag="docker"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://yuanshuai1122.github.io/posts/docker%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2elasticsearch%E5%8D%95%E6%9C%BA%E7%89%88/" data-title="docker安装部署ElasticSearch（单机版）"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/docker/' class="post-tag">docker</a><a href='/tags/es/' class="post-tag">es</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/elasticsearch-%E6%9F%A5%E8%AF%A2/" class="post-nav-item" rel="prev" title="ElasticSearch-查询"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>ElasticSearch-查询</a>
+      <a href="/posts/docker%E5%AE%89%E8%A3%85kibana%E5%92%8Cfscrawler/" class="post-nav-item" rel="next" title="docker安装Kibana和Fscrawler">docker安装Kibana和Fscrawler<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
