@@ -20,10 +20,10 @@
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="死磕Juc（一）之CompletableFuture"/>
 <meta name="twitter:description" content="死磕Juc（一）之CompletableFuture 一、Future和Callable接口 Future接口定义了操作异步任务执行一些方法，如"/>
-<meta name="application-name" content="FixIt">
-<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="application-name" content="CN.yuanshuai">
+<meta name="apple-mobile-web-app-title" content="CN.yuanshuai"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://yuanshuai1122.github.io/posts/%E6%AD%BB%E7%A3%95juc%E4%B8%80%E4%B9%8Bcompletablefuture-2022-08-03-13-31-28/" /><link rel="prev" href="http://yuanshuai1122.github.io/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6xxl-job/" /><link rel="next" href="http://yuanshuai1122.github.io/posts/%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1-%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://yuanshuai1122.github.io/posts/%E6%AD%BB%E7%A3%95juc%E4%B8%80%E4%B9%8Bcompletablefuture-2022-08-03-13-31-28/" /><link rel="prev" href="http://yuanshuai1122.github.io/posts/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81pod-wei-shen-me-wo-men-xu-yao-pod/" /><link rel="next" href="http://yuanshuai1122.github.io/posts/%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1-%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
   {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
@@ -52,19 +52,19 @@
                 href="/posts/"
                 
                 
-              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li class="menu-item">
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
               <a
                 class="menu-link"
                 href="/categories/"
                 
                 
-              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li class="menu-item">
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
               <a
                 class="menu-link"
                 href="/tags/"
                 
                 
-              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
           <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
         </li></ul>
     </nav>
@@ -86,21 +86,21 @@
                   href="/posts/"
                   
                   
-                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
               class="menu-item"
             ><a
                   class="menu-link"
                   href="/categories/"
                   
                   
-                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
               class="menu-item"
             ><a
                   class="menu-link"
                   href="/tags/"
                   
                   
-                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item menu-system">
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item menu-system">
           <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
       </ul>
     </nav>
@@ -114,8 +114,7 @@
   <article class="page single">
     <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>死磕Juc（一）之CompletableFuture</span>
       </h1></div><div class="post-meta">
-      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
-      yuanshuai</span></span></div>
+      <div class="post-meta-line"><span class="post-author"><a href="https://cloud.tencent.com/developer/user/8180692" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png 2x" sizes="auto" data-title="yuanshuai" data-alt="yuanshuai" class="avatar" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>&nbsp;yuanshuai</a></span></div>
       <div class="post-meta-line"><span title="发布于 2022-08-03 13:31:27"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2022-08-03">2022-08-03</time></span>&nbsp;<span title="更新于 2022-08-03 13:31:27"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2022-08-03">2022-08-03</time></span>&nbsp;<span title="4121 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 4200 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 9 分钟</span>&nbsp;</div>
     </div><div class="details toc" id="toc-static" data-kept="false">
         <div class="details-summary toc-title">
@@ -697,7 +696,7 @@
     </section>
   </div>
 
-  <div class="post-nav"><a href="/posts/%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E5%BA%A6xxl-job/" class="post-nav-item" rel="prev" title="分布式调度XXL-JOB"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>分布式调度XXL-JOB</a>
+  <div class="post-nav"><a href="/posts/%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81pod-wei-shen-me-wo-men-xu-yao-pod/" class="post-nav-item" rel="prev" title="为什么我们需要Pod？"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>为什么我们需要Pod？</a>
       <a href="/posts/%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1-%E6%AD%BB%E7%A3%95juc%E4%BA%8Cjava%E7%9A%84%E9%94%81%E4%BA%8B1/" class="post-nav-item" rel="next" title="死磕juc（二）java的“锁”事（1）">死磕juc（二）java的“锁”事（1）<i class="fa-solid fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
 </article></main><footer class="footer">

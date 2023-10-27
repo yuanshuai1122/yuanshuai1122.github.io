@@ -8,20 +8,20 @@
     <title>JVM内存与垃圾回收篇第11章直接内存 - CN.yuanshuai</title><meta name="author" content="">
 <meta name="author-link" content="">
 <meta name="description" content="第 11 章 直接内存 1、直接内存概述 直接内存 不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。 直接内存是在Java堆外" /><meta name="keywords" content='Java, JVM' /><meta itemprop="name" content="JVM内存与垃圾回收篇第11章直接内存">
-<meta itemprop="description" content="第 11 章 直接内存 1、直接内存概述 直接内存 不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。 直接内存是在Java堆外">
-
+<meta itemprop="description" content="第 11 章 直接内存 1、直接内存概述 直接内存 不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。 直接内存是在Java堆外"><meta itemprop="datePublished" content="2022-03-19T18:12:20+00:00" />
+<meta itemprop="dateModified" content="2022-03-19T18:12:20+00:00" />
 <meta itemprop="wordCount" content="1652">
 <meta itemprop="keywords" content="Java,JVM," /><meta property="og:title" content="JVM内存与垃圾回收篇第11章直接内存" />
 <meta property="og:description" content="第 11 章 直接内存 1、直接内存概述 直接内存 不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。 直接内存是在Java堆外" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://yuanshuai1122.github.io/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2022-03-19T18:12:20+00:00" />
+<meta property="article:modified_time" content="2022-03-19T18:12:20+00:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="JVM内存与垃圾回收篇第11章直接内存"/>
 <meta name="twitter:description" content="第 11 章 直接内存 1、直接内存概述 直接内存 不是虚拟机运行时数据区的一部分，也不是《Java虚拟机规范》中定义的内存区域。 直接内存是在Java堆外"/>
-<meta name="application-name" content="FixIt">
-<meta name="apple-mobile-web-app-title" content="FixIt"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<meta name="application-name" content="CN.yuanshuai">
+<meta name="apple-mobile-web-app-title" content="CN.yuanshuai"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://yuanshuai1122.github.io/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/" /><link rel="prev" href="http://yuanshuai1122.github.io/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC12%E7%AB%A0%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" /><link rel="next" href="http://yuanshuai1122.github.io/posts/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC10%E7%AB%A0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%B8%8E%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
   {
@@ -33,7 +33,7 @@
       "@type": "WebPage",
       "@id": "http:\/\/yuanshuai1122.github.io\/posts\/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98\/"
     },"genre": "posts","keywords": "Java, JVM","wordcount":  1652 ,
-    "url": "http:\/\/yuanshuai1122.github.io\/posts\/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98\/","publisher": {
+    "url": "http:\/\/yuanshuai1122.github.io\/posts\/jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98-jvm%E5%86%85%E5%AD%98%E4%B8%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AF%87%E7%AC%AC11%E7%AB%A0%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98\/","datePublished": "2022-03-19T18:12:20+00:00","dateModified": "2022-03-19T18:12:20+00:00","publisher": {
       "@type": "Organization",
       "name": ""},"author": {
         "@type": "Person",
@@ -52,19 +52,19 @@
                 href="/posts/"
                 
                 
-              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li class="menu-item">
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
               <a
                 class="menu-link"
                 href="/categories/"
                 
                 
-              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li class="menu-item">
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
               <a
                 class="menu-link"
                 href="/tags/"
                 
                 
-              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
           <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
         </li></ul>
     </nav>
@@ -86,21 +86,21 @@
                   href="/posts/"
                   
                   
-                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> Posts</a></li><li
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
               class="menu-item"
             ><a
                   class="menu-link"
                   href="/categories/"
                   
                   
-                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> Categories</a></li><li
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
               class="menu-item"
             ><a
                   class="menu-link"
                   href="/tags/"
                   
                   
-                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> Tags</a></li><li class="menu-item menu-system">
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item menu-system">
           <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
       </ul>
     </nav>
@@ -114,9 +114,9 @@
   <article class="page single">
     <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>JVM内存与垃圾回收篇第11章直接内存</span>
       </h1></div><div class="post-meta">
-      <div class="post-meta-line"><span class="post-author"><span class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
-      yuanshuai</span></span></div>
-      <div class="post-meta-line"><span title="发布于 0001-01-01 00:00:00"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="更新于 0001-01-01 00:00:00"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="0001-01-01">0001-01-01</time></span>&nbsp;<span title="1652 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1700 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 4 分钟</span>&nbsp;</div>
+      <div class="post-meta-line"><span class="post-author"><a href="https://cloud.tencent.com/developer/user/8180692" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><i class="fa-solid fa-user-circle" aria-hidden="true"></i>
+    yuanshuai</a></span></div>
+      <div class="post-meta-line"><span title="发布于 2022-03-19 18:12:20"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2022-03-19">2022-03-19</time></span>&nbsp;<span title="更新于 2022-03-19 18:12:20"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2022-03-19">2022-03-19</time></span>&nbsp;<span title="1652 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 1700 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 4 分钟</span>&nbsp;</div>
     </div><div class="details toc" id="toc-static" data-kept="false">
         <div class="details-summary toc-title">
           <span>目录</span>
@@ -438,7 +438,7 @@ Process finished with exit code 1</code></pre><hr>
   <div class="post-info">
     <div class="post-info-line">
       <div class="post-info-mod">
-        <span title="更新于 0001-01-01 00:00:00">更新于 0001-01-01&nbsp;</span>
+        <span title="更新于 2022-03-19 18:12:20">更新于 2022-03-19&nbsp;</span>
       </div><div class="post-info-license">
           <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
         </div></div>
