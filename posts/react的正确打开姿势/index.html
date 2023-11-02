@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <meta name="robots" content="noodp" />
+    <title>React的正确打开姿势 - CN.yuanshuai</title><meta name="author" content="">
+<meta name="author-link" content="">
+<meta name="description" content="React的正确打开姿势 一、前置环境 1.1 nodejs https://nodejs.org/ Node.js® 是一个开源、跨平台的 JavaScript 运行时环境。 说白了运行时环境，就是运行的时候需要的环境。 可能" /><meta name="keywords" content='前端, react' /><meta itemprop="name" content="React的正确打开姿势">
+<meta itemprop="description" content="React的正确打开姿势 一、前置环境 1.1 nodejs https://nodejs.org/ Node.js® 是一个开源、跨平台的 JavaScript 运行时环境。 说白了运行时环境，就是运行的时候需要的环境。 可能"><meta itemprop="datePublished" content="2023-11-01T18:12:20+00:00" />
+<meta itemprop="dateModified" content="2023-11-01T18:12:20+00:00" />
+<meta itemprop="wordCount" content="5717">
+<meta itemprop="keywords" content="前端,react," /><meta property="og:title" content="React的正确打开姿势" />
+<meta property="og:description" content="React的正确打开姿势 一、前置环境 1.1 nodejs https://nodejs.org/ Node.js® 是一个开源、跨平台的 JavaScript 运行时环境。 说白了运行时环境，就是运行的时候需要的环境。 可能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://yuanshuai1122.github.io/posts/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-11-01T18:12:20+00:00" />
+<meta property="article:modified_time" content="2023-11-01T18:12:20+00:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="React的正确打开姿势"/>
+<meta name="twitter:description" content="React的正确打开姿势 一、前置环境 1.1 nodejs https://nodejs.org/ Node.js® 是一个开源、跨平台的 JavaScript 运行时环境。 说白了运行时环境，就是运行的时候需要的环境。 可能"/>
+<meta name="application-name" content="CN.yuanshuai">
+<meta name="apple-mobile-web-app-title" content="CN.yuanshuai"><meta name="theme-color" data-light="#f8f8f8" data-dark="#252627" content="#f8f8f8"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="canonical" href="http://yuanshuai1122.github.io/posts/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF/" /><link rel="prev" href="http://yuanshuai1122.github.io/posts/kubernetes-pod%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AF%A6%E8%A7%A3/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "headline": "React的正确打开姿势",
+    "inLanguage": "zh-CN",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http:\/\/yuanshuai1122.github.io\/posts\/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF\/"
+    },"genre": "posts","keywords": "前端, react","wordcount":  5717 ,
+    "url": "http:\/\/yuanshuai1122.github.io\/posts\/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF\/","datePublished": "2023-11-01T18:12:20+00:00","dateModified": "2023-11-01T18:12:20+00:00","publisher": {
+      "@type": "Organization",
+      "name": ""},"author": {
+        "@type": "Person",
+        "name": "yuanshuai"
+      },"description": ""
+  }
+  </script></head>
+  <body data-header-desktop="sticky" data-header-mobile="auto"><script>(window.localStorage?.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('data-theme', 'dark');</script><div class="wrapper" data-page-style="normal"><header class="desktop animate__faster" id="header-desktop">
+  <div class="header-wrapper">
+    <div class="header-title">
+      <a href="/" title="CN.yuanshuai"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="CN.yuanshuai" data-alt="CN.yuanshuai" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">CN.yuanshuai</span></a><span class="header-subtitle"></span></div>
+    <nav>
+      <ul class="menu"><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/posts/"
+                
+                
+              ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/categories/"
+                
+                
+              ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li class="menu-item">
+              <a
+                class="menu-link"
+                href="/tags/"
+                
+                
+              ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item delimiter"></li><li class="menu-item theme-switch" title="切换主题">
+          <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+        </li></ul>
+    </nav>
+  </div>
+</header><header class="mobile animate__faster" id="header-mobile">
+  <div class="header-container">
+    <div class="header-wrapper">
+      <div class="header-title">
+        <a href="/" title="CN.yuanshuai"><img loading="lazy" src="/fixit.min.svg" srcset="/fixit.min.svg, /fixit.min.svg 1.5x, /fixit.min.svg 2x" sizes="auto" data-title="/fixit.min.svg" data-alt="/fixit.min.svg" class="logo" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/><span class="header-title-text">CN.yuanshuai</span></a><span class="header-subtitle"></span></div>
+      <div class="menu-toggle" id="menu-toggle-mobile">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu" id="menu-mobile"><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/posts/"
+                  
+                  
+                ><i class="fa-solid fa-archive fa-fw fa-sm" aria-hidden="true"></i> 文章</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/categories/"
+                  
+                  
+                ><i class="fa-solid fa-th fa-fw fa-sm" aria-hidden="true"></i> 分类</a></li><li
+              class="menu-item"
+            ><a
+                  class="menu-link"
+                  href="/tags/"
+                  
+                  
+                ><i class="fa-solid fa-tags fa-fw fa-sm" aria-hidden="true"></i> 标签</a></li><li class="menu-item menu-system">
+          <span class="menu-system-item theme-switch" title="切换主题"><i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i></span></li>
+      </ul>
+    </nav>
+  </div>
+</header><main class="container"><aside class="toc" id="toc-auto"><h2 class="toc-title">目录&nbsp;<i class="toc-icon fa-solid fa-angle-down fa-fw" aria-hidden="true"></i></h2>
+      <div class="toc-content" id="toc-content-auto"></div></aside>
+
+  <aside class="aside-custom">
+    </aside>
+
+  <article class="page single">
+    <div class="header"><h1 class="single-title animate__animated animate__flipInX"><span>React的正确打开姿势</span>
+      </h1></div><div class="post-meta">
+      <div class="post-meta-line"><span class="post-author"><a href="https://cloud.tencent.com/developer/user/8180692" title="作者"target="_blank" rel="external nofollow noopener noreferrer author" class="author"><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/hjscijg3uw.png 2x" sizes="auto" data-title="yuanshuai" data-alt="yuanshuai" class="avatar" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/>&nbsp;yuanshuai</a></span></div>
+      <div class="post-meta-line"><span title="发布于 2023-11-01 18:12:20"><i class="fa-regular fa-calendar-alt fa-fw me-1" aria-hidden="true"></i><time datetime="2023-11-01">2023-11-01</time></span>&nbsp;<span title="更新于 2023-11-01 18:12:20"><i class="fa-regular fa-edit fa-fw me-1" aria-hidden="true"></i><time datetime="2023-11-01">2023-11-01</time></span>&nbsp;<span title="5717 字"><i class="fa-solid fa-pencil-alt fa-fw me-1" aria-hidden="true"></i>约 5800 字</span>&nbsp;<span><i class="fa-regular fa-clock fa-fw me-1" aria-hidden="true"></i>预计阅读 12 分钟</span>&nbsp;</div>
+    </div><div class="details toc" id="toc-static" data-kept="false">
+        <div class="details-summary toc-title">
+          <span>目录</span>
+          <span><i class="details-icon fa-solid fa-angle-right" aria-hidden="true"></i></span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#react的正确打开姿势">React的正确打开姿势</a>
+      <ul>
+        <li><a href="#一前置环境">一、前置环境</a></li>
+        <li><a href="#11-nodejs">1.1 nodejs</a></li>
+        <li><a href="#12-换源">1.2 换源</a></li>
+        <li><a href="#二react启动">二、React，启动！</a></li>
+        <li><a href="#三目录结构">三、目录结构</a></li>
+        <li><a href="#四一次访问">四、一次访问</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+      </div><div class="content" id="content"><h2 id="react的正确打开姿势">React的正确打开姿势</h2>
+<h3 id="一前置环境">一、前置环境</h3>
+<h3 id="11-nodejs">1.1 nodejs</h3>
+<p><code>https://nodejs.org/</code></p>
+<blockquote>
+<p>Node.js® 是一个开源、跨平台的 JavaScript 运行时环境。</p>
+</blockquote>
+<p>说白了运行时环境，就是运行的时候需要的环境。</p>
+<p>可能这是句废话，但是确实是一句废话。</p>
+<p>举个例子：写代码就好像盖楼，<code>nodejs</code>就是你的地基，你可以用地基带给你的东西（封装好的函数）也可以在地基上盖房子（业务逻辑代码），所以现代前端，必然离不开<code>nodejs</code>。</p>
+<p>当然写的好叫盖房子，写不好叫屎山~</p>
+<p><code>nodejs</code>有很多版本，<code>LTS</code>代表长期维护的稳定版本，理论上可以用在生产环境。</p>
+<p>介绍几个大版本：</p>
+<ul>
+<li>12：存在于vue2时代，很多vue2老项目的都是基于node12，并且一些三五年前流行的vue脚手架也是基于node12，现在不建议使用。</li>
+<li>14：稳定版（保守派），目前很多主流项目都是基于node14。</li>
+<li>16：稳定版（无脑派），目前较新的项目都是基于node16，目前建议无脑node16。</li>
+<li>18：最新稳定版（激进派），目前还不建议直接在生产环境上node18，还比较新，你看那些写java的，都出到21了， 还用java8呢~</li>
+</ul>
+<p>其实对于前端，node版本对于项目不是很感冒，14的项目几乎可以无缝切16，能跑就行，但是我们还是需要一个版本管理工具，面对不同项目切换不同的版本。</p>
+<p>推荐一个node版本管理工具：<code>nvm</code></p>
+<p><code>https://github.com/nvm-sh/nvm</code></p>
+<p>安装教程就不多废话了，网上教程很多，根据操作系统版本进行安装就行。</p>
+<p><code>https://www.runoob.com/w3cnote/nvm-manager-node-versions.html</code></p>
+<p>可以看下菜鸟教程，里面也有简单的使用方法。</p>
+<h3 id="12-换源">1.2 换源</h3>
+<p>我们都知道<code>npm</code>,但是什么是<code>npm</code></p>
+<blockquote>
+<p>npm 为你和你的团队打开了连接整个 JavaScript 天才世界的一扇大门。它是世界上最大的软件注册表，每星期大约有 30 亿次的下载量，包含超过 600000 个 <em>包（package）</em> （即，代码模块）。来自各大洲的开源软件开发者使用 npm 互相分享和借鉴。包的结构使您能够轻松跟踪依赖项和版本。</p>
+</blockquote>
+<p>厉害吧，简单来说就是个包管理工具。但是默认情况下，<code>npm</code>默认的远程地址在国外<code>npm</code>官方，在国内的我们访问十分不方便（遥遥领先）</p>
+<p>所以我们需要换国内的镜像源，什么是镜像源，说白了就是照镜子一样，定期一模一样拷贝一份在国内服务器，我们从国内直接下载，这样就体验好点（缺点是有点版本滞后，问题不大）。</p>
+<p>推荐一个换源工具：<code>nrm</code></p>
+<p><code>https://www.npmjs.com/package/nrm</code></p>
+<h3 id="二react启动">二、React，启动！</h3>
+<p>都3202年了，启动项目肯定是脚手架，这里推荐react官方脚手架：<code>create-react-app</code></p>
+<p><code>https://create-react-app.dev/</code></p>
+<p>当然，<code>TypeScript</code>版本：<code>https://create-react-app.dev/docs/adding-typescript/</code></p>
+<p>你要是不了解<code>TypeScript</code>建议学一下，</p>
+<p>顾名思义，<code>Javascript</code> = <code>Java</code> + <code>Script</code> 也就是 <code>java</code> + <code>脚本</code>,是一门脚本语言（但是貌似和java没半毛钱关系，听说是为了蹭热度）</p>
+<p>以此类推，<code>TypeScript</code> = <code>Type</code>  + <code>Script</code> ,也就是 <code>类型</code> + <code>脚本</code>，学懂这个<code>所谓类型</code>，你就懂TS了！</p>
+<p>言归正传，找个位置，项目，启动！</p>
+<div class="highlight" id="id-1"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">npx create-react-app react-first --template typescript</span></span></code></pre></div><p>这里<code>react-first</code>是我的项目名。</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/125.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/126.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这是完整的脚手架启动日志，仔细阅读下，会发现很多细节。</p>
+<p>我们听劝，进入文件夹，执行</p>
+<div class="highlight" id="id-2"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">npm start</span></span></code></pre></div><p>看下日志！</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/127.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以发现很多信息！</p>
+<p>我也建议看运行日志，这样会让你更了解它，也会对出现的问题，更清晰。</p>
+<p>我们访问:<code>http://localhost:3000/</code></p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>我们可以看到这个快乐的旋转的logo!</p>
+<p>这里我们就完成了第一步，项目启动！</p>
+<h3 id="三目录结构">三、目录结构</h3>
+<p>但现在为止，项目就启动起来了，然后就急着开发，但是我知道你很急，但是你别急，先用编译器打开项目（我这里用WebStome）看看react官方脚手架的基本目录结构。</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/129.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>我们从外往里看，</p>
+<h4 id="31-tsconfigjson">3.1 tsconfig.json</h4>
+<div class="highlight" id="id-3"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;compilerOptions&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;target&#34;</span><span class="p">:</span> <span class="s2">&#34;es5&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;lib&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;dom&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;dom.iterable&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;esnext&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;allowJs&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;skipLibCheck&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;esModuleInterop&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;allowSyntheticDefaultImports&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;strict&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;forceConsistentCasingInFileNames&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;noFallthroughCasesInSwitch&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;module&#34;</span><span class="p">:</span> <span class="s2">&#34;esnext&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;moduleResolution&#34;</span><span class="p">:</span> <span class="s2">&#34;node&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;resolveJsonModule&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;isolatedModules&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;noEmit&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;jsx&#34;</span><span class="p">:</span> <span class="s2">&#34;react-jsx&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;include&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;src&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>简答解释下：</p>
+<ol>
+<li>&ldquo;compilerOptions&rdquo;: 这个对象包含了编译器选项的配置。
+<ul>
+<li>&ldquo;target&rdquo;: 指定编译后的JavaScript代码的目标版本为&quot;es5&quot;，意味着编译后的代码将能在支持ES5的环境中运行。</li>
+<li>&ldquo;lib&rdquo;: 指定了需要包含的类型声明文件（lib.d.ts）的列表。在这个例子中，它包括了&quot;dom&quot;、&ldquo;dom.iterable&quot;和&quot;esnext&rdquo;，表示代码可以使用DOM相关的类型和ESNext的特性。</li>
+<li>&ldquo;allowJs&rdquo;: 允许编译器编译JavaScript文件。</li>
+<li>&ldquo;skipLibCheck&rdquo;: 跳过对声明文件的检查，可以加快编译速度。</li>
+<li>&ldquo;esModuleInterop&rdquo;: 启用对ES模块的互操作性支持，使得可以使用import/export语法。</li>
+<li>&ldquo;allowSyntheticDefaultImports&rdquo;: 允许从没有默认导出的模块中默认导入。</li>
+<li>&ldquo;strict&rdquo;: 启用所有严格类型检查选项。</li>
+<li>&ldquo;forceConsistentCasingInFileNames&rdquo;: 强制文件名的一致性，防止在不同操作系统上的文件名大小写问题引起的错误。</li>
+<li>&ldquo;noFallthroughCasesInSwitch&rdquo;: 在switch语句中禁止case穿透。</li>
+<li>&ldquo;module&rdquo;: 指定生成的模块代码的模块系统。这里设置为&quot;esnext&quot;，表示使用ES模块。</li>
+<li>&ldquo;moduleResolution&rdquo;: 指定模块解析策略为&quot;node&quot;，表示使用Node.js的模块解析算法。</li>
+<li>&ldquo;resolveJsonModule&rdquo;: 允许导入JSON模块。</li>
+<li>&ldquo;isolatedModules&rdquo;: 将每个文件作为单独的模块进行编译，提供更好的编辑器支持。</li>
+<li>&ldquo;noEmit&rdquo;: 不生成编译后的输出文件。</li>
+<li>&ldquo;jsx&rdquo;: 指定JSX语法的处理方式为&quot;react-jsx&quot;，表示使用React的JSX语法。</li>
+</ul>
+</li>
+<li>&ldquo;include&rdquo;: 指定需要包含在编译中的文件或目录。在这个例子中，只包含了&quot;src&quot;目录下的文件。</li>
+</ol>
+<h4 id="32--packagejson">3.2  package.json</h4>
+<div class="highlight" id="id-4"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;react-first&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;version&#34;</span><span class="p">:</span> <span class="s2">&#34;0.1.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;private&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;dependencies&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@testing-library/jest-dom&#34;</span><span class="p">:</span> <span class="s2">&#34;^5.17.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@testing-library/react&#34;</span><span class="p">:</span> <span class="s2">&#34;^13.4.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@testing-library/user-event&#34;</span><span class="p">:</span> <span class="s2">&#34;^13.5.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@types/jest&#34;</span><span class="p">:</span> <span class="s2">&#34;^27.5.2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@types/node&#34;</span><span class="p">:</span> <span class="s2">&#34;^16.18.59&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@types/react&#34;</span><span class="p">:</span> <span class="s2">&#34;^18.2.31&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;@types/react-dom&#34;</span><span class="p">:</span> <span class="s2">&#34;^18.2.14&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;react&#34;</span><span class="p">:</span> <span class="s2">&#34;^18.2.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;react-dom&#34;</span><span class="p">:</span> <span class="s2">&#34;^18.2.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;react-scripts&#34;</span><span class="p">:</span> <span class="s2">&#34;5.0.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;typescript&#34;</span><span class="p">:</span> <span class="s2">&#34;^4.9.5&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;web-vitals&#34;</span><span class="p">:</span> <span class="s2">&#34;^2.1.4&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;scripts&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;start&#34;</span><span class="p">:</span> <span class="s2">&#34;react-scripts start&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;build&#34;</span><span class="p">:</span> <span class="s2">&#34;react-scripts build&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;test&#34;</span><span class="p">:</span> <span class="s2">&#34;react-scripts test&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;eject&#34;</span><span class="p">:</span> <span class="s2">&#34;react-scripts eject&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;eslintConfig&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;extends&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;react-app&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;react-app/jest&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;browserslist&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;production&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;&gt;0.2%&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;not dead&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;not op_mini all&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;development&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;last 1 chrome version&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;last 1 firefox version&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;last 1 safari version&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p>简单解释下：</p>
+<ol>
+<li>&ldquo;name&rdquo;: 项目的名称，这里是&quot;react-first&quot;。</li>
+<li>&ldquo;version&rdquo;: 项目的版本号，这里是&quot;0.1.0&quot;。</li>
+<li>&ldquo;private&rdquo;: 声明项目为私有项目，这意味着它不应该被发布到公共的包管理器中。</li>
+<li>&ldquo;dependencies&rdquo;: 项目的依赖项列表，这些是项目运行所需的外部库。
+<ul>
+<li>&ldquo;@testing-library/jest-dom&rdquo;: 提供了Jest的DOM断言库。</li>
+<li>&ldquo;@testing-library/react&rdquo;: 提供了React组件的测试工具。</li>
+<li>&ldquo;@testing-library/user-event&rdquo;: 提供了模拟用户事件的工具。</li>
+<li>&ldquo;@types/jest&rdquo;: 提供了Jest的类型声明。</li>
+<li>&ldquo;@types/node&rdquo;: 提供了Node.js的类型声明。</li>
+<li>&ldquo;@types/react&rdquo;: 提供了React的类型声明。</li>
+<li>&ldquo;@types/react-dom&rdquo;: 提供了React DOM的类型声明。</li>
+<li>&ldquo;react&rdquo;: React库。</li>
+<li>&ldquo;react-dom&rdquo;: React的DOM渲染器。</li>
+<li>&ldquo;react-scripts&rdquo;: 提供了用于启动、构建和测试React应用程序的脚本。</li>
+<li>&ldquo;typescript&rdquo;: TypeScript编译器。</li>
+<li>&ldquo;web-vitals&rdquo;: 提供了用于测量Web性能指标的工具。</li>
+</ul>
+</li>
+<li>&ldquo;scripts&rdquo;: 定义了一些可执行的命令脚本。
+<ul>
+<li>&ldquo;start&rdquo;: 启动开发服务器。</li>
+<li>&ldquo;build&rdquo;: 构建生产环境的应用程序。</li>
+<li>&ldquo;test&rdquo;: 运行测试。</li>
+<li>&ldquo;eject&rdquo;: 将React应用程序的配置暴露出来，以便进行更高级的自定义。</li>
+</ul>
+</li>
+<li>&ldquo;eslintConfig&rdquo;: 配置ESLint的规则和扩展。
+<ul>
+<li>&ldquo;extends&rdquo;: 继承了&quot;react-app&quot;和&quot;react-app/jest&quot;的ESLint配置，这些配置是为React应用程序预设的。</li>
+</ul>
+</li>
+<li>&ldquo;browserslist&rdquo;: 定义了项目在不同环境下支持的浏览器列表。
+<ul>
+<li>&ldquo;production&rdquo;: 生产环境下支持的浏览器列表。</li>
+<li>&ldquo;development&rdquo;: 开发环境下支持的浏览器列表。</li>
+</ul>
+</li>
+</ol>
+<p>剩下是关于git和锁包的，我们基本不用关心。</p>
+<h4 id="33-src">3.3 src</h4>
+<p>src是我们的源码，我们展开来看：</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/130.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到源码内react脚手架给出了示例用法，包括组件定义，组件样式定义，全局类型声明，以及推荐我们做前端测试方法和性能监控。</p>
+<h4 id="34-public">3.4 public</h4>
+<p>public是对外静态资源，我们打开public看下。</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/131.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>可以看到静态资源目录，放置了网站图标，logo等资源，并且对外暴露了<code>index.html</code>即程序的主入口的html文件，用户访问网站/目录，就会进入到这个<code>index.html</code>。</p>
+<h3 id="四一次访问">四、一次访问</h3>
+<p>在生产环境，我们会把程序打包成一套静态文件放在<code>nginx</code>等服务器上，这时候用户访问https//xxxx.com/网站根目录，就会进入到程序的<code>index.html</code>文件</p>
+<h4 id="41-indexhtml">4.1 index.html</h4>
+<p>我们看下这个<code>index.html</code>中有哪些东西</p>
+<div class="highlight" id="id-5"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&#34;en&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;icon&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/favicon.ico&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;viewport&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;width=device-width, initial-scale=1&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;theme-color&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;#000000&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span>
+</span></span><span class="line"><span class="cl">      <span class="na">name</span><span class="o">=</span><span class="s">&#34;description&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="na">content</span><span class="o">=</span><span class="s">&#34;Web site created using create-react-app&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;apple-touch-icon&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/logo192.png&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;manifest&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/manifest.json&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>React App<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">noscript</span><span class="p">&gt;</span>You need to enable JavaScript to run this app.<span class="p">&lt;/</span><span class="nt">noscript</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;root&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></span></span></code></pre></div><p>可以看到，是一个很标准的html结构，简单解释下：</p>
+<div class="highlight" id="id-6"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span></span></span></code></pre></div><p><code>&lt;!DOCTYPE html&gt;</code>是HTML5的文档类型声明，它告诉浏览器使用HTML5解析文档。</p>
+<div class="highlight" id="id-7"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&#34;en&#34;</span><span class="p">&gt;</span></span></span></code></pre></div><p><code>&lt;html&gt;</code>标签是HTML文档的根元素，它包含了整个网页的内容。<code>lang=&quot;en&quot;</code>属性指定了网页的语言为英语。</p>
+<div class="highlight" id="id-8"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;utf-8&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;icon&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/favicon.ico&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;viewport&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;width=device-width, initial-scale=1&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;theme-color&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;#000000&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&#34;description&#34;</span> <span class="na">content</span><span class="o">=</span><span class="s">&#34;Web site created using create-react-app&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;apple-touch-icon&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/logo192.png&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;manifest&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;%PUBLIC_URL%/manifest.json&#34;</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>React App<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span></span></span></code></pre></div><p><code>&lt;head&gt;</code>标签包含了一些关于网页的元数据和引用的资源。这些元素不会直接显示在网页上，而是提供了关于网页的信息和配置。</p>
+<ul>
+<li><code>&lt;meta charset=&quot;utf-8&quot; /&gt;</code>指定了网页的字符编码为UTF-8，以支持各种语言和字符。</li>
+<li><code>&lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;</code>指定了网页的图标（favicon），它显示在浏览器标签页和书签中。</li>
+<li><code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;</code>设置了网页的视口（viewport），以确保在不同设备上正确显示和缩放。</li>
+<li><code>&lt;meta name=&quot;theme-color&quot; content=&quot;#000000&quot; /&gt;</code>指定了网页的主题颜色，它会影响一些浏览器和移动设备的外观。</li>
+<li><code>&lt;meta name=&quot;description&quot; content=&quot;Web site created using create-react-app&quot; /&gt;</code>提供了网页的描述，通常在搜索结果中显示。</li>
+<li><code>&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;%PUBLIC_URL%/logo192.png&quot; /&gt;</code>指定了在iOS设备上添加到主屏幕时显示的图标。</li>
+<li><code>&lt;link rel=&quot;manifest&quot; href=&quot;%PUBLIC_URL%/manifest.json&quot; /&gt;</code>指定了网页的清单文件（manifest.json），它描述了网页的元数据和配置信息。</li>
+<li><code>&lt;title&gt;React App&lt;/title&gt;</code>设置了网页的标题，显示在浏览器的标题栏或选项卡中。</li>
+</ul>
+<div class="highlight" id="id-9"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">noscript</span><span class="p">&gt;</span>You need to enable JavaScript to run this app.<span class="p">&lt;/</span><span class="nt">noscript</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;root&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span></span></span></code></pre></div><p><code>&lt;body&gt;</code>标签包含了网页的可见内容。它包含了一个<code>&lt;noscript&gt;</code>标签，用于在不支持JavaScript的情况下显示一段提示信息。下面的<code>&lt;div&gt;</code>标签具有<code>id=&quot;root&quot;</code>，它是React应用程序的根容器，React会将组件渲染到这个容器中。</p>
+<p>仔细一看啥只有一行有用：</p>
+<div class="highlight" id="id-10"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&#34;root&#34;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span></span></span></code></pre></div><p>就是渲染一个id为root的div标签。</p>
+<p>但是也就是从这个标签开始，我们进入了react的大门。</p>
+<h4 id="42-indextsx">4.2 index.tsx</h4>
+<p>上面说整个react只有一个id为root的div，那这个div是在哪里挂载的呢？</p>
+<p>我们打开src下的index.tsx</p>
+<div class="highlight" id="id-11"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">React</span> <span class="kr">from</span> <span class="s1">&#39;react&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">ReactDOM</span> <span class="kr">from</span> <span class="s1">&#39;react-dom/client&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="s1">&#39;./index.css&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">App</span> <span class="kr">from</span> <span class="s1">&#39;./App&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">reportWebVitals</span> <span class="kr">from</span> <span class="s1">&#39;./reportWebVitals&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">root</span> <span class="o">=</span> <span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">createRoot</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span> <span class="kr">as</span> <span class="nx">HTMLElement</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">root</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">React.StrictMode</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">App</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">React.StrictMode</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">reportWebVitals</span><span class="p">();</span></span></span></code></pre></div><p>简单解释下：</p>
+<div class="highlight" id="id-12"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">&#39;react&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">ReactDOM</span> <span class="nx">from</span> <span class="s1">&#39;react-dom/client&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="s1">&#39;./index.css&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">App</span> <span class="nx">from</span> <span class="s1">&#39;./App&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">reportWebVitals</span> <span class="nx">from</span> <span class="s1">&#39;./reportWebVitals&#39;</span><span class="p">;</span></span></span></code></pre></div><p>这些是引入所需的依赖项和模块。<code>React</code>和<code>ReactDOM</code>是用于构建React应用程序的核心库。<code>'./index.css'</code>是一个CSS文件的相对路径，用于样式化应用程序。<code>App</code>是一个自定义组件，它在<code>'./App'</code>文件中定义。<code>reportWebVitals</code>是一个用于报告Web性能指标的函数，它在<code>'./reportWebVitals'</code>文件中定义。</p>
+<div class="highlight" id="id-13"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">root</span> <span class="o">=</span> <span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">createRoot</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">HTMLElement</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span></span></span></code></pre></div><p><code>ReactDOM.createRoot()</code>是React 18中引入的新方法，用于创建一个根<code>ReactRoot</code>对象。它接受一个DOM元素作为参数，这里使用<code>document.getElementById('root')</code>获取具有<code>id</code>为<code>'root'</code>的DOM元素作为根容器。</p>
+<div class="highlight" id="id-14"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">root</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="o">&lt;</span><span class="nx">React</span><span class="p">.</span><span class="nx">StrictMode</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="nx">App</span> <span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">&lt;</span><span class="err">/React.StrictMode&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span></span></span></code></pre></div><p><code>root.render()</code>用于将React组件渲染到根容器中。在这里，使用JSX语法编写了一个组件树。<code>&lt;React.StrictMode&gt;</code>是一个React元素，它启用了严格模式，用于检测潜在的问题和不安全的操作。<code>&lt;App /&gt;</code>是一个自定义组件，它是应用程序的主要组件。</p>
+<div class="highlight" id="id-15"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">reportWebVitals</span><span class="p">();</span></span></span></code></pre></div><p><code>reportWebVitals()</code>是一个函数调用，用于报告Web性能指标。它将收集和报告与应用程序性能相关的指标，例如页面加载时间和交互性能。</p>
+<p>核心就在这里，react创建了个dom元素，挂在在了id为root的div标签上（index.html定义的）</p>
+<div class="highlight" id="id-16"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">root</span> <span class="o">=</span> <span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">createRoot</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">)</span> <span class="kr">as</span> <span class="nx">HTMLElement</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span></span></span></code></pre></div><p>而<code>index.tsx</code>在业务上，只做了一件事：</p>
+<div class="highlight" id="id-17"><pre tabindex="0" class="chroma"><code class="language-tsx" data-lang="tsx"><span class="line"><span class="cl"><span class="nx">root</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;</span><span class="nt">React.StrictMode</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">App</span> <span class="p">/&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">&lt;/</span><span class="nt">React.StrictMode</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span></span></span></code></pre></div><p>渲染了一个叫做<code>&lt;App /&gt;</code>的组件!</p>
+<h4 id="43-apptsx">4.3 App.tsx</h4>
+<p>我们打开<code>App.tsx</code>看下：</p>
+<div class="highlight" id="id-18"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">import</span> <span class="err">React</span> <span class="err">from</span> <span class="err">&#39;react&#39;;</span>
+</span></span><span class="line"><span class="cl"><span class="err">import</span> <span class="err">logo</span> <span class="err">from</span> <span class="err">&#39;./logo.svg&#39;;</span>
+</span></span><span class="line"><span class="cl"><span class="err">import</span> <span class="err">&#39;./App.css&#39;;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">function</span> <span class="err">App()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="err">return</span> <span class="err">(</span>
+</span></span><span class="line"><span class="cl">    <span class="err">&lt;div</span> <span class="err">className=</span><span class="nt">&#34;App&#34;</span><span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="err">&lt;header</span> <span class="err">className=</span><span class="s2">&#34;App-header&#34;</span><span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&lt;img</span> <span class="err">src=</span><span class="p">{</span><span class="err">logo</span><span class="p">}</span> <span class="err">className=</span><span class="s2">&#34;App-logo&#34;</span> <span class="err">alt=</span><span class="s2">&#34;logo&#34;</span> <span class="err">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&lt;p&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="err">Edit</span> <span class="err">&lt;code&gt;src/App.tsx&lt;/code&gt;</span> <span class="err">and</span> <span class="err">save</span> <span class="err">to</span> <span class="err">reload.</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&lt;/p&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&lt;a</span>
+</span></span><span class="line"><span class="cl">          <span class="err">className=</span><span class="s2">&#34;App-link&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="err">href=</span><span class="s2">&#34;https://reactjs.org&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="err">target=</span><span class="s2">&#34;_blank&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="err">rel=</span><span class="s2">&#34;noopener noreferrer&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="err">Learn</span> <span class="err">React</span>
+</span></span><span class="line"><span class="cl">        <span class="err">&lt;/a&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="err">&lt;/header&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="err">&lt;/div&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="err">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">export</span> <span class="err">default</span> <span class="err">App;</span></span></span></code></pre></div><p>简单解释下：</p>
+<div class="highlight" id="id-19"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">&#39;react&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nx">logo</span> <span class="nx">from</span> <span class="s1">&#39;./logo.svg&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="s1">&#39;./App.css&#39;</span><span class="p">;</span></span></span></code></pre></div><p>这些是引入所需的依赖项和资源。<code>React</code>是用于构建React组件的核心库。<code>logo</code>是一个图片资源，通过相对路径<code>'./logo.svg'</code>引入。<code>'./App.css'</code>是一个CSS文件的相对路径，用于样式化<code>App</code>组件。</p>
+<div class="highlight" id="id-20"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">App</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&#34;App&#34;</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">&lt;</span><span class="nx">header</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&#34;App-header&#34;</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="p">{</span><span class="nx">logo</span><span class="p">}</span> <span class="nx">className</span><span class="o">=</span><span class="s2">&#34;App-logo&#34;</span> <span class="nx">alt</span><span class="o">=</span><span class="s2">&#34;logo&#34;</span> <span class="o">/&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">Edit</span> <span class="o">&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">src</span><span class="o">/</span><span class="nx">App</span><span class="p">.</span><span class="nx">tsx</span><span class="o">&lt;</span><span class="err">/code&gt; and save to reload.</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="nx">a</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">className</span><span class="o">=</span><span class="s2">&#34;App-link&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">href</span><span class="o">=</span><span class="s2">&#34;https://reactjs.org&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">target</span><span class="o">=</span><span class="s2">&#34;_blank&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">rel</span><span class="o">=</span><span class="s2">&#34;noopener noreferrer&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">Learn</span> <span class="nx">React</span>
+</span></span><span class="line"><span class="cl">        <span class="o">&lt;</span><span class="err">/a&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">&lt;</span><span class="err">/header&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&lt;</span><span class="err">/div&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div><p><code>App</code>是一个函数组件，它返回一个JSX元素。这个函数组件定义了应用程序的外观和内容。它包含了一个<code>&lt;div&gt;</code>元素作为根容器，并使用<code>className=&quot;App&quot;</code>为其添加了一个CSS类名。</p>
+<p>在<code>&lt;div&gt;</code>内部，有一个<code>&lt;header&gt;</code>元素，它包含了应用程序的标题和Logo。<code>&lt;img&gt;</code>元素使用<code>src={logo}</code>来显示导入的Logo图像，并使用<code>className=&quot;App-logo&quot;</code>为其添加一个CSS类名。<code>&lt;p&gt;</code>元素显示了一段文本，其中使用了<code>&lt;code&gt;</code>元素来表示代码。<code>&lt;a&gt;</code>元素是一个链接，它指向React官方网站，并在新标签页中打开。</p>
+<div class="highlight" id="id-21"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="nx">App</span><span class="p">;</span></span></span></code></pre></div><p><code>export default App</code>将<code>App</code>组件导出，以便其他文件可以引入和使用它。</p>
+<p>其实这段代码，就是定义了一个名为<code>App</code>的React组件。</p>
+<p>走到这里，你就可以顺利看到这个App组件，也就是你在上面http://localhost:3000/所看到的东西，也是你之后部署服务器所看到的东西。</p>
+<p><img loading="lazy" src="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" srcset="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png, https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png 1.5x, https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png 2x" sizes="auto" data-title="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" data-alt="https://aabb-2023.oss-cn-beijing.aliyuncs.com/128.png" style="background: url(/svg/loading.min.svg) no-repeat center;" onload="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}this.dataset.lazyloaded='';" onerror="this.title=this.dataset.title;this.alt=this.dataset.alt;for(const a of ['style','data-title','data-alt','onerror','onload']){this.removeAttribute(a);}"/></p>
+<p>这就是一个完整的流程:</p>
+<p><code>index.html</code> &ndash;&gt; <code>index.tsx</code> &ndash;&gt; <code>App.tsx</code></p>
+<p>同理我们想要设计一个单页应用程序(SPA)，就可以在这个<code>App.tsx</code>里写！</p>
+<p>同理我们可以封装多个组件，通过<code>App.tsx</code>进行引用，类似于<code>index.tsx</code>中的render一样&hellip;</p>
+<p>到了这里，你是不是对react的一次请求，有了基本的概念。</p>
+<p>good luck！开始踏进react的开发之旅吧！</p>
+</div><div class="post-footer" id="post-footer">
+  <div class="post-info">
+    <div class="post-info-line">
+      <div class="post-info-mod">
+        <span title="更新于 2023-11-01 18:12:20">更新于 2023-11-01&nbsp;</span>
+      </div><div class="post-info-license">
+          <span><a rel="license external nofollow noopener noreferrer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span>
+        </div></div>
+    <div class="post-info-line">
+      <div class="post-info-md"></div>
+      <div class="post-info-share">
+        <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://yuanshuai1122.github.io/posts/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF/" data-title="React的正确打开姿势" data-hashtags="前端,react"><i class="fa-brands fa-twitter fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://yuanshuai1122.github.io/posts/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF/" data-hashtag="前端"><i class="fa-brands fa-facebook-square fa-fw" aria-hidden="true"></i></a>
+  <a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://yuanshuai1122.github.io/posts/react%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E5%A7%BF%E5%8A%BF/" data-title="React的正确打开姿势"><i class="fa-brands fa-weibo fa-fw" aria-hidden="true"></i></a>
+  </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-info-more">
+    <section class="post-tags"><i class="fa-solid fa-tags fa-fw me-1" aria-hidden="true"></i><a href='/tags/%E5%89%8D%E7%AB%AF/' class="post-tag">前端</a><a href='/tags/react/' class="post-tag">react</a></section>
+    <section>
+      <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+    </section>
+  </div>
+
+  <div class="post-nav"><a href="/posts/kubernetes-pod%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AF%A6%E8%A7%A3/" class="post-nav-item" rel="prev" title="Kubernetes-Pod控制器详解"><i class="fa-solid fa-angle-left fa-fw" aria-hidden="true"></i>Kubernetes-Pod控制器详解</a></div>
+</div>
+</article></main><footer class="footer">
+    <div class="footer-container"><div class="footer-line powered">由 <a href="https://gohugo.io/" target="_blank" rel="external nofollow noopener noreferrer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/hugo-fixit/FixIt" target="_blank" rel="external" title="FixIt v0.2.18-lts.2"><img class="fixit-icon" src="/fixit.min.svg" alt="FixIt logo" />&nbsp;FixIt</a>
+        </div><div class="footer-line copyright" itemscope itemtype="http://schema.org/CreativeWork"><i class="fa-regular fa-copyright fa-fw" aria-hidden="true"></i>
+            <span itemprop="copyrightYear">2023</span><span class="author" itemprop="copyrightHolder">
+              <a href="/"></a></span></div><div class="footer-line statistics"></div></div>
+  </footer></div><div class="widgets"><div class="fixed-buttons animate__faster d-none"><div class="fixed-button back-to-top" role="button" aria-label="回到顶部"><i class="fa-solid fa-arrow-up fa-fw" aria-hidden="true"></i><span class="variant-numeric d-none">0%</span>
+        </div></div><div id="mask"></div><noscript>
+    <div class="noscript-warning">FixIt 主题在启用 JavaScript 的情况下效果最佳。</div>
+  </noscript>
+</div><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/cookieconsent/cookieconsent.min.css"><script src="/lib/sharer/sharer.min.js" async defer></script><script src="/lib/katex/katex.min.js" defer></script><script src="/lib/katex/auto-render.min.js" defer></script><script src="/lib/katex/copy-tex.min.js" defer></script><script src="/lib/katex/mhchem.min.js" defer></script><script src="/lib/cookieconsent/cookieconsent.min.js" defer></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","editLockTitle":"锁定可编辑代码块","editUnLockTitle":"解锁可编辑代码块","editable":true,"maxShownLines":10},"comment":{"enable":false},"cookieconsent":{"content":{"dismiss":"同意","link":"了解更多","message":"本网站使用 Cookies 来改善您的浏览体验。"},"enable":true,"palette":{"button":{"background":"#f0f0f0"},"popup":{"background":"#1aa3ff"}},"theme":"edgeless"},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false}};</script><script src="/js/theme.min.js" defer></script></body>
+</html>
